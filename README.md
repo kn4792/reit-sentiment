@@ -1,8 +1,6 @@
 # REIT Sentiment Analysis Using Employee Reviews
 
-**Authors:** Konain Niaz, Travis Desell, Debanjana Dey  
-**Institution:** Rochester Institute of Technology  
-**Course:** DSCI 601
+
 
 ## Project Overview
 
