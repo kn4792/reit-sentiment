@@ -1,6 +1,7 @@
-﻿# Python
+﻿# Python artifacts
 __pycache__/
 *.py[cod]
+*.pyc
 *.class
 *.so
 .Python
@@ -11,31 +12,35 @@ dist/
 build/
 .pytest_cache/
 
-# Data files
+# IDE/project files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS / Misc
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Credentials & secrets
+config/secret.json
+*.key
+.env
+
+# Data files (ignore everything in these but keep the folder)
 data/raw/*
 data/processed/*
 data/results/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/results/.gitkeep
+
+# Ignore all large/tabular data wherever they appear
 *.csv
 *.xlsx
 *.pkl
+*.parquet
 
-# Credentials
-config/secret.json
-*.key
-.env
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/

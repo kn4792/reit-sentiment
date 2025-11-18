@@ -1,0 +1,792 @@
+{
+  "companies": [
+    {
+      "ticker": "AHR",
+      "name": "American Healthcare REIT, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/American-Healthcare-REIT-Reviews-E7171082.htm"
+    },
+
+    {
+      "ticker": "WELL",
+      "name": "Welltower Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Welltower-Reviews-E1166198.htm"
+    },
+    {
+      "ticker": "WPC",
+      "name": "W. P. Carey Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/W-P-Carey-Reviews-E7682.htm"
+    },
+    {
+      "ticker": "AGNC",
+      "name": "AGNC Investment Corp.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/AGNC-Reviews-E10830465.htm"
+    },
+    {
+      "ticker": "CTRE",
+      "name": "CareTrust REIT, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/CareTrust-REIT-Reviews-E4916191.htm"
+    },
+    {
+      "ticker": "VTR",
+      "name": "Ventas, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Ventas-Inc-Reviews-E8222.htm"
+    },
+    {
+      "ticker": "OHI",
+      "name": "Omega Healthcare Investors, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Omega-Healthcare-Reviews-E326877.htm"
+    },
+    {
+      "ticker": "PLD",
+      "name": "Prologis, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Prologis-Reviews-E2631.htm"
+    },
+    {
+      "ticker": "HR",
+      "name": "Healthcare Realty Trust",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Healthcare-Realty-Reviews-E1047.htm"
+    },
+    {
+      "ticker": "SPG",
+      "name": "Simon Property Group, Inc.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Simon-Property-Group-Reviews-E2458.htm"
+    },
+    {
+      "ticker": "STAG",
+      "name": "STAG Industrial, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/STAG-Industrial-Reviews-E354630.htm"
+    },
+    {
+      "ticker": "FR",
+      "name": "First Industrial Realty Trust, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/First-Industrial-Realty-Reviews-E2683.htm"
+    },
+    {
+      "ticker": "EGP",
+      "name": "EastGroup Properties, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/EastGroup-Properties-Reviews-E849.htm"
+    },
+    {
+      "ticker": "STWD",
+      "name": "Starwood Property Trust, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Starwood-Property-Reviews-E354156.htm"
+    },
+    {
+      "ticker": "ADC",
+      "name": "Agree Realty Corporation",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Agree-Realty-Reviews-E2645.htm"
+    },
+    {
+      "ticker": "O",
+      "name": "Realty Income Corporation",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Realty-Income-Reviews-E3890.htm"
+    },
+    {
+      "ticker": "SUI",
+      "name": "Sun Communities, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Sun-Communities-Reviews-E2567.htm"
+    },
+    {
+      "ticker": "VICI",
+      "name": "VICI Properties Inc.",
+      "property_type": "Gaming",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/VICI-Properties-Reviews-E1964301.htm"
+    },
+    {
+      "ticker": "REG",
+      "name": "Regency Centers Corporation",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Regency-Centers-Reviews-E2379.htm"
+    },
+    {
+      "ticker": "NNN",
+      "name": "NNN REIT, Inc.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/NNN-REIT-Reviews-E2468.htm"
+    },
+    {
+      "ticker": "HST",
+      "name": "Host Hotels & Resorts, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Host-Hotels-and-Resorts-Reviews-E305.htm"
+    },
+    {
+      "ticker": "BRX",
+      "name": "Brixmor Property Group Inc.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Brixmor-Reviews-E482072.htm"
+    },
+    {
+      "ticker": "DLR",
+      "name": "Digital Realty",
+      "property_type": "Data Center",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Digital-Realty-Reviews-E36929.htm"
+    },
+    {
+      "ticker": "LAMR",
+      "name": "Lamar Advertising Company",
+      "property_type": "Specialty",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Lamar-Advertising-Reviews-E5998.htm"
+    },
+    {
+      "ticker": "AMH",
+      "name": "AMH",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/AMH-Reviews-E669975.htm"
+    },
+    {
+      "ticker": "ESS",
+      "name": "Essex Property Trust, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Essex-Property-Trust-Reviews-E3630.htm"
+    },
+    {
+      "ticker": "EQIX",
+      "name": "Equinix, Inc.",
+      "property_type": "Data Center",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Equinix-Reviews-E11296.htm"
+    },
+    {
+      "ticker": "INVH",
+      "name": "Invitation Homes",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Invitation-Homes-Reviews-E666277.htm"
+    },
+    {
+      "ticker": "BXP",
+      "name": "BXP",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/BXP-Reviews-E3948.htm"
+    },
+    {
+      "ticker": "CPT",
+      "name": "Camden Property Trust",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Camden-Property-Trust-Reviews-E2418.htm"
+    },
+    {
+      "ticker": "ELS",
+      "name": "Equity LifeStyle Properties, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Equity-LifeStyle-Properties-Reviews-E2281.htm"
+    },
+    {
+      "ticker": "FRT",
+      "name": "Federal Realty Investment Trust",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Federal-Realty-Investment-Trust-Reviews-E248.htm"
+    },
+    {
+      "ticker": "SBAC",
+      "name": "SBA Communications Corporation",
+      "property_type": "Telecommunications",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/SBA-Communications-Reviews-E9253.htm"
+    },
+    {
+      "ticker": "CCI",
+      "name": "Crown Castle Inc.",
+      "property_type": "Telecommunications",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Crown-Castle-Reviews-E8416.htm"
+    },
+    {
+      "ticker": "AMT",
+      "name": "American Tower Corporation",
+      "property_type": "Telecommunications",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/American-Tower-Reviews-E8043.htm"
+    },
+    {
+      "ticker": "KIM",
+      "name": "Kimco Realty Corporation",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Kimco-Realty-Reviews-E2116.htm"
+    },
+    {
+      "ticker": "MAA",
+      "name": "MAA",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/MAA-Reviews-E2504.htm"
+    },
+    {
+      "ticker": "EQR",
+      "name": "Equity Residential",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Equity-Residential-Reviews-E3635.htm"
+    },
+    {
+      "ticker": "PSA",
+      "name": "Public Storage",
+      "property_type": "Self-storage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Public-Storage-Reviews-E626.htm"
+    },
+    {
+      "ticker": "VNO",
+      "name": "Vornado Realty Trust",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Vornado-Realty-Reviews-E708.htm"
+    },
+    {
+      "ticker": "DOC",
+      "name": "Healthpeak Properties, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Healthpeak-Properties-Reviews-E321.htm"
+    },
+    {
+      "ticker": "UDR",
+      "name": "UDR, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/UDR-Reviews-E1988.htm"
+    },
+    {
+      "ticker": "EXR",
+      "name": "Extra Space Storage, Inc.",
+      "property_type": "Self-storage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Extra-Space-Storage-Reviews-E35227.htm"
+    },
+    {
+      "ticker": "IRM",
+      "name": "Iron Mountain",
+      "property_type": "Specialty",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Iron-Mountain-Reviews-E6774.htm"
+    },
+    {
+      "ticker": "AVB",
+      "name": "AvalonBay Communities, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/AvalonBay-Communities-Reviews-E2616.htm"
+    },
+    {
+      "ticker": "CUBE",
+      "name": "CubeSmart",
+      "property_type": "Self-storage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/CubeSmart-Self-Storage-Reviews-E429776.htm"
+    },
+    {
+      "ticker": "WY",
+      "name": "Weyerhaeuser",
+      "property_type": "Timberland",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Weyerhaeuser-Reviews-E730.htm"
+    },
+    {
+      "ticker": "LINE",
+      "name": "Lineage, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Lineage-Reviews-E807889.htm"
+    },
+    {
+      "ticker": "ARE",
+      "name": "Alexandria Real Estate Equities, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Alexandria-Real-Estate-Equities-Reviews-E6956.htm"
+    },
+
+    {
+      "ticker": "AAT",
+      "name": "American Assets Trust",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/American-Assets-Trust-Reviews-E354669.htm"
+    },
+    {
+      "ticker": "ABR",
+      "name": "Arbor Realty Trust, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Arbor-Realty-Trust-Reviews-E35110.htm"
+    },
+
+    {
+      "ticker": "AHH",
+      "name": "Armada Hoffler Properties, Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Armada-Hoffler-Properties-Reviews-E342533.htm"
+    },
+
+    {
+      "ticker": "AKR",
+      "name": "Acadia Realty Trust",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Acadia-Realty-Trust-Reviews-E1288.htm"
+    },
+
+    {
+      "ticker": "ALEX",
+      "name": "Alexander & Baldwin, Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Alexander-and-Baldwin-Reviews-E1101.htm"
+    },
+
+    {
+      "ticker": "AOMR",
+      "name": "Angel Oak Mortgage, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Angel-Oak-Mortgage-Solutions-Reviews-E3307166.htm"
+
+    },
+    {
+      "ticker": "APLE",
+      "name": "Apple Hospitality REIT, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Apple-Hospitality-REIT-Reviews-E677761.htm"
+    },
+    {
+      "ticker": "BDN",
+      "name": "Brandywine Realty Trust",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Brandywine-Realty-Reviews-E2532.htm"
+    },
+    {
+    "ticker": "BFS",
+    "name": "Saul Centers, Inc.",
+    "property_type": "Retail",
+    "glassdoor_url": "https://www.glassdoor.com/Reviews/Saul-Centers-Reviews-E2395.htm"
+    },
+    {
+      "ticker": "BRG",
+      "name": "Bluerock Homes Trust, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Bluerock-Real-Estate-Holdings-Reviews-E4487920.htm"
+    },
+
+    {
+      "ticker": "BNL",
+      "name": "Broadstone Net Lease, Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Broadstone-Real-Estate-Reviews-E1699794.htm"
+    },
+    {
+      "ticker": "BRSP",
+      "name": "BrightSpire Capital, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/BrightSpire-Capital-Reviews-E10613981.htm"
+    },
+    {
+      "ticker": "CBL",
+      "name": "CBL Properties",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/CBL-and-Associates-Properties-Reviews-E2378.htm"
+    },
+
+    {
+      "ticker": "CDP",
+      "name": "COPT Defense Properties",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Corporate-Office-Properties-Trust-Reviews-E5027.htm"
+    },
+    {
+      "ticker": "CLDT",
+      "name": "Chatham Lodging Trust",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Chatham-Lodging-Trust-Reviews-E354384.htm"
+    },
+    {
+      "ticker": "CMTG",
+      "name": "Claros Mortgage Trust, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Claros-Mortgage-Trust-Reviews-E6334339.htm"
+    },
+
+    {
+      "ticker": "COLD",
+      "name": "Americold Realty Trust",
+      "property_type": "Industrial",  
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Americold-Logistics-Reviews-E33145.htm"
+    },
+    {
+      "ticker": "CSR",
+      "name": "Centerspace",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Centerspace-Reviews-E641383.htm"
+    },
+    {
+      "ticker": "CUZ",
+      "name": "Cousins Properties",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Cousins-Properties-Reviews-E1307.htm" 
+    },
+    {
+      "ticker": "DEA",
+      "name": "Easterly Government Properties",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Overview/Working-at-Easterly-Government-Properties-EI_IE1478999.11,41.htm"
+    },
+
+    {
+      "ticker": "DRH",
+      "name": "DiamondRock Hospitality Company",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/DiamondRock-Hospitality-Reviews-E38038.htm"
+    },
+
+    {
+      "ticker": "DX",
+      "name": "Dynex Capital, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Dynex-Capital-Reviews-E555.htm"
+
+    },
+
+    {
+      "ticker": "EGP",
+      "name": "EastGroup Properties, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/EastGroup-Properties-Reviews-E849.htm"
+    },
+
+    {
+      "ticker": "ELME",
+      "name": "Elme Communities",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Elme-Communities-Reviews-E1059.htm"
+    },
+
+    {
+      "ticker": "EPRT",
+      "name": "Essential Properties Realty Trust, Inc.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Essential-Properties-NJ-Reviews-E2151890.htm"
+    },
+    {
+      "ticker": "ESRT",
+      "name": "Empire State Realty Trust",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Empire-State-Realty-Trust-Reviews-E980580.htm"
+    },
+    {
+      "ticker": "FCPT",
+      "name": "Four Corners Property Trust",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Four-Corners-Property-Trust-Reviews-E4603419.htm"
+    },
+    {
+      "ticker": "FSP",
+      "name": "Franklin Street Properties Corp.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Franklin-Street-Properties-Reviews-E38474.htm" 
+    },
+    {
+      "ticker": "GNL",
+      "name": "Global Net Lease",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Global-Net-Lease-Reviews-E9595394.htm"
+    },
+    {
+      "ticker": "GTY",
+      "name": "Getty Realty Corp.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Getty-Realty-Reviews-E286.htm"
+    },
+
+    {
+      "ticker": "HHH",
+      "name": "Howard Hughes Holdings Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Howard-Hughes-Communities-Reviews-E723909.htm"
+    },
+    {
+      "ticker": "HIW",
+      "name": "Highwoods Properties, Inc.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Highwoods-Properties-Reviews-E2674.htm"
+    },
+    {
+      "ticker": "HPP",
+      "name": "Hudson Pacific Properties, Inc.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Hudson-Pacific-Properties-Reviews-E354494.htm"
+    },
+
+    {
+      "ticker": "INN",
+      "name": "Summit Hotel Properties, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Summit-Hotel-Properties-Reviews-E354640.htm"
+    },
+    {
+      "ticker": "IVT",
+      "name": "InvenTrust Properties Corp.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/InvenTrust-Properties-Reviews-E1403652.htm"
+    },
+    {
+      "ticker": "JBGS",
+      "name": "JBG SMITH",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/JBG-SMITH-Reviews-E1747097.htm"
+    },
+    {
+      "ticker": "KRC",
+      "name": "Kilroy Realty Corporation",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Kilroy-Realty-Reviews-E6707.htm"
+    },
+    {
+      "ticker": "KRG",
+      "name": "Kite Realty Group Trust",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Kite-Realty-Reviews-E35119.htm" 
+    },
+    {
+      "ticker": "LADR",
+      "name": "Ladder Capital Corp",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Ladder-Capital-Realty-Finance-Reviews-E354261.htm"
+    },
+    {
+      "ticker": "LTC",
+      "name": "LTC Properties, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/LTC-Properties-Reviews-E2227.htm"
+    },
+    {
+      "ticker": "LXP",
+      "name": "LXP Industrial Trust",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Lexington-Realty-Trust-Reviews-E2481.htm"
+    },
+    {
+      "ticker": "MAC",
+      "name": "Macerich",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Macerich-Reviews-E3939.htm"
+    },
+    {
+      "ticker": "MFA",
+      "name": "MFA Financial, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/MFA-Financial-Inc-Reviews-E8022.htm"
+    },
+    {
+      "ticker": "MPW",
+      "name": "Medical Properties Trust Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Medical-Properties-Trust-Reviews-E37806.htm"
+    },
+    {
+      "ticker": "NHI",
+      "name": "National Health Investors, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/National-Health-Investors-Reviews-E2105.htm"
+    },
+    {
+      "ticker": "NREF",
+      "name": "NexPoint Real Estate Finance",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/NexPoint-Reviews-E2602013.htmhtm"
+    },
+    {
+      "ticker": "NSA",
+      "name": "National Storage Affiliates",
+      "property_type": "Self-storage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/National-Storage-Affiliates-Reviews-E2469764.htm"
+    },
+    {
+      "ticker": "NTST",
+      "name": "NETSTREIT",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/NetSTREIT-Reviews-E4501438.htm"
+    },
+    {
+      "ticker": "OLP",
+      "name": "One Liberty Properties, Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/One-Liberty-Properties-Reviews-E968.htm"
+    },
+    {
+      "ticker": "OUT",
+      "name": "OUTFRONT Media Inc.",
+      "property_type": "Specialty",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Outfront-Media-Reviews-E930001.htm"
+    },
+    {
+      "ticker": "PDM",
+      "name": "Piedmont Realty Trust, Inc.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Piedmont-Office-Realty-Trust-Reviews-E42619.htm"
+    },
+    {
+      "ticker": "PEB",
+      "name": "Pebblebrook Hotel Trust",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Pebblebrook-Reviews-E354329.htm"
+    },
+    {
+      "ticker": "PGRE",
+      "name": "Paramount Group, Inc.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Paramount-Group-Inc-Reviews-E142041.htm"
+    },
+    {
+      "ticker": "PINE",
+      "name": "Alpine Income Property Trust",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Alpine-Income-Property-Trust-Reviews-E3127120.htm"
+    },
+    {
+      "ticker": "PK",
+      "name": "Park Hotels & Resorts",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Park-Hotels-and-Resorts-Reviews-E2090992.htm"
+    },
+    {
+      "ticker": "PLYM",
+      "name": "Plymouth Industrial REIT, Inc.",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Plymouth-Industrial-Reit-Reviews-E2942816.htm"
+    },
+    {
+      "ticker": "PMT",
+      "name": "PennyMac Mortgage Investment Trust",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/PENNYMAC-Reviews-E230027.htm" 
+    },
+    {
+      "ticker": "PSTL",
+      "name": "Postal Realty Trust, Inc.",
+      "property_type": "Specialty",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Postal-Realty-Trust-Reviews-E2594126.htm"
+    },
+    {
+      "ticker": "RC",
+      "name": "Ready Capital Corporation",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Ready-Capital-Reviews-E2314302.htm"
+    },
+    {
+      "ticker": "RHP",
+      "name": "Ryman Hospitality Properties, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Ryman-Hospitality-Properties-Reviews-E697429.htm"
+    },
+    {
+      "ticker": "RLJ",
+      "name": "RLJ Lodging Trust",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/RLJ-Lodging-Trust-Reviews-E7308275.htm"
+    },
+    {
+      "ticker": "RPT",
+      "name": "Rithm Property Trust",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Rithm-Capital-Reviews-E2407133.htm"
+    },
+    {
+      "ticker": "RYN",
+      "name": "Rayonier Inc.",
+      "property_type": "Timberland",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Rayonier-Reviews-E2529.htm"
+    },
+    {
+      "ticker": "SAFE",
+      "name": "Safehold Inc.",
+      "property_type": "Specialty",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Safehold-Reviews-E9492819.htm"
+    },
+    {
+      "ticker": "SHO",
+      "name": "Sunstone Hotel Investors, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Sunstone-Hotel-Investors-Reviews-E4448.htm"
+    },
+    {
+      "ticker": "SILA",
+      "name": "Sila Realty Trust, Inc.",
+      "property_type": "Health Care",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Sila-Realty-Trust-Reviews-E1609517.htm"
+    },
+    {
+      "ticker": "SITC",
+      "name": "SITE Centers Corp.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/SITE-Centers-Reviews-E2379845.htm"
+    },
+    {
+      "ticker": "SKT",
+      "name": "Tanger Inc.",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Tanger-Reviews-E2348.htm"
+    },
+    {
+      "ticker": "SLG",
+      "name": "SL Green Realty Corp.",
+      "property_type": "Office",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/SL-Green-Realty-Reviews-E7127.htm"
+    },
+    {
+      "ticker": "SMA",
+      "name": "SmartStop Self Storage REIT, Inc.",
+      "property_type": "Self-storage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/SmartStop-Self-Storage-Reviews-E717553.htm"
+    },
+    {
+      "ticker": "TRNO",
+      "name": "Terreno Realty Corporation",
+      "property_type": "Industrial",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Terreno-Realty-Reviews-E354396.htm"
+    },
+    {
+      "ticker": "TRTX",
+      "name": "TPG RE Finance Trust, Inc.",
+      "property_type": "Mortgage",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/TPG-Reviews-E6060.htm"
+    },
+    {
+      "ticker": "UE",
+      "name": "Urban Edge Properties",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Urban-Edge-Properties-Reviews-E1266179.htm"
+    },
+    {
+      "ticker": "UMH",
+      "name": "UMH Properties, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/UMH-Properties-Reviews-E675.htm"
+    },
+    {
+      "ticker": "VRE",
+      "name": "Veris Residential, Inc.",
+      "property_type": "Residential",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Veris-Residential-Reviews-E6510052.htm"
+    },
+    {
+      "ticker": "WSR",
+      "name": "Whitestone REIT",
+      "property_type": "Retail",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Whitestone-REIT-Reviews-E354383.htm"
+    },
+    {
+      "ticker": "XHR",
+      "name": "Xenia Hotels & Resorts, Inc.",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Xenia-Hotels-and-Resorts-Reviews-E1270967.htm" 
+    },
+    {
+      "ticker": "AHT",
+      "name": "Ashford Hospitality Trust",
+      "property_type": "Lodging/Resorts",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Ashford-Inc-Reviews-E16208.htm"
+    },
+    {
+      "ticker": "ALX",
+      "name": "Alexander's, Inc.",
+      "property_type": "Diversified",
+      "glassdoor_url": "https://www.glassdoor.com/Reviews/Alexander-s-Reviews-E24.htm"
+    }
+  ],
+  "total_count": 127,
+  "note": "Ready for scraping with verified Glassdoor URLs"
+}

@@ -1,550 +1,427 @@
-# REIT Sentiment Analysis Using Employee Reviews
+# REIT Sentiment & Generative AI Impact Study
 
-
-
-## Project Overview
-
-This project performs sentiment analysis on Glassdoor employee reviews to analyze and forecast Real Estate Investment Trust (REIT) asset pricing and returns. We integrate employee sentiment signals with traditional REIT factor models using natural language processing and deep learning techniques.
-
-## Table of Contents
-
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Project Structure](#project-structure)
-- [Data Collection](#data-collection)
-- [Data Preprocessing](#data-preprocessing)
-- [Model Training](#model-training)
-- [Analysis and Visualization](#analysis-and-visualization)
-- [Running Tests](#running-tests)
-- [Usage Examples](#usage-examples)
-- [Contributing](#contributing)
+**Author:** Konain Niaz (kn4792@rit.edu)  
+**Advisors:** Dr. Debanjana Dey, Dr. Travis Desell  
+**Institution:** Rochester Institute of Technology  
 
 ---
 
-## Requirements
+## 1. Project Overview
 
-### System Requirements
-- **Python**: 3.8 or higher
-- **Operating System**: Linux, macOS, or Windows
-- **Memory**: At least 8GB RAM (16GB recommended for model training)
-- **Storage**: At least 5GB free space for data and models
+This project analyzes the relationship between Generative AI adoption, employee sentiment, and firm performance in US REITs (Real Estate Investment Trusts) using large-scale Glassdoor review scraping, NLP-based sentiment analysis (FinBERT). The pipeline covers scraping, cleaning, sentiment computation, keyword extraction, and testing/visualization.
 
-### Python Dependencies
-All required packages are listed in `requirements.txt`. Key dependencies include:
-- **Data Collection**: selenium, beautifulsoup4, playwright
-- **NLP/ML**: torch, transformers (FinBERT), scikit-learn, nltk, spacy
-- **Financial Analysis**: pandas, numpy, statsmodels, yfinance
-- **Visualization**: matplotlib, seaborn, plotly
-- **Testing**: pytest, pytest-cov
+Then next steps of this project will be to create a measure of AI related productivity using MNIR, given the sentiment scores and extracted keywords. The measure will then be checked using a difference in difference approach by looking at the timeline of the measure before and after AI rollout, somewhere around November 30th 2022 (ChatGPT came to market). 
 
 ---
 
-## Installation
+## 2. System Requirements
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/reit-sentiment-analysis.git
-cd reit-sentiment-analysis
-```
+### Required Software
+- **Python**: 3.9 or higher
+- **Google Chrome**: Latest version (for web scraping)
+- **ChromeDriver**: Matching your Chrome version
+- **Recommended**: virtualenv or conda for environment management
 
-### 2. Create Virtual Environment
+### Hardware Recommendations
+- **RAM**: 16GB minimum (32GB recommended for large-scale processing)
+- **Storage**: 10GB available space
+- **GPU**: CUDA-compatible GPU recommended for FinBERT (optional)
+
+### Account Requirements
+- Glassdoor Username and Password
+
+---
+
+## 3. Installation
+
+### Clone Repository & Set Up Environment
 ```bash
+# Clone repository
+git clone https://github.com/kn4792/reit-sentiment.git
+cd reit-sentiment       # or the exact folder address within your computer
+
 # Create virtual environment
-python3 -m venv venv
+python -m venv venv
 
 # Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
+# Windows:
 venv\Scripts\activate
-```
+# macOS/Linux:
+source venv/bin/activate
 
-### 3. Install Dependencies
-```bash
-# Install all required packages
+# Install dependencies
 pip install -r requirements.txt
-
-# Download NLTK data
-python -m nltk.downloader punkt stopwords vader_lexicon
-
-# Download spaCy model
-python -m spacy download en_core_web_sm
-
-# Install Playwright browsers (for web scraping)
-playwright install chromium
 ```
 
-### 4. Configure Credentials
-Create a `config/secret.json` file with your Glassdoor credentials:
-```json
-{
-  "glassdoor_username": "your_email@example.com",
-  "glassdoor_password": "your_password"
-}
+### Sample `requirements.txt`
+```
+pandas
+numpy
+requests
+selenium
+finbert-embedding
+transformers
+scikit-learn
+matplotlib
+seaborn
+pytest
+nltk
 ```
 
-**Important:** Never commit `secret.json` to version control. It's listed in `.gitignore`.
-
-### 5. Verify Installation
+### Download NLTK Data
 ```bash
-# Run installation test
-pytest tests/test_installation.py -v
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
 ```
 
 ---
 
-## Project Structure
+## 4. Directory Structure
 
 ```
 reit-sentiment-analysis/
-├── README.md                      # This file
+│
+├── config/
+│   ├── reit_companies.json      # List of 127 REITs with Glassdoor URLs
+│   └── schema.sql                # MySQL database schema (optional)
+│
+├── data/
+│   ├── raw/                      # Raw scraped data (.gitignored)
+│   ├── processed/                # Cleaned data, train/val/test splits
+│   ├── results/                  # Analysis results, models, plots
+│   │   ├── exploration/          # Exploratory analysis outputs
+│   │   ├── plots/                # Generated visualizations
+│   │   └── tables/               # Generated tables and reports
+│   └── sample/                   # Sample data for testing
+│
+├── src/
+│   ├── data_collection/
+│   │   ├── __init__.py
+│   │   └── glassdoor_scraper.py  # Web scraping with Selenium
+│   │
+│   ├── preprocessing/
+│   │   ├── __init__.py
+│   │   ├── text_cleaner.py       # Text preprocessing pipeline
+│   │   └── data_validator.py     # Data quality checks
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── sentiment_analyzer.py # FinBERT sentiment analysis
+│   │   ├── keyword_extractor.py  # TF-IDF + keyword extraction
+│   │   └── ai_productivity.py    # AI productivity measurement
+│   │
+│   ├── analysis/
+│   │   ├── __init__.py
+│   │   └── panel_regression.py   # Fixed effects models
+│   │
+│   └── visualization/
+│       ├── __init__.py
+│       └── plotting.py           # Matplotlib/Seaborn visualizations
+│
+├── scripts/
+│   ├── scrape_reviews.py         # Step 1: Data collection
+│   ├── clean_data.py             # Step 2: Data cleaning
+│   ├── split_dataset.py          # Step 3: Train/val/test split
+│   ├── sentiment_analysis.py     # Step 4: Sentiment scoring
+│   ├── keyword_extraction.py     # Step 5: Keyword analysis
+│   ├── train_model.py            # Step 6: Model training & evaluation
+│   ├── explore_data.py           # Step 7: Exploratory analysis
+│   ├── generate_plots.py         # Step 8: Results visualization
+│   └── generate_tables.py        # Step 9: Table generation
+│
+├── tests/
+│   ├── __init__.py
+│   │
+│   ├── Phase 1: Data Preparation Tests
+│   ├── test_data_preparation.py  # Integration test for Phase 1
+│   ├── test_scraper.py           # Unit tests for scraping
+│   ├── test_cleaner.py           # Unit tests for cleaning
+│   │
+│   ├── Phase 2: Model Training Tests
+│   ├── test_model_training.py    # Integration test for Phase 2
+│   ├── test_sentiment.py         # Unit tests for sentiment analysis
+│   │
+│   ├── Phase 3: Exploration Tests
+│   ├── test_exploration.py       # Tests for data exploration
+│   │
+│   ├── Phase 4: Visualization Tests
+│   ├── test_visualization.py     # Integration test for Phase 4
+│   │
+│   └── conftest.py               # Pytest configuration and fixtures
+│
+├── notebooks/                     # Jupyter notebooks for exploration
+│   └── exploratory_analysis.ipynb
+│
+├── .gitignore                     # Git ignore file
 ├── requirements.txt               # Python dependencies
-├── .gitignore                     # Git ignore rules
-│
-├── config/                        # Configuration files
-│   ├── config.yaml               # Project settings
-│   ├── reit_companies.json       # List of REIT companies to scrape
-│   └── secret.json               # Credentials (not in git)
-│
-├── data/                         # Data directory
-│   ├── raw/                      # Raw scraped data
-│   ├── processed/                # Cleaned and processed data
-│   └── results/                  # Analysis results
-│
-├── src/                          # Source code
-│   ├── data_collection/          # Web scraping modules
-│   ├── preprocessing/            # Data cleaning and feature engineering
-│   ├── models/                   # ML/NLP models
-│   ├── analysis/                 # Correlation and factor analysis
-│   └── visualization/            # Plotting and visualization
-│
-├── scripts/                      # Executable scripts
-│   ├── download_data.py          # Data collection script
-│   ├── preprocess_data.py        # Preprocessing script
-│   ├── train_model.py            # Model training script
-│   ├── run_analysis.py           # Analysis script
-│   └── generate_plots.py         # Visualization script
-│
-├── tests/                        # Unit tests
-│   ├── test_data_collection.py
-│   ├── test_preprocessing.py
-│   ├── test_models.py
-│   └── test_visualization.py
-│
-└── notebooks/                    # Jupyter notebooks for exploration
-    ├── exploratory_analysis.ipynb
-    └── results_presentation.ipynb
+└── README.md                      # This file
 ```
 
 ---
 
-## Data Collection
+## 5. Pipeline Execution
 
-### Step 1: Configure REIT Companies
+#### Phase 1.1: Initiate Chrome in debugging mode manually, and log in to glassdoor.com
 
-Edit `config/reit_companies.json` to specify which REITs to scrape:
-```json
-{
-  "companies": [
-    {
-      "name": "Prologis",
-      "glassdoor_url": "https://www.glassdoor.com/Reviews/Prologis-Reviews-E8449.htm",
-      "ticker": "PLD"
-    },
-    {
-      "name": "American Tower",
-      "glassdoor_url": "https://www.glassdoor.com/Reviews/American-Tower-Reviews-E14129.htm",
-      "ticker": "AMT"
-    }
-  ]
-}
-```
-
-### Step 2: Scrape Glassdoor Reviews
+Start Chrome in debugging mode first:
 
 ```bash
-# Scrape all companies (default: 500 reviews per company)
-python scripts/download_data.py
+# Windows
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\selenium\ChromeProfile"
 
-# Scrape specific company
-python scripts/download_data.py --company "Prologis" --max-reviews 1000
+# macOS
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/selenium/ChromeProfile"
 
-# Scrape with custom date range
-python scripts/download_data.py --start-date "2020-01-01" --end-date "2023-12-31"
+# Linux
+google-chrome --remote-debugging-port=9222
 ```
 
-**Output:** Raw review data saved to `data/raw/glassdoor_reviews.csv`
+In the newly opened Chrome window, go to glassdoor.com and log in with your credentials. 
 
-### Step 3: Download REIT Financial Data
+### Phase 1.2: Scrape Single Company Reviews by Ticker
 
 ```bash
-# Download REIT returns and factor data
-python scripts/download_data.py --financial-only
-
-# Download specific date range
-python scripts/download_data.py --financial-only --start-date "2020-01-01"
+# Phase 1: Data Collection & Preparation
+python scripts/scrape_reviews.py --company PLD --max-reviews 100
 ```
 
-**Output:** Financial data saved to `data/raw/reit_returns.csv`
+**Note**: Manual Glassdoor login required. You need to press enter once the log in is successful. You will see the scraper go through the pages. Output: 1 CSV per REIT + combined dataset.
 
-### Step 4: Verify Data Collection
+Run tests to verify data was scraped correctly:
+```bash
+pytest tests/test_scraper.py -v          # Verify scraping logic
+```
+
+#### Phase 1.3: Data Cleaning & Preprocessing
 
 ```bash
-# Run data collection tests
-pytest tests/test_data_collection.py -v
-
-# Check data integrity
-python scripts/download_data.py --verify
+python scripts/clean_data.py --input data/raw/PLD_reviews.csv --output data/processed/
 ```
 
-**Expected Output:**
+**Cleaning steps:**
+1. Remove HTML entities and special characters
+2. Tokenize text using NLTK
+3. Remove stopwords (including domain-specific: "reit", "company")
+4. Apply Porter stemming
+5. Normalize dates to YYYY-MM-DD format
+6. Handle missing values
+7. Remove outliers (>5 standard deviations)
+
+#### Phase 1.4: Dataset Splitting
+```bash
+python scripts/split_dataset.py --input data/processed/cleaned_PLD_reviews.csv --outdir data/processed/PLD/
 ```
-✓ Glassdoor reviews: 5,432 reviews from 12 companies
-✓ Date range: 2018-01-15 to 2023-12-20
-✓ REIT returns: 145 months of data for 12 tickers
-✓ All required columns present
-```
+Creates `train.csv`, `val.csv`, and `test.csv` in `data/processed/`.
 
----
 
-## Data Preprocessing
-
-### Step 1: Clean and Process Text Data
+Run tests to verify the data was prepared (cleaned and split) correctly:
 
 ```bash
-# Run full preprocessing pipeline
-python scripts/preprocess_data.py
-
-# Process only reviews (skip financial data)
-python scripts/preprocess_data.py --reviews-only
-
-# Custom text cleaning options
-python scripts/preprocess_data.py --lowercase --remove-stopwords --lemmatize
+pytest tests/test_data_preparation.py -v
 ```
 
-**Processing Steps:**
-1. Text normalization (lowercase, remove special characters)
-2. Tokenization
-3. Stop word removal
-4. Lemmatization/stemming
-5. Sentiment feature extraction
-6. TF-IDF vectorization
-
-**Output:** Processed data saved to `data/processed/`
-
-### Step 2: Feature Engineering
+### Phase 2: Model Training
+#### Phase 2.1: Sentiment Analysis & Keyword Extraction
 
 ```bash
-# Generate sentiment features
-python scripts/preprocess_data.py --feature-engineering
-
-# Options:
-#   --tfidf           Generate TF-IDF features
-#   --word2vec        Generate word embeddings
-#   --finbert         Use FinBERT embeddings (slow, requires GPU)
+# Run sentiment analysis on splits
+python scripts/sentiment_analysis.py --input data/processed/PLD/train.csv --output data/results/PLD/sentiments_train
+python scripts/sentiment_analysis.py --input data/processed/PLD/val.csv --output data/results/PLD/sentiments_val
+python scripts/sentiment_analysis.py --input data/processed/PLD/test.csv --output data/results/PLD/sentiments_test
 ```
 
-### Step 3: Align Reviews with Financial Data
+Test to see that sentiment analysis was done correctly:
 
 ```bash
-# Merge sentiment scores with REIT returns by date
-python scripts/preprocess_data.py --merge-financial
+pytest tests/test_sentiment.py -v
 ```
 
-**Output:** `data/processed/merged_data.csv` with columns:
-- `date`, `company`, `ticker`
-- `sentiment_score`, `pros_sentiment`, `cons_sentiment`
-- `return`, `excess_return`, `volatility`
-- Factor loadings: `size`, `value`, `momentum`, `quality`, `low_vol`, `reversal`
 
-### Step 4: Verify Preprocessing
-
+##### Extract keywords
 ```bash
-# Run preprocessing tests
-pytest tests/test_preprocessing.py -v
+python scripts/keyword_extraction.py --input data/processed/PLD/train.csv --output data/results/PLD/keywords_train
 ```
-
----
-
-## Model Training
-
-### Option 1: FinBERT Sentiment Model (Recommended)
-
+Test to verify the keywords were extracted correctly:
 ```bash
-# Fine-tune FinBERT on REIT reviews
-python scripts/train_model.py --model finbert --epochs 5
-
-# With GPU acceleration
-python scripts/train_model.py --model finbert --epochs 5 --device cuda
-
-# Resume training from checkpoint
-python scripts/train_model.py --model finbert --resume --checkpoint models/finbert_epoch3.pt
+pytest tests/test_keyword_extraction.py -v
 ```
 
-### Option 2: LSTM Sentiment Model
 
+
+#### Phase 2.2: Model Training
 ```bash
-# Train LSTM model
-python scripts/train_model.py --model lstm --epochs 10 --hidden-size 128
-
-# With hyperparameter tuning
-python scripts/train_model.py --model lstm --tune-hyperparams
+# Train on default parameters
+python scripts/train_model.py --train data/results/PLD/sentiments_train --val data/results/PLD/sentiments_val --test data/results/PLD/sentiments_test --output data/results/PLD/model_results
 ```
 
-### Option 3: Traditional ML Models
-
+Verify model training and evaluation:
 ```bash
-# Train SVM classifier
-python scripts/train_model.py --model svm
-
-# Train logistic regression
-python scripts/train_model.py --model logistic
+pytest tests/test_model_training.py -v
 ```
 
-### Training Options
 
+### Phase 3: Exploration
+
+#### Phase 3.1: Exploratory Data Analysis
 ```bash
-python scripts/train_model.py \
-  --model finbert \
-  --train-split 0.7 \
-  --val-split 0.15 \
-  --test-split 0.15 \
-  --batch-size 16 \
-  --learning-rate 2e-5 \
-  --epochs 5 \
-  --early-stopping \
-  --save-best-only
+python scripts/explore_data.py --input data/processed/cleaned_PLD_reviews.csv --output-dir data/results/PLD/exploration
 ```
 
-**Output:** Trained models saved to `models/`
-
-### Verify Model Training
-
+Test to check exploration worked correctly:
 ```bash
-# Run model tests with sample data
-pytest tests/test_models.py -v
-
-# Evaluate model performance
-python scripts/train_model.py --evaluate --model-path models/finbert_best.pt
+pytest tests/test_exploration.py -v
 ```
 
-**Expected Output:**
-```
-Model Evaluation Results:
-  Accuracy: 0.847
-  Precision: 0.823
-  Recall: 0.856
-  F1 Score: 0.839
-  ROC-AUC: 0.912
-```
+### Phase 4: Visualization and Results
 
----
-
-## Analysis and Visualization
-
-### Step 1: Correlation Analysis
-
+#### Phase 4.1: Generate Results Visualization
 ```bash
-# Compute correlations between sentiment and returns
-python scripts/run_analysis.py --correlation
-
-# Test Granger causality
-python scripts/run_analysis.py --granger-causality --max-lag 12
+#generate all plots
+python scripts/generate_plots.py --input data/results/PLD/model_results --output-dir data/results/PLD/plots
 ```
 
-### Step 2: Factor Model Analysis
-
+Test to verify results visualization:
 ```bash
-# Run Fama-French style regression with sentiment
-python scripts/run_analysis.py --factor-model
-
-# GARCH model for volatility analysis
-python scripts/run_analysis.py --garch-model
-```
-
-### Step 3: Backtesting
-
-```bash
-# Backtest trading strategy based on sentiment
-python scripts/run_analysis.py --backtest --strategy sentiment-momentum
-
-# Custom parameters
-python scripts/run_analysis.py --backtest \
-  --strategy sentiment-momentum \
-  --lookback 30 \
-  --rebalance-freq monthly \
-  --transaction-cost 0.001
-```
-
-### Step 4: Generate Visualizations
-
-```bash
-# Generate all plots
-python scripts/generate_plots.py
-
-# Specific plot types
-python scripts/generate_plots.py --plot sentiment-timeseries
-python scripts/generate_plots.py --plot correlation-heatmap
-python scripts/generate_plots.py --plot factor-loadings
-python scripts/generate_plots.py --plot backtest-returns
-```
-
-**Output:** Plots saved to `data/results/figures/`
-
-### Step 5: Verify Analysis
-
-```bash
-# Run analysis tests
-pytest tests/test_analysis.py -v
 pytest tests/test_visualization.py -v
 ```
 
----
-
-## Running Tests
-
-### Run All Tests
-```bash
-pytest tests/ -v
-```
-
-### Run Specific Test Modules
-```bash
-# Data collection tests
-pytest tests/test_data_collection.py -v
-
-# Preprocessing tests
-pytest tests/test_preprocessing.py -v
-
-# Model tests
-pytest tests/test_models.py -v
-
-# Visualization tests
-pytest tests/test_visualization.py -v
-```
-
-### Run Tests with Coverage
-```bash
-pytest tests/ --cov=src --cov-report=html
-# Open htmlcov/index.html to view coverage report
-```
-
-### Run Quick Smoke Tests (Small Data)
-```bash
-pytest tests/ -m smoke
-```
 
 ---
 
-## Usage Examples
+## 6. Data Policy & .gitignore
 
-### Example 1: Complete Pipeline
+**Important**: Large and intermediate data files are excluded from version control:
 
-```bash
-# 1. Download data
-python scripts/download_data.py --max-reviews 1000
-
-# 2. Preprocess
-python scripts/preprocess_data.py --feature-engineering
-
-# 3. Train model
-python scripts/train_model.py --model finbert --epochs 3
-
-# 4. Run analysis
-python scripts/run_analysis.py --correlation --factor-model
-
-# 5. Generate plots
-python scripts/generate_plots.py
+```gitignore
+data/raw/*.csv
+data/raw/*.json
+data/processed/*.csv
+*.parquet
+__pycache__/
+*.pyc
+.env
 ```
 
-### Example 2: Using as Python Module
-
-```python
-from src.data_collection import GlassdoorScraper
-from src.preprocessing import TextCleaner
-from src.models import FinBERTSentiment
-
-# Scrape reviews
-scraper = GlassdoorScraper(credentials_path='config/secret.json')
-reviews = scraper.scrape_company('Prologis', max_reviews=500)
-
-# Preprocess text
-cleaner = TextCleaner()
-cleaned_reviews = cleaner.clean(reviews['pros'])
-
-# Analyze sentiment
-sentiment_model = FinBERTSentiment()
-sentiment_scores = sentiment_model.predict(cleaned_reviews)
-```
-
-### Example 3: Custom Analysis in Jupyter
-
-See `notebooks/exploratory_analysis.ipynb` for interactive examples.
+Only sample data and configuration files are committed.
 
 ---
 
-## Contributing
+## 7. Reproducibility
 
-### Code Review Process
-
-1. **Create feature branch:** `git checkout -b feature/your-feature`
-2. **Write tests:** Add tests in `tests/` directory
-3. **Run tests locally:** `pytest tests/ -v`
-4. **Format code:** `black src/ tests/ scripts/`
-5. **Check style:** `pylint src/`
-6. **Commit changes:** `git commit -m "Description"`
-7. **Push branch:** `git push origin feature/your-feature`
-8. **Create Pull Request:** Request code review from team member
-
-### Code Style Guidelines
-
-- Follow PEP 8 style guide
-- Use Black formatter (max line length: 88)
-- Write docstrings for all functions/classes (Google style)
-- Maintain test coverage above 80%
-- Add type hints where appropriate
+All analysis is fully reproducible:
+- ✓ Fixed random seeds (`random.seed(42)`, `np.random.seed(42)`)
+- ✓ Pinned package versions in `requirements.txt`
+- ✓ Git version control for all code
+- ✓ Timestamped data outputs
+- ✓ Comprehensive logging
+- ✓ Train/validation/test splitting
 
 ---
 
-## Troubleshooting
+## 8. Troubleshooting
 
 ### Common Issues
 
-**Issue:** Selenium WebDriver not found
+**Issue**: Chrome debug mode not connecting
 ```bash
-# Solution: Install ChromeDriver
-playwright install chromium
+# Kill existing Chrome processes and restart
+taskkill /F /IM chrome.exe  # Windows
+pkill -9 chrome              # macOS/Linux
 ```
 
-**Issue:** Out of memory during model training
+**Issue**: FinBERT out of memory
 ```bash
-# Solution: Reduce batch size
-python scripts/train_model.py --model finbert --batch-size 8
+# Reduce batch size
+python scripts/sentiment_analysis.py --batch-size 8
 ```
 
-**Issue:** CUDA out of memory (GPU)
+**Issue**: Tests failing due to missing sample data
 ```bash
-# Solution: Use CPU or reduce batch size
-python scripts/train_model.py --model finbert --device cpu
+# Ensure sample data exists
+ls data/sample/
+
+# If missing, create sample data from your processed data
+python scripts/create_sample_data.py --input data/processed/cleaned_all_reviews.csv --output data/sample/ --size 100
 ```
 
-**Issue:** Glassdoor blocking requests
+**Issue**: Import errors when running tests
 ```bash
-# Solution: Add delays and rotate user agents
-python scripts/download_data.py --delay 5 --rotate-agents
+# Install package in development mode
+pip install -e .
+
+# Or add project root to PYTHONPATH
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"  # Linux/macOS
+set PYTHONPATH=%PYTHONPATH%;%CD%          # Windows
+```
+
+**Issue**: Pytest not discovering tests
+```bash
+# Check pytest configuration
+pytest --collect-only
+
+# Run from project root directory
+cd /path/to/reit-sentiment-analysis
+pytest tests/
+```
+
+**Issue**: Coverage report not including all files
+```bash
+# Ensure .coveragerc or pyproject.toml is configured
+# Run with explicit source paths
+pytest tests/ --cov=src --cov=scripts --cov-report=html
+```
+
+**Issue**: Tests timing out or running too slowly
+```bash
+# Run only fast unit tests
+pytest tests/ -v -m "not slow"
+
+# Increase timeout for specific tests
+pytest tests/ --timeout=300
+
+# Run tests in parallel (requires pytest-xdist)
+pip install pytest-xdist
+pytest tests/ -n auto
+```
+
+**Issue**: Selenium WebDriver version mismatch
+```bash
+# Check Chrome version
+google-chrome --version  # Linux
+# Update ChromeDriver to match
+
+# Or use webdriver-manager (auto-downloads correct version)
+pip install webdriver-manager
 ```
 
 ---
 
+## 9. Citation
+
+If you use this code or data, please cite:
+
+```bibtex
+@mastersthesis{niaz2025reit,
+  author = {Niaz, Konain},
+  title = {AI, Management Perception, and Corporate Culture: Employee Sentiment and Its Effect on REIT Transparency and Performance},
+  school = {Rochester Institute of Technology},
+  year = {2025},
+  type = {Master's Thesis}
+}
+```
 
 ---
 
-## License
+## 10. Contact
 
-This project is licensed under the MIT License - see LICENSE file for details.
+**Konain Niaz**  
+Email: kn4792@rit.edu  
+GitHub: [@kn4792](https://github.com/kn4792)
 
 ---
 
+## 11. Acknowledgments
 
-
-**Project Repository:** https://github.com/your-username/reit-sentiment-analysis
+- Dr. Debanjana Dey (Advisor)
+- Dr. Travis Desell (Advisor)
+- RIT Data Science Program
+- MatthewChatham's glassdoor-review-scraper (base scraping code)
