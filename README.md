@@ -162,7 +162,7 @@ reit-sentiment-analysis/
 
 #### Phase 1.1: Initiate Chrome in debugging mode manually, and log in to glassdoor.com
 
-Start Chrome in debugging mode first:
+Start Chrome in debugging mode first. Open a new Command Prompt and within your base (system 32 for windows) type the following commands.
 
 ```bash
 # Windows
