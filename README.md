@@ -160,7 +160,7 @@ reit-sentiment-analysis/
 
 ## 5. Pipeline Execution
 
-#### Phase 1.1: Initiate Chrome in debugging mode manually, and log in to glassdoor.com
+#### Phase 1.1: Initiate Chrome in debugging mode manually.
 
 Start Chrome in debugging mode first. Open a new Command Prompt and within your base (system 32 for windows) type the following commands.
 
@@ -186,7 +186,7 @@ Go back to the command prompt with the previously created virtual environment an
 python scripts/scrape_reviews.py --company PLD --max-reviews 100
 ```
 
-**Note**: Manual Glassdoor login required. You need to press enter once the log in is successful. You will see the scraper go through the pages. Output: 1 CSV per REIT + combined dataset.
+**Note**: The chrome window will be guided to glassdoor.com. Login here with your credential (required). Once the log in is successful, come back to the command prompt, press enter. You will see the scraper go through the pages. Output: 1 CSV per REIT + combined dataset.
 
 Run tests to verify data was scraped correctly:
 ```bash
