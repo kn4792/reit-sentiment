@@ -175,9 +175,11 @@ Start Chrome in debugging mode first. Open a new Command Prompt and within your 
 google-chrome --remote-debugging-port=9222
 ```
 
-In the newly opened Chrome window, go to glassdoor.com and log in with your credentials. 
+Keep this new Chrome window open. Don't do anything to it.
 
 ### Phase 1.2: Scrape Single Company Reviews by Ticker
+
+Go back to the command prompt with the previously created virtual environment and all the following commands go here.  
 
 ```bash
 # Phase 1: Data Collection & Preparation
