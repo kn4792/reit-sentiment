@@ -1,0 +1,263 @@
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/finbert_sentiment.py
+================================================================================
+STAGE 1: FINBERT SENTIMENT EXTRACTION
+================================================================================
+
+📂 Loading data...
+  ✓ Loaded 28,252 reviews
+  ✓ Columns: ['title', 'rating', 'date', 'pros', 'cons', 'company', 'ticker', 'property_type', 'scrape_date', 'glassdoor_url']
+
+📝 Preparing text for sentiment analysis...
+  ✓ Prepared 28,252 reviews with valid text
+  ✓ Excluded 0 empty reviews
+
+🤖 Loading FinBERT model...
+  Model: ProsusAI/finbert
+
+C:\Users\konid\anaconda3\lib\site-packages\huggingface_hub\file_download.py:942: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+  ✓ Model loaded on: cuda
+
+🔍 Running sentiment analysis on 28,252 reviews...
+  Batch size: 32
+  Max sequence length: 512
+
+Processing batches: 100%|█████████████████████████████████████████████████| 883/883 [07:10<00:00,  2.05it/s] 
+
+  ✓ Sentiment analysis complete!
+
+📊 Combining results with original data...
+  ✓ Final dataset: 28,486 reviews
+
+
+Sentiment Distribution:
+   neutral: 16,193 ( 56.8%)
+  negative: 10,184 ( 35.8%)
+  positive:  2,109 (  7.4%)
+
+Sentiment Score Statistics:
+  Mean:   -0.2251
+  Median: -0.1226
+  Std:     0.4615
+  Min:    -0.9651
+  Max:     0.9433
+
+💾 Saving results...
+  ✓ Saved: data/processed\finbert_sentiment_scores.csv
+  ✓ Saved: data/processed\finbert_summary_stats.json
+
+🔍 Sample Results:
+
+POSITIVE Example:
+  Company: AMH
+  Rating: 5.0
+  Sentiment Score: 0.554
+  Pros: Rapid Growth, Opportunity and energy...
+  Cons: Still in a start up mode-...
+
+NEGATIVE Example:
+  Company: American Tower Corporation
+  Rating: 3.0
+  Sentiment Score: -0.887
+  Pros: Met some nice people working there. Management was relaxed and did not micromanage....
+  Cons: Lacked the resources needed to make this job manageable. No support from corporate for new resources...
+
+NEUTRAL Example:
+  Company: Camden Property Trust
+  Rating: 5.0
+  Sentiment Score: -0.292
+  Pros: Amazing Benefits, Lots of opportunity for job growth, forward thinking, fair pay, family is welcome,...
+  Cons: limited manager roles within the regions...
+
+================================================================================
+✅ STAGE 1 COMPLETE
+================================================================================
+
+📁 Output Files:
+  • data/processed\finbert_sentiment_scores.csv
+  • data/processed\finbert_summary_stats.json
+
+🚀 Next Step:
+  Run Stage 2: python scripts/aggregate_year.py
+================================================================================
+
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/aggregrate_firm_year.py
+================================================================================
+STAGE 2: AGGREGATE TO FIRM-YEAR LEVEL
+================================================================================
+
+📂 Loading sentiment data...
+  ✓ Loaded 28,486 reviews
+
+🔧 Preparing variables...
+  ✓ Date range: 2008-06-11 00:00:00 to 2025-11-19 00:00:00
+  ✓ Years: 2008 to 2025
+  ✓ Pre-ChatGPT reviews: 18,796
+  ✓ Post-ChatGPT reviews: 9,690
+
+🏢 Classifying property types...
+  Property Type Distribution:
+       Residential                6,362
+       Self-storage               6,232
+       Health Care                2,363
+    🔧 Data Center                2,166
+       Mortgage                   2,114
+       Industrial                 2,003
+       Retail                     1,918
+    🔧 Telecommunications         1,894
+       Specialty                  1,121
+       Office                       758
+       Timberland                   731
+       Diversified                  630
+       Lodging/Resorts              192
+       Gaming                         2
+
+  ✓ Technology-intensive REITs: 4,060 reviews
+  ✓ Data Center REITs: 2,166 reviews
+
+📊 Aggregating to firm-year level...
+  ✓ Using 28,486 reviews with valid sentiment
+  ✓ Created 1,144 firm-year observations
+  ✓ Unique firms: 115
+  ✓ Year range: 2008 to 2025
+
+📈 Calculating additional metrics...
+  ✓ Sentiment dispersion calculated
+  ✓ Sentiment agreement calculated
+  ✓ Rating-sentiment alignment calculated
+
+🔍 Applying quality filters...
+  ✓ Minimum reviews per firm-year: 3
+  ✓ Filtered: 1,144 → 808 firm-years
+  ✓ Excluded: 336 firm-years with <3 reviews
+
+📊 Summary Statistics:
+
+Firm-Year Dataset:
+  Observations: 808
+  Firms: 91
+  Years: 2008 - 2025
+  Avg reviews per firm-year: 34.7
+
+ChatGPT Treatment Distribution:
+  Pre-ChatGPT:   603 firm-years (74.6%)
+  Post-ChatGPT:  205 firm-years (25.4%)
+
+Property Type Distribution (Firm-Years):
+  Residential                155 ( 19.2%)
+  Retail                     138 ( 17.1%)
+  Office                      97 ( 12.0%)
+  Self-storage                66 (  8.2%)
+  Diversified                 60 (  7.4%)
+  Health Care                 60 (  7.4%)
+  Mortgage                    56 (  6.9%)
+  Telecommunications          44 (  5.4%)
+  Industrial                  41 (  5.1%)
+  Specialty                   34 (  4.2%)
+  Lodging/Resorts             22 (  2.7%)
+  Timberland                  18 (  2.2%)
+  Data Center                 17 (  2.1%)
+
+Sentiment Statistics:
+  Mean sentiment:      -0.2526
+  Median sentiment:    -0.2547
+  Mean dispersion:      0.4344
+  Mean agreement:       0.6258
+
+Sentiment by Property Type:
+  Data Center               -0.1835 (n=17)
+  Office                    -0.2339 (n=97)
+  Residential               -0.2325 (n=155)
+  Retail                    -0.2462 (n=138)
+  Industrial                -0.2750 (n=41)
+
+Sentiment: Pre vs Post ChatGPT
+  Pre-ChatGPT:  -0.2503
+  Post-ChatGPT: -0.2591
+  Difference:   -0.0088 (-3.5%)
+  T-test: t=0.594, p=0.5529
+  ✗ Not statistically significant
+
+💾 Saving results...
+  ✓ Saved: data/processed\firm_year_sentiment.csv
+  ✓ Saved: data/processed\firm_year_summary_stats.json
+
+================================================================================
+✅ STAGE 2 COMPLETE
+================================================================================
+
+📁 Output Files:
+  • data/processed\firm_year_sentiment.csv
+  • data/processed\firm_year_summary_stats.json
+
+🚀 Next Step:
+  Run Stage 3: python scripts/descriptive_analysis.py
+================================================================================
+
+================================================================================
+STAGE 3: DESCRIPTIVE ANALYSIS AND VISUALIZATION
+================================================================================
+
+📂 Loading data...
+  ✓ Loaded 808 firm-year observations
+  ✓ Columns: 24
+
+📊 Creating descriptive statistics tables...
+  ✓ Saved: summary_statistics.csv
+  ✓ Saved: stats_by_property_type.csv
+  ✓ Saved: stats_pre_post_chatgpt.csv
+  ✓ Saved: stats_by_year.csv
+
+🔗 Creating correlation matrix...
+  ✓ Saved: correlation_matrix.csv
+  ✓ Saved: correlation_heatmap.png
+
+📈 Creating time trend visualizations...
+  ✓ Saved: time_trends.png
+  ✓ Saved: review_volume_trend.png
+
+🔄 Creating Pre/Post ChatGPT comparisons...
+  ✓ Saved: pre_post_chatgpt_comparison.png
+
+🏢 Creating property type comparisons...
+  ✓ Saved: sentiment_by_property_type.png
+  ✓ Saved: tech_vs_traditional_comparison.png
+
+📊 Creating sentiment distribution plots...
+  ✓ Saved: sentiment_distributions.png
+
+📝 Creating summary report...
+  ✓ Saved: analysis_summary_report.txt
+
+================================================================================
+✅ STAGE 3 COMPLETE
+================================================================================
+
+📁 Output Directory: data/results/descriptive_stats
+
+📊 Generated Files:
+  Tables:
+    • summary_statistics.csv
+    • stats_by_property_type.csv
+    • stats_pre_post_chatgpt.csv
+    • stats_by_year.csv
+    • correlation_matrix.csv
+
+  Figures:
+    • correlation_heatmap.png
+    • time_trends.png
+    • review_volume_trend.png
+    • pre_post_chatgpt_comparison.png
+    • sentiment_by_property_type.png
+    • tech_vs_traditional_comparison.png
+    • sentiment_distributions.png
+
+  Reports:
+    • analysis_summary_report.txt
+
+🚀 Next Step:
+  Run Stage 4: python scripts/export_analysis_dataset.py
+================================================================================

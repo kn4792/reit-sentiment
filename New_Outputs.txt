@@ -1,0 +1,607 @@
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/mnir_preprocessing.py
+======================================================================
+MNIR STAGE 1: TEXT PREPROCESSING (BINARY TREATMENT)
+======================================================================
+
+📄 Input: data\raw\all_reit_reviews_merged.csv
+📁 Output: data\processed\mnir
+⚙️  Min reviews: 10
+⚙️  Max percentage: 0.5
+🎯 Treatment: POST_CHATGPT (>Nov 30, 2022)
+
+======================================================================
+📂 LOADING DATA
+======================================================================
+✓ Loaded 28,252 reviews
+  Columns: title, rating, date, pros, cons, company, ticker, property_type, scrape_date, glassdoor_url
+
+======================================================================
+🧹 CLEANING TEXT
+======================================================================
+  Processing Pros...
+  Processing Cons...
+  ✓ Text cleaning complete
+
+🤖 Creating POST_CHATGPT treatment variable...
+  ✓ Pre-ChatGPT (≤Nov 30, 2022): 18,646 reviews (66.0%)
+  ✓ Post-ChatGPT (>Nov 30, 2022): 9,606 reviews (34.0%)
+
+======================================================================
+📚 BUILDING VOCABULARY
+======================================================================
+
+📚 Building vocabulary...
+  Filtering: 10 ≤ reviews ≤ 14126
+  Found 16,038 unique words before filtering
+  ✓ Vocabulary size: 3,280 words
+  ✓ Removed 12,722 too rare
+  ✓ Removed 1 too common
+  ✓ Removed 35 low quality
+  💾 Saved → data\processed\mnir\vocabulary.json
+
+======================================================================
+📅 AGGREGATING TO FIRM-YEAR
+======================================================================
+
+📅 Aggregating to firm-year level...
+  ✓ Filtered to 2014-2025 (dropped 1,050 pre-2014 reviews)
+  ✓ Firm-years: 966
+  ✓ Unique firms: 115
+  ✓ Year range: 2014 - 2025
+  ✓ Pre-ChatGPT firm-years: 692 (71.6%)
+  ✓ Post-ChatGPT firm-years: 274 (28.4%)
+
+======================================================================
+🔢 CREATING WORD COUNT MATRICES
+======================================================================
+    Creating count matrix for pros_mnir...
+      ✓ Matrix shape: (966, 3282)
+    💾 Saved → data\processed\mnir\word_counts_pros.csv
+    Creating count matrix for cons_mnir...
+      ✓ Matrix shape: (966, 3282)
+    💾 Saved → data\processed\mnir\word_counts_cons.csv
+
+======================================================================
+💾 SAVING FIRM-YEAR DATA
+======================================================================
+  ✓ Saved firm-year data → data\processed\mnir\firm_year_data.csv
+
+======================================================================
+📊 CALCULATING STATISTICS
+======================================================================
+  ✓ Saved statistics → data\processed\mnir\preprocessing_stats.json
+
+======================================================================
+✅ PREPROCESSING COMPLETE
+======================================================================
+
+📊 Summary Statistics:
+  • Reviews processed: 28,252
+  • Firm-years: 966
+  • Unique firms: 115
+  • Year range: 2014-2025
+  • Vocabulary size: 3,280 words
+
+🤖 ChatGPT Treatment Statistics:
+  • Pre-ChatGPT firm-years: 692
+  • Post-ChatGPT firm-years: 274
+  • Treatment rate: 28.4%
+
+📁 Output Files:
+  • vocabulary.json
+  • word_counts_pros.csv
+  • word_counts_cons.csv
+  • firm_year_data.csv
+  • preprocessing_stats.json
+
+🚀 NEXT STEPS:
+  1. Review preprocessing_stats.json for data quality
+  2. Run MNIR Stage 2 regressions:
+     python scripts/mnir_regression.py
+  3. Model: Poisson(word_count ~ POST_CHATGPT + year_FE + controls)
+  4. Extract word weights (φ_j) from regressions
+  5. Create ChatGPT Language Index for each firm-year
+======================================================================
+
+
+
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/mnir_regression.py
+======================================================================
+MNIR STAGE 2: REGRESSION ANALYSIS (BINARY TREATMENT)
+======================================================================
+
+📂 Input:  data\processed\mnir
+📁 Output: data\results\mnir
+⚙️  Min |t-stat|: 1.96
+⚙️  Year fixed effects: Enabled
+🎯 Treatment: POST_CHATGPT (>Nov 30, 2022)
+
+======================================================================
+📂 LOADING DATA
+======================================================================
+  ✓ Loaded 966 firm-year observations
+  ✓ Loaded 3,280 vocabulary words
+  ✓ Loaded word count matrices
+
+======================================================================
+🔍 VALIDATING DATA ALIGNMENT
+======================================================================
+  PROS: 966 rows × 3282 columns
+  ✓ pros: All 966 firm-years matched
+  ✓ pros: Found 3,280 word count columns
+  CONS: 966 rows × 3282 columns
+  ✓ cons: All 966 firm-years matched
+  ✓ cons: Found 3,280 word count columns
+
+  POST_CHATGPT Distribution:
+    Pre (0): 692
+    Post (1): 274
+    Treatment rate: 28.4%
+
+======================================================================
+📊 RUNNING REGRESSIONS: PROS
+======================================================================
+    POST_CHATGPT distribution:
+      Pre (0): 692
+      Post (1): 274
+    Added 11 year fixed effects
+  Data shape: (966, 3289)
+  Covariates: 15 variables
+  Words to process: 3,280
+  ✓ Using year fixed effects
+
+  Processing 3,280 words...
+  Regressing: 100%|████████████████████████████████████████████████████████████████| 3280/3280 [01:03<00:00, 51.35it/s] 
+
+  📊 Detailed Status Breakdown:
+    - success: 3,002 (91.5%)
+    - zero_variance: 174 (5.3%)
+    - not_converged: 104 (3.2%)
+
+  ✓ Regressions complete:
+    - Converged: 3,002 / 3,280 (91.5%)
+    - Significant (|t| > 1.96): 3 (0.1%)
+
+======================================================================
+📊 RUNNING REGRESSIONS: CONS
+======================================================================
+    POST_CHATGPT distribution:
+      Pre (0): 692
+      Post (1): 274
+    Added 11 year fixed effects
+  Data shape: (966, 3289)
+  Covariates: 15 variables
+  Words to process: 3,280
+  ✓ Using year fixed effects
+
+  Processing 3,280 words...
+  Regressing: 100%|████████████████████████████████████████████████████████████████| 3280/3280 [00:58<00:00, 55.61it/s] 
+
+  📊 Detailed Status Breakdown:
+    - success: 3,252 (99.1%)
+    - not_converged: 16 (0.5%)
+    - zero_variance: 12 (0.4%)
+
+  ✓ Regressions complete:
+    - Converged: 3,252 / 3,280 (99.1%)
+    - Significant (|t| > 1.96): 4 (0.1%)
+
+💾 Saved word weights → data\results\mnir\word_weights.csv
+
+======================================================================
+🏗️  CONSTRUCTING INDEX: PROS
+======================================================================
+  Using 3 significant weights (|t| ≥ 1.96)
+  Mean |coefficient|: 2.9225
+  Matched 3 words between counts and weights
+  ✓ Index constructed
+    Mean: 0.061269
+    Std:  0.101287
+    Min:  0.000000
+    Max:  1.461238
+
+======================================================================
+🏗️  CONSTRUCTING INDEX: CONS
+======================================================================
+  Using 4 significant weights (|t| ≥ 1.96)
+  Mean |coefficient|: 4.4498
+  Matched 4 words between counts and weights
+  ✓ Index constructed
+    Mean: 0.045427
+    Std:  0.138594
+    Min:  0.000000
+    Max:  3.559829
+💾 Saved ChatGPT Language Index → data\results\mnir\chatgpt_language_index.csv
+
+💾 Saved validation report → data\results\mnir\validation_report.txt
+
+======================================================================
+📈 INDEX STATISTICS
+======================================================================
+
+chatgpt_index_pros:
+  Mean:     0.061269
+  Median:   0.043815
+  Std:      0.101287
+  Min:      0.000000
+  Max:      1.461238
+  Non-zero: 667 / 966 (69.0%)
+
+chatgpt_index_cons:
+  Mean:     0.045427
+  Median:   0.028268
+  Std:      0.138594
+  Min:      0.000000
+  Max:      3.559829
+  Non-zero: 549 / 966 (56.8%)
+
+chatgpt_language_index:
+  Mean:     0.053348
+  Median:   0.043969
+  Std:      0.098954
+  Min:      0.000000
+  Max:      2.510533
+  Non-zero: 737 / 966 (76.3%)
+
+======================================================================
+🔝 TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)
+======================================================================
+
+PROS Section (Positive Association with POST_CHATGPT):
+   1. atmospher            coef:   4.0141  t:    3.93  p: 0.0001
+   2. team                 coef:   2.4374  t:    2.43  p: 0.0152
+   3. environ              coef:   2.3159  t:    2.31  p: 0.0212
+
+CONS Section (Positive Association with POST_CHATGPT):
+   1. micromanag           coef:   5.1207  t:    4.95  p: 0.0000
+   2. bit                  coef:   4.4453  t:    4.32  p: 0.0000
+   3. thing                coef:   4.2491  t:    4.19  p: 0.0000
+   4. make                 coef:   3.9840  t:    3.95  p: 0.0001
+
+======================================================================
+🔻 BOTTOM WORDS (NEGATIVE ASSOCIATION)
+======================================================================
+
+PROS Section (Negative Association with POST_CHATGPT):
+   1. environ              coef:   2.3159  t:    2.31  p: 0.0212
+   2. team                 coef:   2.4374  t:    2.43  p: 0.0152
+   3. atmospher            coef:   4.0141  t:    3.93  p: 0.0001
+
+CONS Section (Negative Association with POST_CHATGPT):
+   1. make                 coef:   3.9840  t:    3.95  p: 0.0001
+   2. thing                coef:   4.2491  t:    4.19  p: 0.0000
+   3. bit                  coef:   4.4453  t:    4.32  p: 0.0000
+   4. micromanag           coef:   5.1207  t:    4.95  p: 0.0000
+
+======================================================================
+📊 REGRESSION SUMMARY
+======================================================================
+
+Total words processed: 6,560
+Converged: 6,254 (95.3%)
+Significant (|t| ≥ 1.96): 7 (0.1%)
+
+Significant coefficients:
+  Positive (increased post-ChatGPT): 7 (100.0%)
+  Negative (decreased post-ChatGPT): 0 (0.0%)
+  Mean |coef|: 3.7952
+
+======================================================================
+✅ ANALYSIS COMPLETE
+======================================================================
+
+📁 Output files:
+  • word_weights.csv
+  • chatgpt_language_index.csv
+  • validation_report.txt
+
+🚀 NEXT STEPS:
+  1. Review validation_report.txt for data quality
+  2. Run: python scripts/map_stems_to_words.py
+  3. Examine word_weights_readable.csv for interpretable words
+  4. Run: python scripts/analysis.py
+  5. Merge chatgpt_language_index.csv with REIT performance data
+  6. Test hypothesis: High ChatGPT Language Index → Better performance?
+======================================================================
+
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/map_stems_to_words.py
+======================================================================
+STEM-TO-WORD MAPPING
+======================================================================
+
+📂 Loading raw reviews...
+✓ Loaded 28,252 reviews
+
+🔍 Building stem-to-word mapping...
+  Processing pros...
+  Processing cons...
+
+✅ Creating stem -> word mapping...
+✓ Created mapping for 16,103 stems
+
+📊 Loading word weights...
+✓ Loaded 6,560 word weights
+
+🔄 Mapping stems to original words...
+
+✓ Saved readable weights to: data\results\mnir\word_weights_readable.csv
+
+📋 Creating top 50 words file...
+✓ Saved top 50 readable words to: data\results\mnir\top_50_chatgpt_words_readable.csv
+
+======================================================================
+📝 SAMPLE MAPPINGS
+======================================================================
+
+Stem               -> Original Word
+--------------------------------------------------
+autom              -> automation
+automat            -> automatically
+machin             -> machine
+technolog          -> technology
+digit              -> digital
+platform           -> platform
+effici             -> efficient
+product            -> product
+innov              -> innovation
+adapt              -> adapt
+
+======================================================================
+🔝 TOP 10 POST-CHATGPT WORDS (with original forms)
+======================================================================
+
+Original Word      Stem               Section    Coefficient
+----------------------------------------------------------------------
+micromanagement    micromanag         cons         5.1207
+bit                bit                cons         4.4453
+things             thing              cons         4.2491
+atmosphere         atmospher          pros         4.0141
+make               make               cons         3.9840
+team               team               pros         2.4374
+environment        environ            pros         2.3159
+
+======================================================================
+✅ MAPPING COMPLETE
+======================================================================
+
+📁 Output files:
+  • word_weights_readable.csv
+  • top_50_chatgpt_words_readable.csv
+
+🚀 Next step:
+  Run: python scripts/analysis.py
+======================================================================
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/analysis.py
+======================================================================
+CHATGPT LANGUAGE INDEX ANALYSIS
+======================================================================
+
+======================================================================
+1. LOADING DATA
+======================================================================
+
+✓ ChatGPT Language Index: 966 firm-years
+✓ Word Weights: 6,560 words
+✓ Firm-Year Data: 966 observations
+
+✓ Merged dataset: 966 firm-years
+  Columns: ticker, year, chatgpt_index_pros, chatgpt_index_cons, chatgpt_language_index, review_count, rating, POST_CHATGPT, word_count_pros, word_count_cons
+
+======================================================================
+2. DESCRIPTIVE STATISTICS
+======================================================================
+
+ChatGPT Language Index Statistics:
+count    966.000000
+mean       0.053348
+std        0.098954
+min        0.000000
+25%        0.014544
+50%        0.043969
+75%        0.063348
+max        2.510533
+Name: chatgpt_language_index, dtype: float64
+
+Distribution by Quartile:
+index_quartile
+Q1 (Low)     242
+Q2           241
+Q3           241
+Q4 (High)    242
+Name: count, dtype: int64
+
+Top 10 Firms by Average ChatGPT Language Index:
+   1. PSTL:  2.5105
+   2. SAFE:  0.3541
+   3. XHR:  0.1848
+   4. DX:  0.1816
+   5. BFS:  0.1708
+   6. EPRT:  0.1456
+   7. DEA:  0.1341
+   8. APLE:  0.1079
+   9. AHT:  0.1029
+  10. SKT:  0.0910
+
+Bottom 10 Firms by Average ChatGPT Language Index:
+   1. CLDT:  0.0000
+   2. GTY:  0.0000
+   3. LADR:  0.0000
+   4. MPW:  0.0000
+   5. NHI:  0.0000
+   6. PEB:  0.0000
+   7. FSP:  0.0000
+   8. RPT:  0.0000
+   9. BRSP:  0.0000
+  10. GNL:  0.0000
+
+======================================================================
+3. TIME TRENDS
+======================================================================
+
+Average ChatGPT Language Index by Year:
+          mean       std  count
+year
+2014  0.038111  0.031856     59
+2015  0.046136  0.045557     69
+2016  0.039846  0.032338     74
+2017  0.043850  0.043853     74
+2018  0.050035  0.051631     68
+2019  0.056559  0.068066     77
+2020  0.058918  0.083445     82
+2021  0.054483  0.053500     92
+2022  0.075870  0.260633     98
+2023  0.055272  0.054170     87
+2024  0.051929  0.057195     98
+2025  0.056526  0.069944     88
+
+Pre-ChatGPT (≤Nov 30, 2022): 0.049352
+Post-ChatGPT (>Nov 30, 2022): 0.063440
+Difference: 0.014089 (28.55% change)
+T-test: t=1.9978, p=0.0460
+✓ Statistically significant difference!
+
+======================================================================
+4. TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)
+======================================================================
+
+Total significant words: 7
+
+PROS - Top 20 Words (Increased Post-ChatGPT):
+   1. atmosphere           (stem: atmospher      ) coef:  4.0141  t:    3.93
+   2. team                 (stem: team           ) coef:  2.4374  t:    2.43
+   3. environment          (stem: environ        ) coef:  2.3159  t:    2.31
+
+PROS - Top 20 Words (Decreased Post-ChatGPT):
+   1. environment          (stem: environ        ) coef:  2.3159  t:    2.31
+   2. team                 (stem: team           ) coef:  2.4374  t:    2.43
+   3. atmosphere           (stem: atmospher      ) coef:  4.0141  t:    3.93
+
+CONS - Top 20 Words (Increased Post-ChatGPT):
+   1. micromanagement      (stem: micromanag     ) coef:  5.1207  t:    4.95
+   2. bit                  (stem: bit            ) coef:  4.4453  t:    4.32
+   3. things               (stem: thing          ) coef:  4.2491  t:    4.19
+   4. make                 (stem: make           ) coef:  3.9840  t:    3.95
+
+CONS - Top 20 Words (Decreased Post-ChatGPT):
+   1. make                 (stem: make           ) coef:  3.9840  t:    3.95
+   2. things               (stem: thing          ) coef:  4.2491  t:    4.19
+   3. bit                  (stem: bit            ) coef:  4.4453  t:    4.32
+   4. micromanagement      (stem: micromanag     ) coef:  5.1207  t:    4.95
+
+======================================================================
+5. CORRELATIONS WITH REVIEW CHARACTERISTICS
+======================================================================
+
+Correlations with ChatGPT Language Index:
+chatgpt_language_index    1.000000
+rating                    0.077860
+POST_CHATGPT              0.064211
+review_count             -0.011103
+word_count_pros          -0.014763
+word_count_cons          -0.024108
+Name: chatgpt_language_index, dtype: float64
+
+======================================================================
+6. CREATING VISUALIZATIONS
+======================================================================
+  ✓ Saved: index_distribution.png
+  ✓ Saved: index_time_trend.png
+  ✓ Saved: pre_vs_post_chatgpt.png
+  ✓ Saved: index_vs_rating.png
+  ✓ Saved: top_predictive_words.png
+
+======================================================================
+7. EXPORTING DATA
+======================================================================
+
+✓ Saved analysis-ready dataset: data/results/mnir/chatgpt_index_analysis_ready.csv
+  Rows: 966
+  Columns: 11
+
+✓ Saved top 50 ChatGPT words: data/results/mnir/top_50_chatgpt_words.csv
+✓ Saved summary statistics: data/results/mnir/index_summary_stats.csv
+
+======================================================================
+✅ ANALYSIS COMPLETE
+======================================================================
+
+📊 Generated Files:
+  1. chatgpt_index_analysis_ready.csv - Ready to merge with REIT performance data
+  2. top_50_chatgpt_words.csv - Top words for thesis
+  3. index_summary_stats.csv - Summary statistics table
+  4. figures/ - 5 visualization files
+
+📖 INTERPRETING THE INDEX:
+
+  The ChatGPT Language Index measures the extent to which firm-year
+  reviews use language patterns that emerged AFTER ChatGPT's launch
+  (November 30, 2022).
+
+  • HIGH index = Reviews use more 'post-ChatGPT' language
+  • LOW index = Reviews use more 'pre-ChatGPT' language
+
+  Positive coefficients = Words that INCREASED post-ChatGPT
+  Negative coefficients = Words that DECREASED post-ChatGPT
+
+🔍 KEY FINDINGS TO EXAMINE:
+
+  1. Did language patterns actually change after ChatGPT?
+     → YES (p=0.0460)
+     → 28.5% change in average index
+
+  2. What words increased? (Check top_50_chatgpt_words.csv)
+     → Look for: technology terms, AI words, productivity language
+
+  3. What words decreased?
+     → Look for: traditional terms being replaced
+
+🚀 NEXT STEPS FOR YOUR THESIS:
+
+1. EXAMINE TOP WORDS:
+   Review top_50_chatgpt_words.csv to understand what language changed
+   Write about this in your 'Results' section
+
+2. MERGE WITH REIT PERFORMANCE DATA:
+   ```python
+   # Load your REIT performance data (returns, FFO, occupancy, etc.)
+   performance = pd.read_csv('your_reit_performance_data.csv')
+
+   # Merge on ticker and year
+   analysis_df = pd.read_csv('data/results/mnir/chatgpt_index_analysis_ready.csv')
+   merged = performance.merge(analysis_df, on=['ticker', 'year'], how='inner')
+   ```
+
+3. RUN REGRESSION ANALYSIS:
+   ```python
+   import statsmodels.formula.api as smf
+
+   # Does high ChatGPT language predict better performance?
+   model = smf.ols('returns ~ chatgpt_language_index + rating + review_count',
+                   data=merged).fit()
+   print(model.summary())
+   ```
+
+4. DIFFERENCE-IN-DIFFERENCES:
+   ```python
+   # Did the effect of the index change post-ChatGPT?
+   model_did = smf.ols('''returns ~ chatgpt_language_index * POST_CHATGPT +
+                          rating + review_count''', data=merged).fit()
+   print(model_did.summary())
+   ```
+
+5. HYPOTHESIS TESTS:
+   H1: High ChatGPT Language Index is associated with better firm performance
+   H2: Firms that adopted ChatGPT-era language faster performed better
+   H3: Effect varies by property type or firm size
+
+======================================================================
+

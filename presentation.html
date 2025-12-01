@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REIT Sentiment Analysis - Capstone Presentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --dark-bg: #0a0e27;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #e8eaf6;
+            --text-secondary: #b0b8d4;
+            --border-glow: rgba(102, 126, 234, 0.3);
+        }
+
+        .reveal {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-weight: 700;
+            text-transform: none;
+            color: var(--text-primary);
+        }
+
+        .reveal h1 {
+            font-size: 2.8em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5em;
+        }
+
+        .reveal h2 {
+            font-size: 2em;
+            margin-bottom: 1em;
+        }
+
+        .reveal h3 {
+            font-size: 1.4em;
+            color: #667eea;
+        }
+
+        .reveal p, .reveal li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .reveal section {
+            text-align: left;
+        }
+
+        .reveal .title-slide {
+            text-align: center;
+            padding: 2em;
+        }
+
+        .gradient-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2em;
+            margin: 1em 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gradient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(102, 126, 234, 0.4);
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: 0.4em 1em;
+            margin: 0.3em;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .metric-box {
+            background: var(--primary-gradient);
+            padding: 1.5em;
+            border-radius: 12px;
+            text-align: center;
+            margin: 0.5em;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .metric-box h3 {
+            color: white;
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .metric-box p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0.5em 0 0 0;
+            font-size: 0.9em;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2em;
+            align-items: start;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5em;
+        }
+
+        .reveal img {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            max-height: 500px;
+        }
+
+        .author-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2em;
+            flex-wrap: wrap;
+        }
+
+        .author-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glow);
+            padding: 1.5em;
+            border-radius: 12px;
+            text-align: center;
+            margin: 0.5em;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .author-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5em;
+            font-size: 1.1em;
+        }
+
+        .author-card p {
+            font-size: 0.85em;
+            margin: 0.3em 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(102, 126, 234, 0.15);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: #4facfe;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #1a1e3a !important;
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1.5em !important;
+            margin: 1em 0 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #e8eaf6;
+            font-size: 0.75em;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .architecture-layer {
+            background: var(--card-bg);
+            border-left: 4px solid #667eea;
+            padding: 1em 1.5em;
+            margin: 0.8em 0;
+            border-radius: 8px;
+        }
+
+        .architecture-layer h3 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li::before {
+            content: "▹";
+            color: #667eea;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            padding-right: 0.5em;
+        }
+
+        .icon {
+            color: #667eea;
+            margin-right: 0.5em;
+        }
+
+        .demo-section {
+            background: var(--success-gradient);
+            padding: 2em;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+        }
+
+        .demo-section h2 {
+            color: white;
+        }
+
+        .progress-bar {
+            background: var(--primary-gradient);
+            height: 4px;
+        }
+
+        .github-link {
+            display: inline-block;
+            padding: 1em 2em;
+            background: var(--primary-gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            margin: 1em;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .github-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(102, 126, 234, 0.6);
+        }
+
+        .reveal strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3em 0.8em;
+            background: var(--success-gradient);
+            border-radius: 15px;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: white;
+            margin-left: 0.5em;
+        }
+
+        .future-work-item {
+            background: rgba(79, 172, 254, 0.1);
+            border-left: 3px solid #4facfe;
+            padding: 1em;
+            margin: 0.8em 0;
+            border-radius: 6px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal .slides section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- SLIDE 1: Title Slide -->
+            <section class="title-slide">
+                <h1>Employee Sentiment and REIT Performance</h1>
+                <h2 style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    A FinBERT-Based Analysis of AI Era Effects
+                </h2>
+                
+                <div class="author-info">
+                    <div class="author-card">
+                        <h4><i class="fas fa-user-graduate icon"></i>Konain Niaz</h4>
+                        <p>Graduate Student, Data Science</p>
+                        <p>Rochester Institute of Technology</p>
+                        <p style="color: #667eea;">kn4792@rit.edu</p>
+                    </div>
+                    
+                    <div class="author-card">
+                        <h4><i class="fas fa-chalkboard-teacher icon"></i>Dr. Travis Desell</h4>
+                        <p>Associate Professor</p>
+                        <p>Software Engineering</p>
+                        <p style="color: #667eea;">tjdvse@rit.edu</p>
+                    </div>
+                    
+                    <div class="author-card">
+                        <h4><i class="fas fa-chalkboard-teacher icon"></i>Dr. Debanjana Dey</h4>
+                        <p>Assistant Professor</p>
+                        <p>Finance and Accounting</p>
+                        <p style="color: #667eea;">ddey@saunders.rit.edu</p>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 2em; color: var(--text-secondary);">
+                    <i class="fas fa-calendar icon"></i>Capstone Presentation • Fall 2024
+                </p>
+            </section>
+
+            <!-- SLIDE 2: Project Overview -->
+            <section>
+                <h2><i class="fas fa-project-diagram icon"></i>Project Overview</h2>
+                
+                <div class="gradient-card">
+                    <h3>Research Question</h3>
+                    <p style="font-size: 1.1em;">Does <strong>employee sentiment</strong> predict <strong>REIT performance</strong>, and did this relationship change after <strong>ChatGPT's launch</strong>?</p>
+                </div>
+
+                <div class="two-column" style="margin-top: 1.5em;">
+                    <div>
+                        <h3><i class="fas fa-bullseye icon"></i>Goals</h3>
+                        <ul>
+                            <li>Analyze <strong>28,486</strong> Glassdoor reviews from <strong>91 REITs</strong></li>
+                            <li>Apply <strong>FinBERT</strong> sentiment analysis (financial NLP)</li>
+                            <li>Test AI adoption effects using <strong>ChatGPT launch</strong> as natural experiment</li>
+                            <li>Examine heterogeneity across property types</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3><i class="fas fa-layer-group icon"></i>Key Innovation</h3>
+                        <ul>
+                            <li><strong>First</strong> FinBERT application to REIT employee sentiment</li>
+                            <li>Largest REIT sentiment dataset created</li>
+                            <li>Quasi-experimental design for causal inference</li>
+                            <li>Bridges NLP, finance, and organizational behavior</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 1.5em;">
+                    <div class="metric-box">
+                        <h3>28,486</h3>
+                        <p>Employee Reviews</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>91</h3>
+                        <p>Public REITs</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>17.5</h3>
+                        <p>Years of Data</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: Domain Model -->
+            <section>
+                <h2><i class="fas fa-sitemap icon"></i>Domain Model</h2>
+                
+                <div style="text-align: center;">
+                    <img src="file:///C:/Users/konid/Documents/Capstone/Domain_Model.png" alt="Domain Model" style="max-width: 100%; max-height: 600px;">
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em;">
+                    <h3>Eight Primary Entities</h3>
+                    <div class="two-column">
+                        <ul>
+                            <li><strong>REIT_COMPANY</strong>: Firm identifiers & metadata</li>
+                            <li><strong>EMPLOYEE_REVIEW</strong>: Glassdoor reviews with text</li>
+                            <li><strong>FINBERT_SENTIMENT</strong>: Sentiment probabilities & scores</li>
+                            <li><strong>FIRM_YEAR_SENTIMENT</strong>: Aggregated metrics</li>
+                        </ul>
+                        <ul>
+                            <li><strong>PROPERTY_TYPE</strong>: Data Center, Office, Retail, etc.</li>
+                            <li><strong>PERFORMANCE_DATA</strong>: Returns, FFO, market cap</li>
+                            <li><strong>REGRESSION_ANALYSIS</strong>: Econometric estimates</li>
+                            <li><strong>Treatment Indicators</strong>: POST_CHATGPT, tech_intensive</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: Architecture Overview -->
+            <section>
+                <h2><i class="fas fa-network-wired icon"></i>System Architecture</h2>
+                
+                <div style="text-align: center; margin-bottom: 1em;">
+                    <img src="file:///C:/Users/konid/Documents/Capstone/Latest_Architecture.png" alt="System Architecture" style="max-width: 100%; max-height: 500px;">
+                </div>
+
+                <div class="gradient-card">
+                    <h3>Five-Stage Pipeline</h3>
+                    <p><strong>1. Data Collection</strong> → <strong>2. Preprocessing</strong> → <strong>3. FinBERT Analysis</strong> → <strong>4. Aggregation</strong> → <strong>5. Econometric Modeling</strong></p>
+                </div>
+
+                <div class="two-column" style="margin-top: 1em;">
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-check-circle icon" style="color: #43e97b;"></i>Completed</h4>
+                        <ul style="font-size: 0.9em;">
+                            <li>Web scraping (Selenium)</li>
+                            <li>Text preprocessing (NLTK)</li>
+                            <li>FinBERT sentiment classification</li>
+                            <li>Firm-year aggregation</li>
+                            <li>Descriptive analysis & visualization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-spinner icon" style="color: #f5576c;"></i>In Progress</h4>
+                        <ul style="font-size: 0.9em;">
+                            <li>WRDS data acquisition (CRSP/Compustat)</li>
+                            <li>Panel regression analysis</li>
+                            <li>Difference-in-differences estimation</li>
+                            <li>Robustness checks</li>
+                            <li>Causal inference validation</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: Layer 1 - Data Collection -->
+            <section>
+                <h2><i class="fas fa-database icon"></i>Layer 1: Data Collection</h2>
+                
+                <div class="architecture-layer">
+                    <h3>Web Scraping Infrastructure</h3>
+                    <p><strong>Tool:</strong> Selenium WebDriver with Chrome in debug mode</p>
+                    
+                    <div class="two-column" style="margin-top: 1em;">
+                        <div>
+                            <h4>Features Implemented</h4>
+                            <ul>
+                                <li>JavaScript rendering for dynamic content</li>
+                                <li>Authentication state management</li>
+                                <li>Intelligent pagination traversal</li>
+                                <li>CSS selector-based extraction</li>
+                                <li>Exponential backoff retry logic</li>
+                                <li>Rate limiting (2-second delays)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4>Data Extracted</h4>
+                            <ul>
+                                <li><strong>Metadata:</strong> Ratings, dates, job titles</li>
+                                <li><strong>Text:</strong> Pros, cons, advice fields</li>
+                                <li><strong>Employment:</strong> Status, location</li>
+                                <li><strong>Coverage:</strong> 91 REITs, 2008-2025</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 1em;">
+                    <div class="metric-box">
+                        <h3>28,486</h3>
+                        <p>Reviews Scraped</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>156</h3>
+                        <p>Avg Tokens/Review</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>97%</h3>
+                        <p>Data Completeness</p>
+                    </div>
+                </div>
+
+                <div class="tech-badge">Selenium</div>
+                <div class="tech-badge">Chrome DevTools</div>
+                <div class="tech-badge">Pandas</div>
+                <div class="tech-badge">CSV Storage</div>
+            </section>
+
+            <!-- SLIDE 6: Layer 2 - Text Preprocessing -->
+            <section>
+                <h2><i class="fas fa-filter icon"></i>Layer 2: Text Preprocessing</h2>
+                
+                <div class="architecture-layer">
+                    <h3>Multi-Stage Cleaning Pipeline</h3>
+                    
+                    <div class="two-column">
+                        <div>
+                            <h4>Preprocessing Steps</h4>
+                            <ol style="list-style: decimal; padding-left: 1.5em;">
+                                <li>HTML entity decoding</li>
+                                <li>Lowercase normalization</li>
+                                <li>NLTK tokenization</li>
+                                <li>Stopword removal (augmented lists)</li>
+                                <li>Porter stemming</li>
+                                <li>Negation context preservation</li>
+                            </ol>
+                        </div>
+                        
+                        <div>
+                            <h4>Text Cleaning Class</h4>
+                            <ul>
+                                <li><code>TextCleaner</code>: Main preprocessing</li>
+                                <li><code>DateParser</code>: Temporal standardization</li>
+                                <li><code>DataValidator</code>: Quality assurance</li>
+                                <li><strong>Key Innovation:</strong> Preserves "not good" as single token</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em;">
+                    <h3>Dataset Splitting Strategy</h3>
+                    <p><strong>Stratified sampling</strong> by company ticker to prevent data leakage</p>
+                    <div class="three-column" style="margin-top: 1em;">
+                        <div>
+                            <h4 style="color: #4facfe;">Training</h4>
+                            <p style="font-size: 1.5em; font-weight: 700;">70%</p>
+                            <p>19,940 reviews</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #f093fb;">Validation</h4>
+                            <p style="font-size: 1.5em; font-weight: 700;">15%</p>
+                            <p>4,273 reviews</p>
+                        </div>
+                        <div>
+                            <h4 style="color: #43e97b;">Test</h4>
+                            <p style="font-size: 1.5em; font-weight: 700;">15%</p>
+                            <p>4,273 reviews</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-badge">NLTK</div>
+                <div class="tech-badge">Porter Stemmer</div>
+                <div class="tech-badge">Scikit-learn</div>
+                <div class="tech-badge">Regex</div>
+            </section>
+
+            <!-- SLIDE 7: Layer 3 - FinBERT Sentiment -->
+            <section>
+                <h2><i class="fas fa-brain icon"></i>Layer 3: FinBERT Sentiment Analysis</h2>
+                
+                <div class="architecture-layer">
+                    <h3>Transformer-Based Classification</h3>
+                    
+                    <div class="two-column">
+                        <div>
+                            <h4>Model Architecture</h4>
+                            <ul>
+                                <li><strong>Base:</strong> BERT (Bidirectional Encoder)</li>
+                                <li><strong>Pre-training:</strong> 4.9B financial tokens</li>
+                                <li><strong>Sources:</strong> 10-Ks, earnings calls, analyst reports</li>
+                                <li><strong>Fine-tuning:</strong> 10,000 labeled financial sentences</li>
+                                <li><strong>Layers:</strong> 12 transformer blocks</li>
+                                <li><strong>Hidden size:</strong> 768 dimensions</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4>Implementation Details</h4>
+                            <ul>
+                                <li><strong>Framework:</strong> PyTorch + Transformers</li>
+                                <li><strong>GPU:</strong> NVIDIA GTX 1660 Ti (6GB VRAM)</li>
+                                <li><strong>Batch size:</strong> 32 (optimized for GPU)</li>
+                                <li><strong>Sequence length:</strong> 512 tokens max</li>
+                                <li><strong>Processing time:</strong> ~7 minutes total</li>
+                                <li><strong>Coverage:</strong> 100% classification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em;">
+                    <h3>Output Schema</h3>
+                    <div class="two-column" style="font-size: 0.9em;">
+                        <ul>
+                            <li><code>positive_prob</code>: P(positive sentiment)</li>
+                            <li><code>negative_prob</code>: P(negative sentiment)</li>
+                            <li><code>neutral_prob</code>: P(neutral sentiment)</li>
+                        </ul>
+                        <ul>
+                            <li><code>sentiment_label</code>: Categorical {pos, neg, neu}</li>
+                            <li><code>sentiment_score</code>: Continuous [-1, +1]</li>
+                            <li><code>confidence</code>: max(probabilities)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 1em;">
+                    <div class="metric-box">
+                        <h3>0.74</h3>
+                        <p>Mean Confidence</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>0.58</h3>
+                        <p>r(Sentiment, Rating)</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>100%</h3>
+                        <p>Classification Coverage</p>
+                    </div>
+                </div>
+
+                <div class="tech-badge">PyTorch 2.0.1</div>
+                <div class="tech-badge">Transformers 4.30.0</div>
+                <div class="tech-badge">CUDA</div>
+                <div class="tech-badge">ProsusAI/finbert</div>
+            </section>
+
+            <!-- SLIDE 8: Layer 4 - Temporal Aggregation -->
+            <section>
+                <h2><i class="fas fa-chart-bar icon"></i>Layer 4: Temporal Aggregation</h2>
+                
+                <div class="architecture-layer">
+                    <h3>Review-Level → Firm-Year Transformation</h3>
+                    
+                    <div class="two-column">
+                        <div>
+                            <h4>Aggregation Metrics</h4>
+                            <ul>
+                                <li><strong>Central tendency:</strong> Mean, median sentiment</li>
+                                <li><strong>Dispersion:</strong> Standard deviation</li>
+                                <li><strong>Distribution:</strong> % positive, % negative</li>
+                                <li><strong>Volume:</strong> Review count</li>
+                                <li><strong>Agreement:</strong> % agreeing with majority</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4>Treatment Variables</h4>
+                            <ul>
+                                <li><code>POST_CHATGPT</code>: 1 if year ≥ 2023</li>
+                                <li><code>tech_intensive</code>: 1 for Data Center, Telecommunications, Industrial</li>
+                                <li><strong>Quality filter:</strong> Minimum 3 reviews per firm-year</li>
+                                <li><strong>Final dataset:</strong> 808 firm-year observations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em;">
+                    <h3>Groupby Logic</h3>
+                    <pre><code>firm_year = df.groupby(['ticker', 'year']).agg({
+    'sentiment_score': ['mean', 'std', 'median', 'min', 'max'],
+    'sentiment_label': lambda x: (x == 'positive').mean(),
+    'review_id': 'count',
+    'POST_CHATGPT': 'first',
+    'property_type': 'first'
+}).reset_index()</code></pre>
+                </div>
+
+                <div class="three-column" style="margin-top: 1em;">
+                    <div class="metric-box">
+                        <h3>808</h3>
+                        <p>Firm-Year Obs</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>34.7</h3>
+                        <p>Avg Reviews/Firm-Year</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>64.8%</h3>
+                        <p>Inclusion Rate</p>
+                    </div>
+                </div>
+
+                <div class="tech-badge">Pandas GroupBy</div>
+                <div class="tech-badge">NumPy</div>
+                <div class="tech-badge">SciPy Stats</div>
+            </section>
+
+            <!-- SLIDE 9: Layer 5 - Econometric Analysis -->
+            <section>
+                <h2><i class="fas fa-chart-line icon"></i>Layer 5: Econometric Modeling</h2>
+                
+                <div class="architecture-layer">
+                    <h3>Panel Regression with Fixed Effects</h3>
+                    
+                    <div style="background: rgba(79, 172, 254, 0.1); padding: 1em; border-radius: 8px; margin: 1em 0;">
+                        <h4>Triple-Difference Specification</h4>
+                        <pre><code>Return = β₀ + β₁·Sentiment + β₂·POST_CHATGPT + β₃·TechIntensive
+       + β₄·(Sentiment × POST_CHATGPT)
+       + β₅·(Sentiment × TechIntensive)
+       + β₆·(POST_CHATGPT × TechIntensive)
+       + β₇·(Sentiment × POST_CHATGPT × TechIntensive)
+       + FirmFE + YearFE + ε</code></pre>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-vial icon"></i>Planned Tests</h4>
+                        <ul>
+                            <li><strong>Baseline:</strong> Sentiment → Returns</li>
+                            <li><strong>Heterogeneity:</strong> Property type interactions</li>
+                            <li><strong>DiD:</strong> POST_CHATGPT treatment effect</li>
+                            <li><strong>Triple-DiD:</strong> Heterogeneous AI effects</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-shield-alt icon"></i>Robustness Checks</h4>
+                        <ul>
+                            <li>Parallel trends validation</li>
+                            <li>Alternative DVs (FFO, volatility)</li>
+                            <li>Exclude COVID years (2020-2021)</li>
+                            <li>Placebo tests with fake dates</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em; background: rgba(245, 87, 108, 0.1); border-color: #f5576c;">
+                    <h4><i class="fas fa-exclamation-triangle icon"></i>Blocked on WRDS Access</h4>
+                    <p>Awaiting CRSP/Compustat data from Wharton Research Data Services</p>
+                    <p><strong>Status:</strong> Dr. Dey has access through RIT Library – data pull in progress</p>
+                </div>
+
+                <div class="tech-badge">Statsmodels</div>
+                <div class="tech-badge">LinearModels</div>
+                <div class="tech-badge">WRDS API</div>
+            </section>
+
+            <!-- SLIDE 10: Code Deep Dive (GitHub Break) -->
+            <section>
+                <h2><i class="fab fa-github icon"></i>Code Walkthrough</h2>
+                
+                <div class="gradient-card" style="text-align: center;">
+                    <h3>GitHub Repository Structure</h3>
+                    <a href="https://github.com/kn4792/reit-sentiment-analysis" class="github-link" target="_blank">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                </div>
+
+                <div class="two-column" style="margin-top: 1.5em;">
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-folder-open icon"></i>Repository Structure</h4>
+                        <pre><code>reit-sentiment-analysis/
+├── scripts/
+│   ├── scrape_reviews.py
+│   ├── clean_data.py
+│   ├── finbert_sentiment.py
+│   ├── aggregate_firm_year.py
+│   └── descriptive_analysis.py
+├── src/
+│   ├── preprocessing/
+│   ├── models/
+│   └── analysis/
+├── tests/
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── results/
+└── requirements.txt</code></pre>
+                    </div>
+                    
+                    <div class="gradient-card">
+                        <h4><i class="fas fa-code icon"></i>Key Scripts</h4>
+                        <ul>
+                            <li><strong>scrape_reviews.py:</strong> Selenium scraper</li>
+                            <li><strong>clean_data.py:</strong> TextCleaner pipeline</li>
+                            <li><strong>finbert_sentiment.py:</strong> GPU-accelerated analysis</li>
+                            <li><strong>aggregate_firm_year.py:</strong> Temporal aggregation</li>
+                            <li><strong>descriptive_analysis.py:</strong> Statistical summaries</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em; background: var(--success-gradient); color: white;">
+                    <h3 style="color: white;">💻 Live Code Demonstration</h3>
+                    <p style="color: white; font-size: 1.1em;">
+                        <strong>Break from slides to show actual code on GitHub</strong>
+                    </p>
+                    <p style="color: rgba(255,255,255,0.9);">
+                        Focus areas: TextCleaner class, FinBERT processing loop, aggregation logic
+                    </p>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: Next Semester Plan -->
+            <section>
+                <h2><i class="fas fa-road icon"></i>Next Semester Roadmap</h2>
+                
+                <div class="future-work-item">
+                    <h3><i class="fas fa-database icon"></i>1. Data Acquisition & Merging</h3>
+                    <ul>
+                        <li>Pull REIT performance data from WRDS (CRSP + Compustat)</li>
+                        <li>Merge sentiment dataset with financial metrics</li>
+                        <li>Validate data quality and handle missing values</li>
+                        <li><strong>Timeline:</strong> Weeks 1-2</li>
+                    </ul>
+                </div>
+
+                <div class="future-work-item">
+                    <h3><i class="fas fa-calculator icon"></i>2. Econometric Analysis</h3>
+                    <ul>
+                        <li>Run baseline regressions (sentiment → returns)</li>
+                        <li>Estimate difference-in-differences models</li>
+                        <li>Test triple-difference specification for heterogeneous effects</li>
+                        <li>Conduct parallel trends validation</li>
+                        <li><strong>Timeline:</strong> Weeks 3-6</li>
+                    </ul>
+                </div>
+
+                <div class="future-work-item">
+                    <h3><i class="fas fa-shield-alt icon"></i>3. Robustness & Extensions</h3>
+                    <ul>
+                        <li>Alternative dependent variables (FFO, volatility)</li>
+                        <li>Subperiod analysis (exclude COVID years)</li>
+                        <li>Placebo tests & sensitivity analysis</li>
+                        <li><strong>Timeline:</strong> Weeks 7-9</li>
+                    </ul>
+                </div>
+
+                <div class="future-work-item">
+                    <h3><i class="fas fa-file-alt icon"></i>4. Thesis Writing & Defense</h3>
+                    <ul>
+                        <li>Complete results, discussion, and conclusion sections</li>
+                        <li>Prepare IEEE conference-format paper</li>
+                        <li>Create final defense presentation</li>
+                        <li><strong>Timeline:</strong> Weeks 10-14</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: Preliminary Results -->
+            <section>
+                <h2><i class="fas fa-chart-area icon"></i>Preliminary Results</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <img src="file:///C:/Users/konid/Documents/Capstone/reit-sentiment-analysis/data/results/descriptive_stats/figures/pre_post_chatgpt_comparison.png" alt="Pre vs Post ChatGPT" style="max-height: 400px;">
+                    </div>
+                    <div>
+                        <div class="gradient-card">
+                            <h3>Key Findings</h3>
+                            <ul>
+                                <li><strong>No average sentiment change</strong> post-ChatGPT (p=0.553)</li>
+                                <li><strong>Dispersion increased 10.9%</strong> (p=0.031**)</li>
+                                <li><strong>Review volume surged 89.7%</strong> (p<0.001***)</li>
+                                <li>Suggests <strong>heterogeneous employee responses</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column" style="margin-top: 1em;">
+                    <div>
+                        <img src="file:///C:/Users/konid/Documents/Capstone/reit-sentiment-analysis/data/results/descriptive_stats/figures/sentiment_by_property_type.png" alt="Sentiment by Property Type" style="max-height: 350px;">
+                    </div>
+                    <div>
+                        <img src="file:///C:/Users/konid/Documents/Capstone/reit-sentiment-analysis/data/results/descriptive_stats/figures/time_trends.png" alt="Time Trends" style="max-height: 350px;">
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em;">
+                    <h3><i class="fas fa-lightbulb icon"></i>Interpretation</h3>
+                    <p>Data Center REITs show <strong>less negative sentiment</strong> (-0.184) vs traditional property types (-0.232 to -0.275). Combined with increased dispersion post-ChatGPT, this supports our heterogeneous treatment hypothesis.</p>
+                </div>
+            </section>
+
+            <!-- SLIDE 13: Methodological Contributions -->
+            <section>
+                <h2><i class="fas fa-award icon"></i>Methodological Contributions</h2>
+                
+                <div class="gradient-card">
+                    <h3><i class="fas fa-times-circle icon" style="color: #f5576c;"></i>MNIR Failure → Valuable Lesson</h3>
+                    <p>Initially planned <strong>Multinomial Inverse Regression</strong> (Campbell & Shang 2022) to measure AI-related language changes</p>
+                </div>
+
+                <div class="two-column" style="margin-top: 1em;">
+                    <div class="gradient-card" style="background: rgba(245, 87, 108, 0.1);">
+                        <h4>Why MNIR Failed</h4>
+                        <ul>
+                            <li><strong>Insufficient time:</strong> Only 2 years post-ChatGPT (need ~5)</li>
+                            <li><strong>Data imbalance:</strong> 66% pre / 34% post (need balanced)</li>
+                            <li><strong>Sparse signals:</strong> Only 0.26% reviews mention AI</li>
+                            <li><strong>Concentration:</strong> 59% of AI mentions from 5 Data Center REITs</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="gradient-card" style="background: rgba(67, 233, 123, 0.1);">
+                        <h4>Why FinBERT Succeeded</h4>
+                        <ul>
+                            <li><strong>Semantic capture:</strong> 768-dim embeddings vs keyword matching</li>
+                            <li><strong>Contextual nuance:</strong> Handles opposing interpretations</li>
+                            <li><strong>Immediate results:</strong> No waiting for language evolution</li>
+                            <li><strong>Generalizability:</strong> Pre-trained on millions of financial texts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1em; background: var(--accent-gradient); color: white;">
+                    <h3 style="color: white;"><i class="fas fa-book icon"></i>Contribution to Literature</h3>
+                    <p style="color: white;">Documenting this negative result provides guidance for researchers studying technology shocks and language evolution with sparse signals and short time horizons</p>
+                </div>
+            </section>
+
+            <!-- SLIDE 14: Demo -->
+            <section>
+                <div class="demo-section">
+                    <h2 style="color: white;"><i class="fas fa-play-circle icon"></i>Live Demo</h2>
+                    
+                    <div style="margin: 2em 0;">
+                        <h3 style="color: white;">Demonstration Components</h3>
+                        <div class="two-column" style="margin-top: 1em; color: white;">
+                            <div>
+                                <h4 style="color: white;"><i class="fas fa-terminal icon"></i>Command Line</h4>
+                                <ul style="color: rgba(255,255,255,0.9);">
+                                    <li>Run FinBERT on sample reviews</li>
+                                    <li>Show aggregation to firm-year</li>
+                                    <li>Display processing speed (GPU)</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 style="color: white;"><i class="fas fa-chart-pie icon"></i>Visualizations</h4>
+                                <ul style="color: rgba(255,255,255,0.9);">
+                                    <li>Interactive sentiment distributions</li>
+                                    <li>Time series trends</li>
+                                    <li>Property type comparisons</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.2); padding: 1.5em; border-radius: 12px; margin-top: 2em;">
+                        <h3 style="color: white; margin-top: 0;"><i class="fas fa-code icon"></i>Demo Script</h3>
+                        <pre style="background: rgba(0,0,0,0.3); text-align: left;"><code style="color: white;">python scripts/finbert_sentiment.py --sample 100
+python scripts/aggregate_firm_year.py
+python scripts/descriptive_analysis.py --visualize</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 15: Summary & Impact -->
+            <section>
+                <h2><i class="fas fa-star icon"></i>Summary & Impact</h2>
+                
+                <div class="gradient-card">
+                    <h3>What We've Achieved</h3>
+                    <div class="two-column">
+                        <ul>
+                            <li><strong>Largest dataset:</strong> 28,486 REIT employee reviews</li>
+                            <li><strong>Production pipeline:</strong> End-to-end sentiment extraction</li>
+                            <li><strong>Novel application:</strong> FinBERT to REIT employee sentiment</li>
+                            <li><strong>Preliminary evidence:</strong> Heterogeneous AI effects</li>
+                        </ul>
+                        <ul>
+                            <li><strong>808 firm-years:</strong> Ready for econometric analysis</li>
+                            <li><strong>Methodological rigor:</strong> Documented MNIR failure</li>
+                            <li><strong>Reproducible code:</strong> 95%+ test coverage</li>
+                            <li><strong>80% complete:</strong> Awaiting WRDS data only</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="gradient-card" style="margin-top: 1.5em; background: var(--primary-gradient); color: white;">
+                    <h3 style="color: white;"><i class="fas fa-lightbulb icon"></i>Research Impact</h3>
+                    <div class="two-column" style="color: white;">
+                        <div>
+                            <h4 style="color: white;">Academic Contributions</h4>
+                            <ul style="color: rgba(255,255,255,0.95);">
+                                <li>First FinBERT-REIT sentiment study</li>
+                                <li>Causal inference on AI adoption</li>
+                                <li>Bridge NLP, finance, org behavior</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: white;">Practical Applications</h4>
+                            <ul style="color: rgba(255,255,255,0.95);">
+                                <li>Alternative data for REIT investing</li>
+                                <li>Early warning system for firm issues</li>
+                                <li>Framework for other industries</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 1.5em;">
+                    <div class="metric-box">
+                        <h3>4</h3>
+                        <p>Stages Complete</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>80%</h3>
+                        <p>Project Progress</p>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Spring '25</h3>
+                        <p>Defense Target</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 16: Questions -->
+            <section class="title-slide">
+                <h1 style="font-size: 3em;">Questions?</h1>
+                
+                <div class="gradient-card" style="margin-top: 2em;">
+                    <h3>Contact Information</h3>
+                    <p style="font-size: 1.2em; color: var(--text-primary);">
+                        <i class="fas fa-envelope icon"></i>kn4792@rit.edu
+                    </p>
+                    <a href="https://github.com/kn4792/reit-sentiment-analysis" class="github-link" target="_blank">
+                        <i class="fab fa-github"></i> View Full Project on GitHub
+                    </a>
+                </div>
+
+                <div style="margin-top: 3em;">
+                    <h3 style="color: var(--text-secondary); font-size: 1.2em;">Thank You!</h3>
+                    <p style="color: var(--text-secondary);">
+                        Special thanks to Dr. Travis Desell and Dr. Debanjana Dey for their guidance
+                    </p>
+                </div>
+
+                <div style="margin-top: 2em; font-size: 0.8em; color: var(--text-secondary);">
+                    <p>
+                        <i class="fas fa-globe icon"></i>Rochester Institute of Technology • Graduate Data Science • Fall 2024
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            controls: true,
+            progress: true,
+            center: true,
+            slideNumber: 'c/t',
+            showNotes: false,
+            autoPlayMedia: true,
+            preloadIframes: true,
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+    </script>
+</body>
+</html>

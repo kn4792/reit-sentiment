@@ -30,17 +30,37 @@ config/secret.json
 *.key
 .env
 
-# Data files (ignore everything in these but keep the folder)
-data/raw/*
-data/processed/*
-data/results/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/results/.gitkeep
+# Data files
+data/raw/*.csv
+data/processed/*.csv
+data/results/*.csv
+data/results/descriptive_stats/
 
-# Ignore all large/tabular data wherever they appear
-*.csv
-*.xlsx
+
+# Model files (CRITICAL - FinBERT is 440MB!)
+models/finbert/
+models/*.bin
+models/*.pt
+models/*.pth
 *.pkl
-*.parquet
+*.pickle
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Additional data formats
+data/raw/*.json
+data/raw/*.xlsx
+data/processed/*.json
+data/processed/*.xlsx
+
+# But allow documentation
+!data/**/README.md
+
 

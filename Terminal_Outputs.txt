@@ -1,0 +1,564 @@
+⚠️  Interrupted by user
+
+============================================================
+📊 SCRAPING SUMMARY
+============================================================
+✓ Total reviews scraped: 2,201
+✓ Companies successful: 5
+✗ Companies failed: 2
+
+✅ Successful companies:
+  • AHR: 7 reviews → data\raw\AHR_reviews.csv
+  • WELL: 123 reviews → data\raw\WELL_reviews.csv       
+  • WPC: 74 reviews → data\raw\WPC_reviews.csv
+  • VTR: 58 reviews → data\raw\VTR_reviews.csv
+  • OHI: 1,939 reviews → data\raw\OHI_reviews.csv       
+
+❌ Failed companies:
+  • AGNC: No reviews found
+  • CTRE: No reviews found
+
+💾 Combined file: data\raw\all_reit_reviews_20251120_170720.csv
+============================================================
+
+
+
+  Interrupted by user
+
+============================================================
+📊 SCRAPING SUMMARY
+============================================================
+✓ Total reviews scraped: 20,686
+✓ Companies successful: 43
+✗ Companies failed: 1
+
+✅ Successful companies:
+  • HR: 77 reviews → data\raw\HR_reviews.csv     
+  • SPG: 824 reviews → data\raw\SPG_reviews.csv  
+  • STAG: 21 reviews → data\raw\STAG_reviews.csv 
+  • FR: 31 reviews → data\raw\FR_reviews.csv     
+  • EGP: 8 reviews → data\raw\EGP_reviews.csv    
+  • STWD: 44 reviews → data\raw\STWD_reviews.csv 
+  • ADC: 9 reviews → data\raw\ADC_reviews.csv    
+  • O: 65 reviews → data\raw\O_reviews.csv       
+  • SUI: 375 reviews → data\raw\SUI_reviews.csv  
+  • VICI: 2 reviews → data\raw\VICI_reviews.csv  
+  • REG: 128 reviews → data\raw\REG_reviews.csv  
+  • NNN: 9 reviews → data\raw\NNN_reviews.csv    
+  • HST: 17 reviews → data\raw\HST_reviews.csv   
+  • BRX: 134 reviews → data\raw\BRX_reviews.csv  
+  • DLR: 50 reviews → data\raw\DLR_reviews.csv   
+  • LAMR: 508 reviews → data\raw\LAMR_reviews.csv
+  • AMH: 650 reviews → data\raw\AMH_reviews.csv  
+  • ESS: 837 reviews → data\raw\ESS_reviews.csv  
+  • EQIX: 2,110 reviews → data\raw\EQIX_reviews.csv
+  • INVH: 526 reviews → data\raw\INVH_reviews.csv
+  • BXP: 175 reviews → data\raw\BXP_reviews.csv  
+  • CPT: 934 reviews → data\raw\CPT_reviews.csv  
+  • ELS: 506 reviews → data\raw\ELS_reviews.csv  
+  • FRT: 68 reviews → data\raw\FRT_reviews.csv   
+  • SBAC: 529 reviews → data\raw\SBAC_reviews.csv
+  • CCI: 580 reviews → data\raw\CCI_reviews.csv  
+  • AMT: 777 reviews → data\raw\AMT_reviews.csv  
+  • KIM: 131 reviews → data\raw\KIM_reviews.csv  
+  • MAA: 745 reviews → data\raw\MAA_reviews.csv  
+  • EQR: 1,082 reviews → data\raw\EQR_reviews.csv
+  • PSA: 2,027 reviews → data\raw\PSA_reviews.csv
+  • VNO: 105 reviews → data\raw\VNO_reviews.csv  
+  • DOC: 43 reviews → data\raw\DOC_reviews.csv   
+  • UDR: 542 reviews → data\raw\UDR_reviews.csv  
+  • EXR: 3,156 reviews → data\raw\EXR_reviews.csv
+  • IRM: 270 reviews → data\raw\IRM_reviews.csv  
+  • CUBE: 718 reviews → data\raw\CUBE_reviews.csv
+  • WY: 731 reviews → data\raw\WY_reviews.csv    
+  • LINE: 838 reviews → data\raw\LINE_reviews.csv
+  • ARE: 60 reviews → data\raw\ARE_reviews.csv   
+  • AAT: 29 reviews → data\raw\AAT_reviews.csv   
+  • ABR: 184 reviews → data\raw\ABR_reviews.csv  
+  • AHH: 31 reviews → data\raw\AHH_reviews.csv   
+
+❌ Failed companies:
+  • AVB: Message: timeout: Timed out receiving message from
+
+💾 Combined file: data\raw\all_reit_reviews_20251121_010625.csv
+============================================================
+
+✅ Scraping complete!
+
+
+
+
+# Data files (ignore everything in these but keep the folder)
+data/raw/*
+data/processed/*
+data/results/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/results/.gitkeep
+
+
+# Ignore all large/tabular data wherever they appear
+*.csv
+*.xlsx
+*.pkl
+*.parquet
+
+
+
+
+S C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/diagnose_regression.py
+Loading data...
+
+Firm-year shape: (1144, 9)
+Word counts shape: (1144, 4603)
+
+Merged shape: (1144, 4610)
+
+======================================================================
+GenAI Intensity Distribution:
+======================================================================
+count    1144.000000
+mean        0.006104
+std         0.012334
+min         0.000000
+25%         0.000000
+50%         0.002696
+75%         0.007692
+max         0.178571
+Name: genai_intensity, dtype: float64
+
+Unique values: 540
+Zeros: 520 / 1144
+
+======================================================================
+Covariate Matrix:
+======================================================================
+Shape: (1144, 21)
+
+Column names: ['intercept', 'rating', 'log_reviews', 'genai_intensity', 'year_2009', 'year_2010', 'year_2011', 'year_2012', 'year_2013', 'year_2014']...
+
+Checking for NaNs in X:
+0
+
+Checking variance in key variables:
+  rating: mean=3.4479, std=0.8877, var=0.788008
+  log_reviews: mean=2.1995, std=1.3221, var=1.747902
+  genai_intensity: mean=0.0061, std=0.0123, var=0.000152
+
+======================================================================
+Testing Single Regression:
+======================================================================
+
+Test word: aka
+  Counts - mean: 0.0026, std: 0.0511, max: 1
+  Zero counts: 1141 / 1144
+
+Offset - mean: 4.2715, std: 1.6733
+
+Attempting Poisson regression...
+
+❌ Error: Pandas data cast to numpy dtype of object. Check input data with np.asarray(data).   
+Traceback (most recent call last):
+  File "C:\Users\konid\Documents\Capstone\reit-sentiment-analysis\scripts\diagnose_regression.py", line 76, in <module>
+    model = sm.GLM(y, X, family=Poisson(), offset=offset)
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\genmod\generalized_linear_model.py", line 325, in __init__
+    super(GLM, self).__init__(endog, exog, missing=missing,
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\model.py", line 270, in __init__
+    super().__init__(endog, exog, **kwargs)
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\model.py", line 95, in __init__
+    self.data = self._handle_data(endog, exog, missing, hasconst,
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\model.py", line 135, in _handle_data
+    data = handle_data(endog, exog, missing, hasconst, **kwargs)
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\data.py", line 675, in handle_data
+    return klass(endog, exog=exog, missing=missing, hasconst=hasconst,
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\data.py", line 84, in __init__
+    self.endog, self.exog = self._convert_endog_exog(endog, exog)
+  File "C:\Users\konid\anaconda3\lib\site-packages\statsmodels\base\data.py", line 509, in _convert_endog_exog
+    raise ValueError("Pandas data cast to numpy dtype of object. "
+ValueError: Pandas data cast to numpy dtype of object. Check input data with np.asarray(data). 
+
+======================================================================
+Checking for Multicollinearity:
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\konid\Documents\Capstone\reit-sentiment-analysis\scripts\diagnose_regression.py", line 96, in <module>
+    print(f"X rank: {matrix_rank(X.values)}")
+  File "<__array_function__ internals>", line 200, in matrix_rank
+  File "C:\Users\konid\anaconda3\lib\site-packages\numpy\linalg\linalg.py", line 1883, in matrix_rank
+    S = svd(A, compute_uv=False, hermitian=hermitian)
+  File "<__array_function__ internals>", line 200, in svd
+  File "C:\Users\konid\anaconda3\lib\site-packages\numpy\linalg\linalg.py", line 1654, in svd  
+    s = gufunc(a, signature=signature, extobj=extobj)
+numpy.core._exceptions.UFuncTypeError: Cannot cast ufunc 'svd_n' input from dtype('O') to dtype('float64') with casting rule 'same_kind'
+
+
+
+
+Pipeline with stricter AI Keywords:
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/mnir_preprocessing.py 
+======================================================================
+MNIR STAGE 1: TEXT PREPROCESSING (v3.0)
+======================================================================
+
+📄 Input: data\raw\all_reit_reviews_merged.csv
+📁 Output: data\processed\mnir
+⚙️  Min reviews: 5
+⚙️  Max percentage: 0.5
+
+======================================================================
+📂 LOADING DATA
+======================================================================
+✓ Loaded 28,252 reviews
+  Columns: title, rating, date, pros, cons, company, ticker, property_type, scrape_date, glassdoor_url
+
+======================================================================
+🧹 CLEANING TEXT
+======================================================================
+  Processing Pros...
+  Processing Cons...
+  ✓ Text cleaning complete
+
+======================================================================
+📚 BUILDING VOCABULARY
+======================================================================
+
+📚 Building vocabulary...
+  Filtering: 5 ≤ reviews ≤ 14126
+  Found 16,038 unique words before filtering
+  ✓ Vocabulary size: 4,601 words
+  ✓ Removed 11,436 too rare (< 5 reviews)
+  ✓ Removed 1 too common (> 50% of reviews)
+  💾 Saved → data\processed\mnir\vocabulary.json
+
+======================================================================
+📅 AGGREGATING TO FIRM-YEAR
+======================================================================
+
+📅 Aggregating to firm-year level...
+  ✓ Firm-years: 1,144
+  ✓ Unique firms: 115
+  ✓ Year range: 2008 - 2025
+
+======================================================================
+🔢 CREATING WORD COUNT MATRICES
+======================================================================
+    Creating count matrix for pros_mnir...
+      ✓ Matrix shape: (1144, 4603)
+    💾 Saved → data\processed\mnir\word_counts_pros.csv
+    Creating count matrix for cons_mnir...
+      ✓ Matrix shape: (1144, 4603)
+    💾 Saved → data\processed\mnir\word_counts_cons.csv
+
+======================================================================
+💾 SAVING FIRM-YEAR DATA
+======================================================================
+  ✓ Saved firm-year data → data\processed\mnir\firm_year_data.csv
+
+======================================================================
+📊 CALCULATING STATISTICS
+======================================================================
+  ✓ Saved statistics → data\processed\mnir\preprocessing_stats.json
+
+======================================================================
+✅ PREPROCESSING COMPLETE
+======================================================================
+
+📊 Summary Statistics:
+  • Reviews processed: 28,252
+  • Firm-years: 1,144
+  • Unique firms: 115
+  • Year range: 2008-2025
+  • Vocabulary size: 4,601 words
+
+🤖 GenAI Intensity Statistics:
+  • Mean intensity: 0.0047
+  • Std intensity: 0.0111
+  • Min intensity: 0.0000
+  • Max intensity: 0.1429
+  • % with GenAI mentions: 49.6%
+
+📁 Output Files:
+  • vocabulary.json
+  • word_counts_pros.csv
+  • word_counts_cons.csv
+  • firm_year_data.csv
+  • preprocessing_stats.json
+
+🚀 NEXT STEPS:
+  1. Review preprocessing_stats.json for data quality
+  2. Run MNIR Stage 2 regressions:
+     python scripts/mnir_regression_v3.py
+  3. Model: Poisson(word_count ~ genai_intensity + year_FE + controls)
+  4. Extract word weights (φ_j) from regressions
+  5. Create GenAI Productivity Index for each firm-year
+======================================================================
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/mnir_regression.py
+======================================================================
+MNIR STAGE 2: REGRESSION ANALYSIS (v3.0)
+======================================================================
+
+📂 Input:  data\processed\mnir
+📁 Output: data\results\mnir
+⚙️  Min |t-stat|: 1.96
+⚙️  Year fixed effects: Enabled
+
+======================================================================
+📂 LOADING DATA
+======================================================================
+  ✓ Loaded 1,144 firm-year observations
+  ✓ Loaded 4,601 vocabulary words
+  ✓ Loaded word count matrices
+
+======================================================================
+🔍 VALIDATING DATA ALIGNMENT
+======================================================================
+  PROS: 1144 rows × 4603 columns
+  ✓ pros: All 1,144 firm-years matched
+  ✓ pros: Found 4,601 word count columns
+  CONS: 1144 rows × 4603 columns
+  ✓ cons: All 1,144 firm-years matched
+  ✓ cons: Found 4,601 word count columns
+
+  GenAI Intensity Distribution:
+    Mean: 0.0047
+    Std:  0.0111
+    Min:  0.0000
+    Max:  0.1429
+
+======================================================================
+📊 RUNNING REGRESSIONS: PROS
+======================================================================
+    GenAI Intensity (scaled to %):
+      Mean: 0.4705%
+      Std:  1.1057%
+      Range: [0.0000%, 14.2857%]
+    Added 17 year fixed effects
+  Data shape: (1144, 4613)
+  Covariates: 21 variables
+  Words to process: 4,601
+  ✓ Using year fixed effects
+
+  Processing 4,601 words...
+  Regressing: 100%|████████████████████████████████████████████████████████████████| 4601/4601 [02:49<00:00, 27.22it/s] 
+
+  📊 Detailed Status Breakdown:
+    - success: 3,439 (74.7%)
+    - not_converged: 666 (14.5%)
+    - zero_variance: 496 (10.8%)
+
+  ✓ Regressions complete:
+    - Converged: 3,439 / 4,601 (74.7%)
+    - Significant (|t| > 1.96): 348 (7.6%)
+
+======================================================================
+📊 RUNNING REGRESSIONS: CONS
+======================================================================
+    GenAI Intensity (scaled to %):
+      Mean: 0.4705%
+      Std:  1.1057%
+      Range: [0.0000%, 14.2857%]
+    Added 17 year fixed effects
+  Data shape: (1144, 4613)
+  Covariates: 21 variables
+  Words to process: 4,601
+  ✓ Using year fixed effects
+
+  Processing 4,601 words...
+  Regressing: 100%|████████████████████████████████████████████████████████████████| 4601/4601 [02:36<00:00, 29.49it/s] 
+
+  📊 Detailed Status Breakdown:
+    - success: 4,201 (91.3%)
+    - not_converged: 362 (7.9%)
+    - zero_variance: 38 (0.8%)
+
+  ✓ Regressions complete:
+    - Converged: 4,201 / 4,601 (91.3%)
+    - Significant (|t| > 1.96): 443 (9.6%)
+
+💾 Saved word weights → data\results\mnir\word_weights.csv
+
+======================================================================
+🏗️  CONSTRUCTING INDEX: PROS
+======================================================================
+  Using 348 significant weights (|t| ≥ 1.96)
+  Mean |coefficient|: 0.8550
+  Matched 348 words between counts and weights
+  ✓ Index constructed
+    Mean: -0.046780
+    Std:  0.075817
+    Min:  -0.471667
+    Max:  0.310817
+
+======================================================================
+🏗️  CONSTRUCTING INDEX: CONS
+======================================================================
+  Using 443 significant weights (|t| ≥ 1.96)
+  Mean |coefficient|: 0.8808
+  Matched 443 words between counts and weights
+  ✓ Index constructed
+    Mean: -0.030845
+    Std:  0.073728
+    Min:  -0.759413
+    Max:  0.432420
+💾 Saved GenAI Productivity Index → data\results\mnir\genai_productivity_index.csv
+
+💾 Saved validation report → data\results\mnir\validation_report.txt
+
+======================================================================
+📈 INDEX STATISTICS
+======================================================================
+
+mnir_score_pros:
+  Mean:    -0.046780
+  Median:  -0.043407
+  Std:      0.075817
+  Min:     -0.471667
+  Max:      0.310817
+  Non-zero: 1,127 / 1,144 (98.5%)
+
+mnir_score_cons:
+  Mean:    -0.030845
+  Median:  -0.023222
+  Std:      0.073728
+  Min:     -0.759413
+  Max:      0.432420
+  Non-zero: 1,103 / 1,144 (96.4%)
+
+genai_productivity_index:
+  Mean:    -0.038813
+  Median:  -0.035631
+  Std:      0.063323
+  Min:     -0.389713
+  Max:      0.288045
+  Non-zero: 1,141 / 1,144 (99.7%)
+
+======================================================================
+🔝 TOP PREDICTIVE WORDS
+======================================================================
+
+PROS Section (Positive Association with GenAI):
+   1. bangalor             coef:   3.0272  t:    2.84  p: 0.0045
+   2. ambienc              coef:   2.6332  t:    3.09  p: 0.0020
+   3. audit                coef:   1.9591  t:    2.77  p: 0.0056
+   4. denial               coef:   1.8674  t:    2.79  p: 0.0053
+   5. bucket               coef:   1.8223  t:    1.98  p: 0.0473
+   6. lawyer               coef:   1.7424  t:    2.14  p: 0.0320
+   7. rcm                  coef:   1.5499  t:    3.77  p: 0.0002
+   8. digniti              coef:   1.5301  t:    2.12  p: 0.0338
+   9. carrer               coef:   1.2789  t:    3.51  p: 0.0004
+  10. coder                coef:   1.2750  t:    4.15  p: 0.0000
+  11. tl                   coef:   1.2161  t:    3.16  p: 0.0016
+  12. underground          coef:   1.1941  t:    2.46  p: 0.0141
+  13. tea                  coef:   1.1141  t:    2.04  p: 0.0410
+  14. wave                 coef:   1.1135  t:    1.98  p: 0.0483
+  15. trichi               coef:   1.0290  t:    3.17  p: 0.0015
+
+CONS Section (Positive Association with GenAI):
+   1. clever               coef:   2.1386  t:    2.28  p: 0.0227
+   2. princip              coef:   2.0955  t:    2.39  p: 0.0169
+   3. nicer                coef:   2.0518  t:    2.86  p: 0.0042
+   4. carrer               coef:   2.0267  t:    2.62  p: 0.0087
+   5. para                 coef:   1.9584  t:    2.78  p: 0.0054
+   6. adhoc                coef:   1.7469  t:    2.34  p: 0.0195
+   7. specifi              coef:   1.7255  t:    2.83  p: 0.0046
+   8. arena                coef:   1.7081  t:    2.25  p: 0.0247
+   9. que                  coef:   1.6707  t:    4.40  p: 0.0000
+  10. recreat              coef:   1.5467  t:    2.40  p: 0.0163
+  11. ijp                  coef:   1.2705  t:    3.70  p: 0.0002
+  12. desktop              coef:   1.2589  t:    2.84  p: 0.0045
+  13. fresher              coef:   1.2208  t:    9.63  p: 0.0000
+  14. introvert            coef:   1.1901  t:    2.52  p: 0.0116
+  15. gud                  coef:   1.1535  t:    2.44  p: 0.0145
+
+======================================================================
+🔻 BOTTOM WORDS
+======================================================================
+
+PROS Section (Negative Association with GenAI):
+   1. radio                coef:  -6.3431  t:   -7.86  p: 0.0000
+   2. hide                 coef:  -6.1206  t:   -8.28  p: 0.0000
+   3. deem                 coef:  -5.3865  t:   -2.46  p: 0.0139
+   4. inquir               coef:  -5.1246  t:   -5.86  p: 0.0000
+   5. instil               coef:  -5.1032  t:   -1.96  p: 0.0497
+   6. philadelphia         coef:  -4.8299  t:   -4.90  p: 0.0000
+   7. ess                  coef:  -4.3663  t:  -27.61  p: 0.0000
+   8. district             coef:  -4.2868  t:  -27.71  p: 0.0000
+   9. sunday               coef:  -3.1722  t:   -5.57  p: 0.0000
+  10. cubesmart            coef:  -3.0487  t:   -3.53  p: 0.0004
+  11. downtim              coef:  -3.0163  t:   -2.61  p: 0.0092
+  12. survey               coef:  -2.9481  t:   -2.45  p: 0.0144
+  13. self                 coef:  -2.8230  t:   -4.38  p: 0.0000
+  14. store                coef:  -2.6484  t:   -5.66  p: 0.0000
+  15. castl                coef:  -2.6215  t:   -2.63  p: 0.0086
+
+CONS Section (Negative Association with GenAI):
+   1. london               coef:  -5.8195  t:  -28.50  p: 0.0000
+   2. mice                 coef:  -5.4913  t:  -19.81  p: 0.0000
+   3. oppurtun             coef:  -5.4831  t:   -3.55  p: 0.0004
+   4. scatter              coef:  -5.1783  t:  -42.70  p: 0.0000
+   5. acumen               coef:  -4.8450  t:   -8.02  p: 0.0000
+   6. janitor              coef:  -4.3506  t:  -16.83  p: 0.0000
+   7. cook                 coef:  -4.2424  t:   -5.00  p: 0.0000
+   8. lineag               coef:  -4.1243  t:   -2.63  p: 0.0085
+   9. unheard              coef:  -4.0250  t:   -1.99  p: 0.0467
+  10. delinqu              coef:  -3.9779  t:   -5.56  p: 0.0000
+  11. hallway              coef:  -3.8569  t:   -2.20  p: 0.0275
+  12. district             coef:  -3.7719  t:   -9.47  p: 0.0000
+  13. dm                   coef:  -3.6996  t:   -4.66  p: 0.0000
+  14. rat                  coef:  -3.5874  t:   -2.52  p: 0.0118
+  15. in                   coef:  -3.4438  t:   -2.68  p: 0.0074
+
+======================================================================
+📊 REGRESSION SUMMARY
+======================================================================
+
+Total words processed: 9,202
+Converged: 7,640 (83.0%)
+Significant (|t| ≥ 1.96): 791 (8.6%)
+
+Significant coefficients:
+  Positive: 463 (58.5%)
+  Negative: 328 (41.5%)
+  Mean |coef|: 0.8695
+
+======================================================================
+✅ ANALYSIS COMPLETE
+======================================================================
+
+📁 Output files:
+  • word_weights.csv
+  • genai_productivity_index.csv
+  • validation_report.txt
+
+🚀 NEXT STEPS:
+  1. Review validation_report.txt for data quality
+  2. Examine word_weights.csv for top predictive words
+  3. Use genai_productivity_index.csv in your main analysis:
+     - Merge with REIT performance data
+     - Analyze relationship between GenAI productivity and firm outcomes
+     - Test hypothesis: Higher GenAI productivity → Better performance
+======================================================================
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/map_stems_to_words.py
+Loading raw reviews...
+Building stem-to-word mapping...
+Created mapping for 16,103 stems
+
+Loading word weights...
+
+✓ Saved readable weights to: data/results/mnir/word_weights_readable.csv
+✓ Saved top 50 readable words to: top_50_genai_words_readable.csv
+
+Sample mappings:
+Stem -> Original Word
+----------------------------------------
+shi             -> shy
+bia             -> bias
+princip         -> principals
+coloc           -> colocation
+cherri          -> cherry
+specifi         -> specify

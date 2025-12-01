@@ -1,0 +1,18 @@
+{
+  "n_reviews": 28486,
+  "n_with_sentiment": 28486,
+  "n_excluded": 0,
+  "sentiment_distribution": {
+    "neutral": 16193,
+    "negative": 10184,
+    "positive": 2109
+  },
+  "sentiment_score_stats": {
+    "mean": -0.22510804738383838,
+    "median": -0.12260403484106064,
+    "std": 0.46148710394949766,
+    "min": -0.9651190638542175,
+    "max": 0.9433000683784485
+  },
+  "timestamp": "2025-11-30T16:14:30.939412"
+}

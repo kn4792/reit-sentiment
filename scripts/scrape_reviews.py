@@ -215,7 +215,7 @@ def extract_review_data(review_element) -> Dict[str, str]:
     
     # Extract rating
     rating_selectors = [
-    '[data-test="review-rating-label"]',   # <-- add this line as FIRST selector!
+    '[data-test="review-rating-label"]',   
     'span[class*="RatingNumber"]',
     'div[class*="RatingNumber"]',
     '[data-test="rating"]'
