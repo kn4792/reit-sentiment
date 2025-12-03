@@ -27,9 +27,7 @@ print("="*70)
 print("CHATGPT LANGUAGE INDEX ANALYSIS")
 print("="*70)
 
-# ============================================================================
-# 1. LOAD DATA
-# ============================================================================
+#1. LOAD DATA
 print("\n" + "="*70)
 print("1. LOADING DATA")
 print("="*70)
@@ -38,19 +36,17 @@ index_df = pd.read_csv('data/results/mnir/chatgpt_language_index.csv')
 weights_df = pd.read_csv('data/results/mnir/word_weights_readable.csv')
 firm_year_df = pd.read_csv('data/processed/mnir/firm_year_data.csv')
 
-print(f"\n✓ ChatGPT Language Index: {len(index_df):,} firm-years")
-print(f"✓ Word Weights: {len(weights_df):,} words")
-print(f"✓ Firm-Year Data: {len(firm_year_df):,} observations")
+print(f"\nChatGPT Language Index: {len(index_df):,} firm-years")
+print(f"Word Weights: {len(weights_df):,} words")
+print(f"Firm-Year Data: {len(firm_year_df):,} observations")
 
 # Merge index with firm-year data for controls
 df = index_df.merge(firm_year_df, on=['ticker', 'year'], how='left')
 
-print(f"\n✓ Merged dataset: {len(df):,} firm-years")
-print(f"  Columns: {', '.join(df.columns)}")
+print(f"\nMerged dataset: {len(df):,} firm-years")
+print(f"Columns: {', '.join(df.columns)}")
 
-# ============================================================================
-# 2. DESCRIPTIVE STATISTICS
-# ============================================================================
+#2. DESCRIPTIVE STATISTICS
 print("\n" + "="*70)
 print("2. DESCRIPTIVE STATISTICS")
 print("="*70)
@@ -73,9 +69,7 @@ bottom_firms = df.groupby('ticker')['chatgpt_language_index'].mean().sort_values
 for i, (ticker, score) in enumerate(bottom_firms.items(), 1):
     print(f"  {i:2d}. {ticker}: {score:7.4f}")
 
-# ============================================================================
-# 3. TIME TRENDS
-# ============================================================================
+#3. TIME TRENDS
 print("\n" + "="*70)
 print("3. TIME TRENDS")
 print("="*70)
@@ -101,13 +95,11 @@ t_stat, p_val = stats.ttest_ind(post_data, pre_data)
 print(f"T-test: t={t_stat:.4f}, p={p_val:.4f}")
 
 if p_val < 0.05:
-    print("✓ Statistically significant difference!")
+    print("Statistically significant difference!")
 else:
-    print("⚠️  Not statistically significant at p<0.05")
+    print("Not statistically significant at p<0.05")
 
-# ============================================================================
-# 4. TOP PREDICTIVE WORDS
-# ============================================================================
+#4. TOP PREDICTIVE WORDS
 print("\n" + "="*70)
 print("4. TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)")
 print("="*70)
@@ -138,9 +130,7 @@ for section in ['pros', 'cons']:
     for i, row in enumerate(bottom_words.itertuples(), 1):
         print(f"  {i:2d}. {row.original_word:<20} (stem: {row.word:<15}) coef: {row.coef:7.4f}  t: {row.t_stat:7.2f}")
 
-# ============================================================================
-# 5. CORRELATIONS WITH REVIEW CHARACTERISTICS
-# ============================================================================
+#5. CORRELATIONS WITH REVIEW CHARACTERISTICS
 print("\n" + "="*70)
 print("5. CORRELATIONS WITH REVIEW CHARACTERISTICS")
 print("="*70)
@@ -151,9 +141,7 @@ correlations = df[['chatgpt_language_index', 'rating', 'review_count',
 print("\nCorrelations with ChatGPT Language Index:")
 print(correlations['chatgpt_language_index'].sort_values(ascending=False))
 
-# ============================================================================
-# 6. CREATING VISUALIZATIONS
-# ============================================================================
+#6. CREATING VISUALIZATIONS
 print("\n" + "="*70)
 print("6. CREATING VISUALIZATIONS")
 print("="*70)
@@ -175,7 +163,7 @@ ax.legend()
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(output_dir / 'index_distribution.png', dpi=300, bbox_inches='tight')
-print("  ✓ Saved: index_distribution.png")
+print("Saved: index_distribution.png")
 plt.close()
 
 # Plot 2: Time Trends
@@ -194,7 +182,7 @@ ax.legend(fontsize=10)
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(output_dir / 'index_time_trend.png', dpi=300, bbox_inches='tight')
-print("  ✓ Saved: index_time_trend.png")
+print("Saved: index_time_trend.png")
 plt.close()
 
 # Plot 3: Pre vs Post ChatGPT comparison
@@ -207,7 +195,7 @@ ax.set_title('Index Comparison: Pre vs Post ChatGPT Launch', fontsize=14, fontwe
 ax.grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
 plt.savefig(output_dir / 'pre_vs_post_chatgpt.png', dpi=300, bbox_inches='tight')
-print("  ✓ Saved: pre_vs_post_chatgpt.png")
+print("Saved: pre_vs_post_chatgpt.png")
 plt.close()
 
 # Plot 4: Index vs Rating by quartile
@@ -219,7 +207,7 @@ ax.set_title('Employee Ratings by ChatGPT Language Index Quartile', fontsize=14,
 plt.suptitle('')  # Remove automatic title
 plt.tight_layout()
 plt.savefig(output_dir / 'index_vs_rating.png', dpi=300, bbox_inches='tight')
-print("  ✓ Saved: index_vs_rating.png")
+print("Saved: index_vs_rating.png")
 plt.close()
 
 # Plot 5: Top 40 predictive words (combined)
@@ -239,12 +227,10 @@ ax.axvline(0, color='black', linewidth=1)
 ax.grid(True, alpha=0.3, axis='x')
 plt.tight_layout()
 plt.savefig(output_dir / 'top_predictive_words.png', dpi=300, bbox_inches='tight')
-print("  ✓ Saved: top_predictive_words.png")
+print("Saved: top_predictive_words.png")
 plt.close()
 
-# ============================================================================
-# 7. EXPORT FOR FURTHER ANALYSIS
-# ============================================================================
+#7. EXPORT FOR FURTHER ANALYSIS
 print("\n" + "="*70)
 print("7. EXPORTING DATA")
 print("="*70)
@@ -260,16 +246,16 @@ analysis_df = df[[
 
 output_file = 'data/results/mnir/chatgpt_index_analysis_ready.csv'
 analysis_df.to_csv(output_file, index=False)
-print(f"\n✓ Saved analysis-ready dataset: {output_file}")
-print(f"  Rows: {len(analysis_df):,}")
-print(f"  Columns: {len(analysis_df.columns)}")
+print(f"\nSaved analysis-ready dataset: {output_file}")
+print(f"Rows: {len(analysis_df):,}")
+print(f"Columns: {len(analysis_df.columns)}")
 
 # Export top words to CSV for thesis
 top_words_export = sig_weights.sort_values('coef', ascending=False)[
     ['original_word', 'word', 'section', 'coef', 't_stat', 'p_value']
 ].head(50)
 top_words_export.to_csv('data/results/mnir/top_50_chatgpt_words.csv', index=False)
-print(f"\n✓ Saved top 50 ChatGPT words: data/results/mnir/top_50_chatgpt_words.csv")
+print(f"\nSaved top 50 ChatGPT words: data/results/mnir/top_50_chatgpt_words.csv")
 
 # Summary statistics for thesis
 summary_stats = pd.DataFrame({
@@ -290,42 +276,40 @@ summary_stats = pd.DataFrame({
     ]
 })
 summary_stats.to_csv('data/results/mnir/index_summary_stats.csv', index=False)
-print(f"✓ Saved summary statistics: data/results/mnir/index_summary_stats.csv")
+print(f"\nSaved summary statistics: data/results/mnir/index_summary_stats.csv")
 
-# ============================================================================
-# 8. INTERPRETATION GUIDE
-# ============================================================================
+#8. INTERPRETATION GUIDE
 print("\n" + "="*70)
 print("✅ ANALYSIS COMPLETE")
 print("="*70)
 
-print("\n📊 Generated Files:")
+print("\nGenerated Files:")
 print("  1. chatgpt_index_analysis_ready.csv - Ready to merge with REIT performance data")
 print("  2. top_50_chatgpt_words.csv - Top words for thesis")
 print("  3. index_summary_stats.csv - Summary statistics table")
 print("  4. figures/ - 5 visualization files")
 
-print("\n📖 INTERPRETING THE INDEX:")
+print("\nINTERPRETING THE INDEX:")
 print("\n  The ChatGPT Language Index measures the extent to which firm-year")
 print("  reviews use language patterns that emerged AFTER ChatGPT's launch")
 print("  (November 30, 2022).")
-print("\n  • HIGH index = Reviews use more 'post-ChatGPT' language")
-print("  • LOW index = Reviews use more 'pre-ChatGPT' language")
+print("\n  - HIGH index = Reviews use more 'post-ChatGPT' language")
+print("  - LOW index = Reviews use more 'pre-ChatGPT' language")
 print("\n  Positive coefficients = Words that INCREASED post-ChatGPT")
 print("  Negative coefficients = Words that DECREASED post-ChatGPT")
 
-print("\n🔍 KEY FINDINGS TO EXAMINE:")
+print("\nKEY FINDINGS TO EXAMINE:")
 print("\n  1. Did language patterns actually change after ChatGPT?")
-print(f"     → {'YES' if p_val < 0.05 else 'NO'} (p={p_val:.4f})")
-print(f"     → {abs(diff/pre_mean)*100:.1f}% change in average index")
+print(f"     {'YES' if p_val < 0.05 else 'NO'} (p={p_val:.4f})")
+print(f"     {abs(diff/pre_mean)*100:.1f}% change in average index")
 
 print("\n  2. What words increased? (Check top_50_chatgpt_words.csv)")
-print("     → Look for: technology terms, AI words, productivity language")
+print("     Look for: technology terms, AI words, productivity language")
 
 print("\n  3. What words decreased?")
-print("     → Look for: traditional terms being replaced")
+print("     Look for: traditional terms being replaced")
 
-print("\n🚀 NEXT STEPS FOR YOUR THESIS:")
+print("\nNEXT STEPS FOR YOUR THESIS:")
 print("\n1. EXAMINE TOP WORDS:")
 print("   Review top_50_chatgpt_words.csv to understand what language changed")
 print("   Write about this in your 'Results' section")

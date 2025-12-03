@@ -135,6 +135,12 @@ mkdir -p data/raw data/processed data/results scripts
 # 2. Place your data
 cp all_reit_reviews_merged.csv data/raw/
 
+# 2.1 If you want to scrape the reviews:
+# for Window, go to command prompt and enter:
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\selenium\ChromeProfile"
+# Log in to Glassdoor, come back to the terminal and enter:
+python scripts/scrape_glassdoor_reviews.py
+
 # 3. Install dependencies
 pip install -r requirements.txt
 

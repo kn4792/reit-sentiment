@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
-MNIR Stage 1: Text Preprocessing for ChatGPT Impact Analysis
+MNIR Stage 1: Text Preprocessing for GenAI Productivity Measurement
 
 Prepares REIT Glassdoor review data for Multinomial Inverse Regression (MNIR)
 following Campbell & Shang (2021) "Tone at the Bottom" methodology.
 
-Key Differences from Campbell & Shang:
-- Treatment: POST_CHATGPT (binary) instead of future violations
-- Question: "What language patterns changed after ChatGPT launch?"
-- Period: Nov 30, 2022 as treatment date
+- Creates continuous GenAI Intensity measure (not binary treatment)
+- Measures GenAI-related language for each firm-year
+- No pre/post analysis - just intensity variation across firms and time
 
 This script:
 1. Cleans review text (remove punctuation, numbers, stop words, Porter stemming)
 2. Builds filtered vocabulary (words appearing in 5-50% of reviews)
-3. Creates binary POST_CHATGPT treatment variable
-4. Aggregates reviews to firm-year level
+3. Aggregates reviews to firm-year level
+4. Calculates GenAI Intensity (outcome variable for MNIR)
 5. Creates word count matrices for each review section (Pros, Cons)
 6. Saves all outputs for MNIR Stage 2 regression
 
@@ -22,16 +21,17 @@ Output Files:
 - vocabulary.json: Filtered word list
 - word_counts_pros.csv: Word counts from Pros section
 - word_counts_cons.csv: Word counts from Cons section
-- firm_year_data.csv: Aggregated data with POST_CHATGPT and controls
+- firm_year_data.csv: Aggregated data with GenAI intensity and controls
 - preprocessing_stats.json: Summary statistics
 
 Author: Konain Niaz (kn4792@rit.edu)
-Date: 2025-11-29
+Date: 2025-11-28
+
 
 Usage:
-    python scripts/mnir_preprocessing.py
-    python scripts/mnir_preprocessing.py --input data/raw/all_reit_reviews_merged.csv
-    python scripts/mnir_preprocessing.py --min-reviews 10 --max-pct 0.4
+    python scripts/mnir_preprocessing_keywords.py
+    python scripts/mnir_preprocessing_keywords.py --input data/raw/all_reit_reviews_merged.csv
+    python scripts/mnir_preprocessing_keywords.py --min-reviews 10 --max-pct 0.4
 """
 
 import sys
@@ -69,7 +69,7 @@ except LookupError:
 
 class MNIRPreprocessor:
     """
-    Preprocessor for MNIR text analysis with binary treatment.
+    Preprocessor for MNIR text analysis.
     
     Implements Campbell et al. (2021) text cleaning and vocabulary building.
     """
@@ -88,6 +88,19 @@ class MNIRPreprocessor:
         self.stop_words = set(stopwords.words('english'))
         self.vocabulary = []
         
+        # GenAI-related keywords for intensity calculation
+        # These are stemmed versions of GenAI-related terms
+        self.genai_keywords = {
+            'ai', 'artifici', 'intellig',
+            'chatgpt', 'gpt', 'openai',
+            'generativ', 'llm', 'languag', 'model',
+            'copilot', 'autom', 'automat',
+            'machin', 'learn', 'neural', 'deep',
+            'algorithm', 'predict', 'analyt',
+            'digit', 'digital', 'technolog', 'tech',
+            'platform', 'softwar', 'data', 'comput'
+        }
+    
     def clean_text(self, text: str) -> str:
         """
         Clean text following Campbell methodology.
@@ -133,7 +146,6 @@ class MNIRPreprocessor:
         Filtering rules (Campbell et al.):
         - Remove words appearing in < min_reviews reviews (too rare)
         - Remove words appearing in > max_pct of reviews (too common)
-        - Remove low-quality words (typos, informal)
         
         Args:
             df: DataFrame with cleaned text
@@ -143,7 +155,7 @@ class MNIRPreprocessor:
             Sorted list of vocabulary words
         """
         print(f"\nBuilding vocabulary...")
-        print(f"Filtering: {self.min_reviews} ≤ reviews ≤ {int(self.max_pct * len(df))}")
+        print(f"  Filtering: {self.min_reviews} ≤ reviews ≤ {int(self.max_pct * len(df))}")
         
         word_doc_count = Counter()
         total_reviews = len(df)
@@ -160,40 +172,17 @@ class MNIRPreprocessor:
         
         # Filter vocabulary
         vocabulary = []
-        filtered_counts = {'too_rare': 0, 'too_common': 0, 'quality': 0}
-
-        # Known informal/typo words to exclude
-        exclude_words = {
-            'gud', 'upto', 'oppurtun', 'collegu', 'trichi', 
-            'fresher', 'hike', 'ambienc', 'canteen', 'collegues',
-            'payscal', 'mangement', 'pathet'
-        }
+        filtered_counts = {'too_rare': 0, 'too_common': 0}
         
         for word, doc_count in word_doc_count.items():
-            # Filter: too rare
+            # Skip if too rare
             if doc_count < self.min_reviews:
                 filtered_counts['too_rare'] += 1
                 continue
             
-            # Filter: too common
+            # Skip if too common
             if doc_count / total_reviews > self.max_pct:
                 filtered_counts['too_common'] += 1
-                continue
-            
-            # Quality filters
-            # Skip if too short after stemming
-            if len(word) < 3:
-                filtered_counts['quality'] += 1
-                continue
-            
-            # Skip known informal/typo words
-            if word in exclude_words:
-                filtered_counts['quality'] += 1
-                continue
-            
-            # Skip if contains numbers
-            if any(char.isdigit() for char in word):
-                filtered_counts['quality'] += 1
                 continue
             
             vocabulary.append(word)
@@ -201,44 +190,35 @@ class MNIRPreprocessor:
         self.vocabulary = sorted(vocabulary)
         
         print(f"Vocabulary size: {len(self.vocabulary):,} words")
-        print(f"Removed {filtered_counts['too_rare']:,} too rare")
-        print(f"Removed {filtered_counts['too_common']:,} too common")
-        print(f"Removed {filtered_counts['quality']:,} low quality")
+        print(f"Removed {filtered_counts['too_rare']:,} too rare (< {self.min_reviews} reviews)")
+        print(f"Removed {filtered_counts['too_common']:,} too common (> {self.max_pct:.0%} of reviews)")
         
         return self.vocabulary
     
-    def create_treatment_variable(self, df: pd.DataFrame) -> pd.DataFrame:
+    def calculate_genai_intensity(self, text: str) -> float:
         """
-        Create binary POST_CHATGPT treatment variable.
+        Calculate GenAI intensity for a text.
         
-        ChatGPT was publicly released on November 30, 2022.
-        Treatment = 1 for reviews from December 2022 onwards.
+        GenAI Intensity = (# GenAI-related words) / (# total words)
+        
+        This becomes the response variable for MNIR.
         
         Args:
-            df: DataFrame with 'date' column
+            text: Cleaned, stemmed text
             
         Returns:
-            DataFrame with 'POST_CHATGPT' column added
+            GenAI intensity score (0.0 to 1.0)
         """
-        print(f"\nCreating POST_CHATGPT treatment variable...")
+        if not text or pd.isna(text):
+            return 0.0
         
-        # Parse dates
-        df['review_date'] = pd.to_datetime(df['date'], errors='coerce')
+        words = text.split()
+        if len(words) == 0:
+            return 0.0
         
-        # Define ChatGPT launch date
-        chatgpt_launch = pd.to_datetime('2022-11-30')
+        genai_word_count = sum(1 for w in words if w in self.genai_keywords)
         
-        # Create treatment: 1 if review is after ChatGPT launch
-        df['POST_CHATGPT'] = (df['review_date'] > chatgpt_launch).astype(int)
-        
-        # Summary statistics
-        n_pre = (df['POST_CHATGPT'] == 0).sum()
-        n_post = (df['POST_CHATGPT'] == 1).sum()
-        
-        print(f"Pre-ChatGPT (≤Nov 30, 2022): {n_pre:,} reviews ({n_pre/len(df)*100:.1f}%)")
-        print(f"Post-ChatGPT (>Nov 30, 2022): {n_post:,} reviews ({n_post/len(df)*100:.1f}%)")
-        
-        return df
+        return genai_word_count / len(words)
     
     def aggregate_to_firm_year(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -248,7 +228,7 @@ class MNIRPreprocessor:
         - Combine all review text (pros and cons separately)
         - Calculate average rating
         - Count number of reviews
-        - Determine POST_CHATGPT status (majority rule)
+        - Calculate GenAI intensity
         
         Args:
             df: Review-level DataFrame
@@ -256,34 +236,41 @@ class MNIRPreprocessor:
         Returns:
             Firm-year DataFrame
         """
-        print(f"\n📅 Aggregating to firm-year level...")
+        print(f"\nAggregating to firm-year level...")
         
         # Extract year from date
-        df['year'] = df['review_date'].dt.year
+        df['year'] = pd.to_datetime(df['date'], errors='coerce').dt.year
         
         # Drop rows with invalid dates
         n_invalid = df['year'].isna().sum()
         if n_invalid > 0:
             print(f"Dropping {n_invalid} reviews with invalid dates")
             df = df.dropna(subset=['year'])
-
-        # FILTER TO 2014-2025 ONLY
-        pre_2014_count = (df['year'] < 2014).sum()
-        df = df[df['year'] >= 2014].copy()
-        print(f"Filtered to 2014-2025 (dropped {pre_2014_count:,} pre-2014 reviews)")
         
         # Aggregation dictionary
         agg_dict = {
             'pros_mnir': lambda x: ' '.join(x.fillna('')),
             'cons_mnir': lambda x: ' '.join(x.fillna('')),
             'rating': 'mean',
-            'title': 'count',  # number of reviews
-            'POST_CHATGPT': lambda x: (x.mean() > 0.5).astype(int)  # majority rule
+            'title': 'count'  # number of reviews
         }
         
         # Group by ticker and year
         firm_year = df.groupby(['ticker', 'year']).agg(agg_dict).reset_index()
         firm_year.rename(columns={'title': 'review_count'}, inplace=True)
+        
+        # Calculate GenAI intensity for each section
+        firm_year['genai_intensity_pros'] = firm_year['pros_mnir'].apply(
+            self.calculate_genai_intensity
+        )
+        firm_year['genai_intensity_cons'] = firm_year['cons_mnir'].apply(
+            self.calculate_genai_intensity
+        )
+        
+        # Combined GenAI intensity (average of pros and cons)
+        firm_year['genai_intensity'] = (
+            firm_year['genai_intensity_pros'] + firm_year['genai_intensity_cons']
+        ) / 2
         
         # Calculate total word counts
         firm_year['word_count_pros'] = firm_year['pros_mnir'].apply(
@@ -296,12 +283,6 @@ class MNIRPreprocessor:
         print(f"Firm-years: {len(firm_year):,}")
         print(f"Unique firms: {firm_year['ticker'].nunique()}")
         print(f"Year range: {firm_year['year'].min():.0f} - {firm_year['year'].max():.0f}")
-        
-        # Treatment distribution
-        n_pre_fy = (firm_year['POST_CHATGPT'] == 0).sum()
-        n_post_fy = (firm_year['POST_CHATGPT'] == 1).sum()
-        print(f"Pre-ChatGPT firm-years: {n_pre_fy:,} ({n_pre_fy/len(firm_year)*100:.1f}%)")
-        print(f"Post-ChatGPT firm-years: {n_post_fy:,} ({n_post_fy/len(firm_year)*100:.1f}%)")
         
         return firm_year
     
@@ -371,17 +352,13 @@ def calculate_statistics(df: pd.DataFrame,
     """
     stats = {
         'preprocessing_date': datetime.now().isoformat(),
-        'methodology': 'MNIR with binary POST_CHATGPT treatment (Campbell & Shang 2021)',
-        'chatgpt_launch_date': '2022-11-30',
         'review_level': {
             'total_reviews': len(df),
             'unique_firms': int(df['ticker'].nunique()),
             'date_range': {
                 'min': str(df['date'].min()),
                 'max': str(df['date'].max())
-            },
-            'pre_chatgpt': int((df['POST_CHATGPT'] == 0).sum()),
-            'post_chatgpt': int((df['POST_CHATGPT'] == 1).sum())
+            }
         },
         'firm_year_level': {
             'total_observations': len(firm_year_df),
@@ -391,13 +368,22 @@ def calculate_statistics(df: pd.DataFrame,
                 'max': int(firm_year_df['year'].max())
             },
             'avg_reviews_per_firm_year': float(firm_year_df['review_count'].mean()),
-            'median_reviews_per_firm_year': float(firm_year_df['review_count'].median()),
-            'pre_chatgpt_firm_years': int((firm_year_df['POST_CHATGPT'] == 0).sum()),
-            'post_chatgpt_firm_years': int((firm_year_df['POST_CHATGPT'] == 1).sum())
+            'median_reviews_per_firm_year': float(firm_year_df['review_count'].median())
         },
         'vocabulary': {
             'size': len(vocabulary),
             'top_50_words': vocabulary[:50]
+        },
+        'genai_intensity': {
+            'mean_pros': float(firm_year_df['genai_intensity_pros'].mean()),
+            'mean_cons': float(firm_year_df['genai_intensity_cons'].mean()),
+            'mean_combined': float(firm_year_df['genai_intensity'].mean()),
+            'std_combined': float(firm_year_df['genai_intensity'].std()),
+            'min_combined': float(firm_year_df['genai_intensity'].min()),
+            'max_combined': float(firm_year_df['genai_intensity'].max()),
+            'pct_with_genai_mentions': float(
+                (firm_year_df['genai_intensity'] > 0).sum() / len(firm_year_df) * 100
+            )
         }
     }
     
@@ -407,21 +393,21 @@ def calculate_statistics(df: pd.DataFrame,
 def main():
     """Main execution function."""
     parser = argparse.ArgumentParser(
-        description='MNIR preprocessing for REIT reviews with binary ChatGPT treatment',
+        description='MNIR preprocessing for REIT reviews (v3.0 - continuous GenAI measure)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Basic usage (default settings)
-  python scripts/mnir_preprocessing.py
+  python scripts/mnir_preprocessing_v3.py
   
   # Custom input file
-  python scripts/mnir_preprocessing.py --input data/raw/my_reviews.csv
+  python scripts/mnir_preprocessing_v3.py --input data/raw/my_reviews.csv
   
   # Stricter vocabulary filtering
-  python scripts/mnir_preprocessing.py --min-reviews 10 --max-pct 0.4
+  python scripts/mnir_preprocessing_v3.py --min-reviews 10 --max-pct 0.4
   
   # Save to custom output directory
-  python scripts/mnir_preprocessing.py --output data/processed/mnir
+  python scripts/mnir_preprocessing_v3.py --output data/processed/mnir_v3
         """
     )
     
@@ -438,8 +424,8 @@ Examples:
     parser.add_argument(
         '--min-reviews',
         type=int,
-        default=10,
-        help='Minimum reviews a word must appear in (default: 10)'
+        default=5,
+        help='Minimum reviews a word must appear in (default: 5, following Campbell et al.)'
     )
     parser.add_argument(
         '--max-pct',
@@ -456,13 +442,12 @@ Examples:
     output_dir.mkdir(parents=True, exist_ok=True)
     
     print("="*70)
-    print("MNIR STAGE 1: TEXT PREPROCESSING (BINARY TREATMENT)")
+    print("MNIR STAGE 1: TEXT PREPROCESSING (v3.0)")
     print("="*70)
     print(f"Input: {input_path}")
     print(f"Output: {output_dir}")
     print(f"Min reviews: {args.min_reviews}")
     print(f"Max percentage: {args.max_pct}")
-    print(f"Treatment: POST_CHATGPT (>Nov 30, 2022)")
     
     # Load data
     print(f"\n{'='*70}")
@@ -475,10 +460,10 @@ Examples:
     
     try:
         df = pd.read_csv(input_path)
-        print(f"✓ Loaded {len(df):,} reviews")
-        print(f"  Columns: {', '.join(df.columns)}")
+        print(f"Loaded {len(df):,} reviews")
+        print(f"Columns: {', '.join(df.columns)}")
     except Exception as e:
-        print(f"✗ Error loading file: {e}")
+        print(f"Error loading file: {e}")
         return 1
     
     # Check required columns
@@ -515,9 +500,6 @@ Examples:
     
     print("Text cleaning complete")
     
-    # Create treatment variable
-    df = preprocessor.create_treatment_variable(df)
-    
     # Build vocabulary
     print(f"\n{'='*70}")
     print("BUILDING VOCABULARY")
@@ -529,7 +511,7 @@ Examples:
     vocab_file = output_dir / 'vocabulary.json'
     with open(vocab_file, 'w') as f:
         json.dump(vocabulary, f, indent=2)
-    print(f"Saved → {vocab_file}")
+    print(f"Saved: {vocab_file}")
     
     # Aggregate to firm-year
     print(f"\n{'='*70}")
@@ -548,14 +530,14 @@ Examples:
     )
     pros_file = output_dir / 'word_counts_pros.csv'
     pros_counts.to_csv(pros_file, index=False)
-    print(f"Saved → {pros_file}")
+    print(f"Saved: {pros_file}")
     
     cons_counts = preprocessor.create_word_count_matrix(
         firm_year_df, 'cons_mnir'
     )
     cons_file = output_dir / 'word_counts_cons.csv'
     cons_counts.to_csv(cons_file, index=False)
-    print(f"Saved → {cons_file}")
+    print(f"Saved: {cons_file}")
     
     # Save firm-year data with controls
     print(f"\n{'='*70}")
@@ -564,12 +546,13 @@ Examples:
     
     firm_year_output = firm_year_df[[
         'ticker', 'year', 'review_count', 'rating',
-        'POST_CHATGPT', 'word_count_pros', 'word_count_cons'
+        'genai_intensity', 'genai_intensity_pros', 'genai_intensity_cons',
+        'word_count_pros', 'word_count_cons'
     ]].copy()
     
     firm_year_file = output_dir / 'firm_year_data.csv'
     firm_year_output.to_csv(firm_year_file, index=False)
-    print(f"Saved → {firm_year_file}")
+    print(f"Saved: {firm_year_file}")
     
     # Calculate and save statistics
     print(f"\n{'='*70}")
@@ -581,22 +564,24 @@ Examples:
     stats_file = output_dir / 'preprocessing_stats.json'
     with open(stats_file, 'w') as f:
         json.dump(stats, f, indent=2)
-    print(f"Saved → {stats_file}")
+    print(f"Saved: {stats_file}")
     
     # Print summary
     print(f"\n{'='*70}")
     print("PREPROCESSING COMPLETE")
     print('='*70)
-    print(f"Summary Statistics:")
+    print(f"\nSummary Statistics:")
     print(f"Reviews processed: {len(df):,}")
     print(f"Firm-years: {len(firm_year_df):,}")
     print(f"Unique firms: {firm_year_df['ticker'].nunique()}")
     print(f"Year range: {firm_year_df['year'].min():.0f}-{firm_year_df['year'].max():.0f}")
     print(f"Vocabulary size: {len(vocabulary):,} words")
-    print(f"\nChatGPT Treatment Statistics:")
-    print(f"Pre-ChatGPT firm-years: {stats['firm_year_level']['pre_chatgpt_firm_years']:,}")
-    print(f"Post-ChatGPT firm-years: {stats['firm_year_level']['post_chatgpt_firm_years']:,}")
-    print(f"Treatment rate: {stats['firm_year_level']['post_chatgpt_firm_years']/len(firm_year_df)*100:.1f}%")
+    print(f"\nGenAI Intensity Statistics:")
+    print(f"Mean intensity: {stats['genai_intensity']['mean_combined']:.4f}")
+    print(f"Std intensity: {stats['genai_intensity']['std_combined']:.4f}")
+    print(f"Min intensity: {stats['genai_intensity']['min_combined']:.4f}")
+    print(f"Max intensity: {stats['genai_intensity']['max_combined']:.4f}")
+    print(f"% with GenAI mentions: {stats['genai_intensity']['pct_with_genai_mentions']:.1f}%")
     print(f"\nOutput Files:")
     print(f"{vocab_file.name}")
     print(f"{pros_file.name}")
@@ -606,10 +591,10 @@ Examples:
     print(f"\nNEXT STEPS:")
     print(f"  1. Review preprocessing_stats.json for data quality")
     print(f"  2. Run MNIR Stage 2 regressions:")
-    print(f"     python scripts/mnir_regression.py")
-    print(f"  3. Model: Poisson(word_count ~ POST_CHATGPT + year_FE + controls)")
+    print(f"     python scripts/mnir_regression_keywords.py")
+    print(f"  3. Model: Poisson(word_count ~ genai_intensity + year_FE + controls)")
     print(f"  4. Extract word weights (φ_j) from regressions")
-    print(f"  5. Create ChatGPT Language Index for each firm-year")
+    print(f"  5. Create GenAI Productivity Index for each firm-year")
     print('='*70)
     
     return 0

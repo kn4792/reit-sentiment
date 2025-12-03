@@ -33,19 +33,19 @@ print("="*70)
 stemmer = PorterStemmer()
 
 # Load raw reviews to build mapping
-print("\n📂 Loading raw reviews...")
+print("\nLoading raw reviews...")
 input_file = Path('data/raw/all_reit_reviews_merged.csv')
 
 if not input_file.exists():
-    print(f"❌ Error: {input_file} not found")
+    print(f"Error: {input_file} not found")
     print("   Make sure you're running from the project root directory")
     exit(1)
 
 df = pd.read_csv(input_file)
-print(f"✓ Loaded {len(df):,} reviews")
+print(f"Loaded {len(df):,} reviews")
 
 # Build stem -> original word mapping
-print("\n🔍 Building stem-to-word mapping...")
+print("\nBuilding stem-to-word mapping...")
 stem_to_words = defaultdict(Counter)
 
 for col in ['pros', 'cons']:
@@ -65,28 +65,28 @@ for col in ['pros', 'cons']:
             stem_to_words[stem][word] += 1
 
 # Create mapping (stem -> most common original word)
-print("\n✅ Creating stem -> word mapping...")
+print("\nCreating stem -> word mapping...")
 stem_mapping = {}
 for stem, word_counts in stem_to_words.items():
     most_common_word = word_counts.most_common(1)[0][0]
     stem_mapping[stem] = most_common_word
 
-print(f"✓ Created mapping for {len(stem_mapping):,} stems")
+print(f"Created mapping for {len(stem_mapping):,} stems")
 
 # Load word weights
-print("\n📊 Loading word weights...")
+print("\nLoading word weights...")
 weights_file = Path('data/results/mnir/word_weights.csv')
 
 if not weights_file.exists():
-    print(f"❌ Error: {weights_file} not found")
+    print(f"Error: {weights_file} not found")
     print("   Run mnir_regression.py first to generate word weights")
     exit(1)
 
 weights = pd.read_csv(weights_file)
-print(f"✓ Loaded {len(weights):,} word weights")
+print(f"Loaded {len(weights):,} word weights")
 
 # Add original word column
-print("\n🔄 Mapping stems to original words...")
+print("\nMapping stems to original words...")
 weights['original_word'] = weights['word'].map(stem_mapping)
 
 # Fill any missing mappings with the stem itself
@@ -99,10 +99,10 @@ weights = weights[['original_word', 'word', 'section', 'coef', 't_stat', 'p_valu
 # Save updated weights
 output_file = Path('data/results/mnir/word_weights_readable.csv')
 weights.to_csv(output_file, index=False)
-print(f"\n✓ Saved readable weights to: {output_file}")
+print(f"Saved readable weights to: {output_file}")
 
 # Create top 50 with readable words
-print("\n📋 Creating top 50 words file...")
+print("\nCreating top 50 words file...")
 top_50 = weights[
     (weights['converged'] == True) & 
     (weights['t_stat'].abs() >= 1.96)
@@ -112,11 +112,11 @@ top_50_file = Path('data/results/mnir/top_50_chatgpt_words_readable.csv')
 top_50[['original_word', 'word', 'section', 'coef', 't_stat', 'p_value']].to_csv(
     top_50_file, index=False
 )
-print(f"✓ Saved top 50 readable words to: {top_50_file}")
+print(f"Saved top 50 readable words to: {top_50_file}")
 
 # Print sample mappings
 print("\n" + "="*70)
-print("📝 SAMPLE MAPPINGS")
+print("SAMPLE MAPPINGS")
 print("="*70)
 print("\nStem               -> Original Word")
 print("-" * 50)
@@ -134,7 +134,7 @@ for stem in example_stems[:10]:
 
 # Show top weighted words with both forms
 print("\n" + "="*70)
-print("🔝 TOP 10 POST-CHATGPT WORDS (with original forms)")
+print("TOP 10 POST-CHATGPT WORDS (with original forms)")
 print("="*70)
 
 top_10 = weights[
@@ -152,11 +152,11 @@ else:
     print("No significant words with positive coefficients found")
 
 print("\n" + "="*70)
-print("✅ MAPPING COMPLETE")
+print("MAPPING COMPLETE")
 print("="*70)
-print("\n📁 Output files:")
-print(f"  • {output_file.name}")
-print(f"  • {top_50_file.name}")
-print("\n🚀 Next step:")
+print("\nOutput files:")
+print(f"  {output_file.name}")
+print(f"  {top_50_file.name}")
+print("\nNext step:")
 print("  Run: python scripts/analysis.py")
 print("="*70)

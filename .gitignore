@@ -31,7 +31,9 @@ config/secret.json
 .env
 
 # Data files
+# Data files
 data/raw/*.csv
+!data/raw/all_reit_reviews_merged.csv  # Exception: include merged reviews
 data/processed/*.csv
 data/results/*.csv
 data/results/descriptive_stats/

@@ -7,7 +7,7 @@ URL tracking, automatic reviews tab clicking, and flexible configuration.
 
 Author: Konain Niaz (kn4792@rit.edu)
 Date: 2025-01-18
-Version: 2.1 (Production)
+
 
 Usage:
     # Start Chrome in debug mode first:
@@ -50,7 +50,7 @@ def init_browser(debug_port: int = 9222) -> webdriver.Chrome:
     Raises:
         Exception if connection fails
     """
-    print(f"🔧 Connecting to Chrome on port {debug_port}...")
+    print(f"Connecting to Chrome on port {debug_port}...")
     
     chrome_options = Options()
     chrome_options.add_experimental_option(
@@ -79,9 +79,9 @@ def manual_login_wait(driver: webdriver.Chrome):
         driver: WebDriver instance
     """
     print("\n" + "="*60)
-    print("⏸️  MANUAL LOGIN REQUIRED")
+    print("MANUAL LOGIN REQUIRED")
     print("="*60)
-    print("\n📋 Instructions:")
+    print("\nInstructions:")
     print("1. A Chrome window should now be open")
     print("2. Login to Glassdoor in that window")
     print("3. Once logged in, return here and press ENTER")
@@ -91,8 +91,8 @@ def manual_login_wait(driver: webdriver.Chrome):
     driver.get('https://www.glassdoor.com')
     time.sleep(2)
     
-    input("\n⏸️  Press ENTER after logging in to Glassdoor... ")
-    print("\n✓ Starting scraper...")
+    input("\nPress ENTER after logging in to Glassdoor... ")
+    print("\nStarting scraper...")
 
 
 def wait_for_reviews_to_load(driver: webdriver.Chrome, timeout: int = 10) -> bool:
@@ -109,7 +109,7 @@ def wait_for_reviews_to_load(driver: webdriver.Chrome, timeout: int = 10) -> boo
     Returns:
         True if reviews loaded, False otherwise
     """
-    print("    ⏳ Waiting for reviews to load...")
+    print("Waiting for reviews to load...")
     
     # Scroll to trigger lazy loading
     for i in range(3):
@@ -128,10 +128,10 @@ def wait_for_reviews_to_load(driver: webdriver.Chrome, timeout: int = 10) -> boo
                 (By.CSS_SELECTOR, 'ol.ReviewsList_reviewsList__Qfw6M')
             )
         )
-        print("    ✓ Reviews loaded")
+        print("Reviews loaded")
         return True
     except TimeoutException:
-        print("    ⚠️ Timeout waiting for reviews")
+        print("Timeout waiting for reviews")
         return False
 
 
@@ -154,7 +154,7 @@ def find_review_elements(driver: webdriver.Chrome) -> List:
         li_elements = reviews_list.find_elements(By.TAG_NAME, 'li')
         
         if li_elements:
-            print(f"    ✓ Found {len(li_elements)} review elements")
+            print(f"Found {len(li_elements)} review elements")
             return li_elements
     except NoSuchElementException:
         pass
@@ -166,12 +166,12 @@ def find_review_elements(driver: webdriver.Chrome) -> List:
             'ol.ReviewsList_reviewsList__Qfw6M > li'
         )
         if li_elements:
-            print(f"    ✓ Found {len(li_elements)} reviews (fallback)")
+            print(f"Found {len(li_elements)} reviews (fallback)")
             return li_elements
     except Exception:
         pass
     
-    print("    ✗ No review elements found")
+    print("No review elements found")
     return []
 
 
@@ -322,7 +322,7 @@ def try_next_page(driver: webdriver.Chrome) -> bool:
     Returns:
         True if navigation successful, False if on last page
     """
-    print("    🔄 Attempting pagination...")
+    print("Attempting pagination...")
     
     try:
         # Find pagination container
@@ -345,15 +345,15 @@ def try_next_page(driver: webdriver.Chrome) -> bool:
         time.sleep(1)
         next_btn.click()
         
-        print("    ✓ Navigated to next page")
+        print("Navigated to next page")
         time.sleep(4)  # Wait for new reviews to load
         return True
         
     except NoSuchElementException:
-        print("    ✗ Next button not found (last page)")
+        print("Next button not found (last page)")
         return False
     except Exception as e:
-        print(f"    ⚠️ Pagination error: {e}")
+        print(f"Pagination error: {e}")
         return False
 
 
@@ -380,7 +380,7 @@ def scrape_company(
     Returns:
         DataFrame with scraped reviews
     """
-    print(f"\n📄 Navigating to: {company_url}")
+    print(f"Navigating to: {company_url}")
     driver.get(company_url)
     time.sleep(4)
     
@@ -391,12 +391,12 @@ def scrape_company(
     last_url = None  # Track URL changes for debugging
     
     while len(reviews_data) < max_reviews and consecutive_failures < max_failures:
-        print(f"\n  📄 Page {page_num}...")
+        print(f"\nPage {page_num}...")
         
         # Check if URL changed (indicates successful pagination)
         current_url = driver.current_url
         if last_url and current_url == last_url:
-            print(f"    ⚠️ URL hasn't changed (still: {current_url})")
+            print(f"URL hasn't changed (still: {current_url})")
         last_url = current_url
         
         # Wait for reviews to load
@@ -405,7 +405,7 @@ def scrape_company(
             
             # DEFENSIVE: Try clicking reviews tab on first failure
             if consecutive_failures == 1:
-                print("    🔍 DEBUG: Checking why reviews aren't loading...")
+                print("DEBUG: Checking why reviews aren't loading...")
                 
                 # Try clicking reviews tab
                 try:
@@ -414,7 +414,7 @@ def scrape_company(
                         '[data-test="ei-nav-reviews-link"]'
                     )
                     if reviews_tab and reviews_tab[0].get_attribute('data-ui-selected') != 'true':
-                        print("    Clicking reviews tab...")
+                        print("Clicking reviews tab...")
                         reviews_tab[0].click()
                         time.sleep(3)
                         
@@ -433,9 +433,9 @@ def scrape_company(
                     )
                     if count_elements:
                         review_count = count_elements[0].text
-                        print(f"    Review count shown: {review_count}")
+                        print(f"Review count shown: {review_count}")
                         if review_count in ['--', '0']:
-                            print("    ⚠️ Company has no reviews!")
+                            print("Company has no reviews!")
                             return pd.DataFrame(reviews_data)
                 except Exception:
                     pass
@@ -506,16 +506,16 @@ def scrape_company(
                 # Silently skip problematic reviews
                 continue
         
-        print(f"    ✓ Extracted {new_reviews} new reviews (total: {len(reviews_data)})")
+        print(f"Extracted {new_reviews} new reviews (total: {len(reviews_data)})")
         
         # Try next page if not at limit
         if len(reviews_data) < max_reviews:
             if not try_next_page(driver):
-                print("    ✓ No more pages available")
+                print("No more pages available")
                 break
             page_num += 1
         else:
-            print(f"\n  ✓ Reached max_reviews limit ({max_reviews})")
+            print(f"Reached max_reviews limit ({max_reviews})")
             break
     
     return pd.DataFrame(reviews_data)
@@ -537,7 +537,7 @@ def load_companies(config_path: str = None, csv_path: str = None) -> List[Dict]:
     companies = []
     
     if csv_path:
-        print(f"📂 Loading companies from CSV: {csv_path}")
+        print(f"Loading companies from CSV: {csv_path}")
         df = pd.read_csv(csv_path)
         
         for _, row in df.iterrows():
@@ -549,13 +549,13 @@ def load_companies(config_path: str = None, csv_path: str = None) -> List[Dict]:
                     'property_type': row.get('property_type', '')
                 })
     else:
-        print(f"📂 Loading companies from JSON: {config_path}")
+        print(f"Loading companies from JSON: {config_path}")
         with open(config_path, 'r') as f:
             config = json.load(f)
         
         companies = [c for c in config['companies'] if c.get('glassdoor_url')]
     
-    print(f"✓ Loaded {len(companies)} companies with Glassdoor URLs")
+    print(f"Loaded {len(companies)} companies with Glassdoor URLs")
     return companies
 
 
@@ -661,15 +661,15 @@ PRODUCTION FEATURES:
     if args.company:
         companies = [c for c in companies if c['ticker'] == args.company.upper()]
         if not companies:
-            print(f"✗ Company {args.company} not found")
+            print(f"Company {args.company} not found")
             return
     elif args.test:
         companies = companies[:1]
     elif args.start_from > 0:
-        print(f"\n⏭️  Resuming from company #{args.start_from}")
+        print(f"Resuming from company #{args.start_from}")
         companies = companies[args.start_from:]
     
-    print(f"\n📊 Will scrape {len(companies)} companies")
+    print(f"Will scrape {len(companies)} companies")
     print("="*60)
     
     # Initialize browser
@@ -723,7 +723,7 @@ PRODUCTION FEATURES:
                 # Save individual file
                 output_file = output_path / f"{company['ticker']}_reviews.csv"
                 df.to_csv(output_file, index=False)
-                print(f"  ✓ Saved {len(df)} reviews → {output_file}")
+                print(f"Saved {len(df)} reviews → {output_file}")
                 
                 all_reviews.append(df)
                 successful.append((company['ticker'], len(df), output_file))
@@ -732,10 +732,10 @@ PRODUCTION FEATURES:
                 time.sleep(2)
                 
             except KeyboardInterrupt:
-                print("\n\n⚠️  Interrupted by user")
+                print("\n\nInterrupted by user")
                 break
             except Exception as e:
-                print(f"  ✗ Error: {e}")
+                print(f"Error: {e}")
                 failed.append((company['ticker'], str(e)[:50]))
                 continue
         
@@ -747,31 +747,31 @@ PRODUCTION FEATURES:
             combined.to_csv(combined_file, index=False)
             
             # Print summary
-            print(f"\n{'='*60}")
-            print("📊 SCRAPING SUMMARY")
+            print(f"{'='*60}")
+            print("SCRAPING SUMMARY")
             print('='*60)
-            print(f"✓ Total reviews scraped: {len(combined):,}")
-            print(f"✓ Companies successful: {len(successful)}")
-            print(f"✗ Companies failed: {len(failed)}")
+            print(f"Total reviews scraped: {len(combined):,}")
+            print(f"Companies successful: {len(successful)}")
+            print(f"Companies failed: {len(failed)}")
             
             if successful:
-                print(f"\n✅ Successful companies:")
+                print(f"\nSuccessful companies:")
                 for ticker, count, filepath in successful:
-                    print(f"  • {ticker}: {count:,} reviews → {filepath}")
+                    print(f"  {ticker}: {count:,} reviews → {filepath}")
             
             if failed:
-                print(f"\n❌ Failed companies:")
+                print(f"\nFailed companies:")
                 for ticker, reason in failed:
-                    print(f"  • {ticker}: {reason}")
+                    print(f"  {ticker}: {reason}")
             
-            print(f"\n💾 Combined file: {combined_file}")
+            print(f"\nCombined file: {combined_file}")
             print('='*60)
         else:
-            print("\n✗ No reviews scraped from any company")
+            print("\nNo reviews scraped from any company")
     
     finally:
         driver.quit()
-        print("\n✅ Scraping complete!")
+        print("\nScraping complete!")
 
 
 if __name__ == '__main__':

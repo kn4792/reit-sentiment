@@ -1,34 +1,37 @@
 #!/usr/bin/env python3
 """
-MNIR Stage 2: Regression and Index Construction (Binary Treatment)
+MNIR Stage 2: Regression and Index Construction
 
-Performs Multinomial Inverse Regression (MNIR) following Campbell & Shang (2021)
-with binary POST_CHATGPT treatment:
-
+Performs the core Multinomial Inverse Regression (MNIR) analysis:
 1. Runs Poisson regression for EACH word in the vocabulary:
-   Word_Count_j ~ POST_CHATGPT + Year_FE + Controls
-2. Extracts the coefficient (φ_j) for POST_CHATGPT for each word
+   Word_Count_j ~ GenAI_Intensity + Year_FE + Controls
+2. Extracts the coefficient (φ_j) for GenAI_Intensity for each word.
 3. Filters coefficients by statistical significance (|t| > 1.96)
-4. Constructs the "ChatGPT Language Index" for each firm-year by weighting
-   word frequencies by their learned coefficients
+4. Constructs the "GenAI Productivity Index" for each firm-year by weighting
+   word frequencies by their learned coefficients.
 
-The index measures: "To what extent do firm-year reviews use language patterns
-that emerged after ChatGPT's launch?"
+SIMPLIFIED VERSION (v3.0):
+- Uses continuous GenAI_Intensity instead of binary treatment
+- Measures GenAI-related language productivity
+- Includes year fixed effects for time trends
+- Filters by statistical significance
+- Fixed index construction (normalize before dot product)
+
+Methodology based on Campbell, Shang (2021) "Tone at the Bottom".
 
 Output Files:
 - word_weights.csv: Learned coefficients (φ) and t-statistics for each word
-- chatgpt_language_index.csv: Final firm-year measure
+- genai_productivity_index.csv: Final firm-year measure of GenAI productivity
 - regression_stats.json: Summary of model performance
 - validation_report.txt: Data alignment and quality checks
 
 Author: Konain Niaz (kn4792@rit.edu)
-Date: 2025-11-29
-
+Date: 2025-11-28
 
 Usage:
-    python scripts/mnir_regression.py
-    python scripts/mnir_regression.py --min-t-stat 1.96
-    python scripts/mnir_regression.py --no-fixed-effects  # for debugging
+    python scripts/mnir_regression_keywords.py
+    python scripts/mnir_regression_keywords.py --min-t-stat 1.96
+    python scripts/mnir_regression_keywords.py --no-fixed-effects  # for debugging
 """
 
 import sys
@@ -55,7 +58,7 @@ def run_single_regression(args: Tuple) -> Dict:
     """
     Run Poisson regression for a single word.
     
-    Model: E[Word_Count] = exp(α + β*Controls + δ*Year_FE + φ*POST_CHATGPT + log(Total_Words))
+    Model: E[Word_Count] = exp(α + β*Controls + δ*Year_FE + φ*GenAI_Intensity + log(Total_Words))
     
     Args:
         args: Tuple containing (word, counts, covariates, offset)
@@ -83,8 +86,8 @@ def run_single_regression(args: Tuple) -> Dict:
         model = sm.GLM(y, X, family=Poisson(), offset=offset)
         result = model.fit(maxiter=100, disp=False)
         
-        # Extract results for POST_CHATGPT (our variable of interest)
-        if 'POST_CHATGPT' not in result.params.index:
+        # Extract results for genai_intensity (our variable of interest)
+        if 'genai_intensity' not in result.params.index:
             return {
                 'word': word,
                 'coef': 0.0,
@@ -93,12 +96,12 @@ def run_single_regression(args: Tuple) -> Dict:
                 'converged': False,
                 'mean_count': float(np.mean(y)),
                 'std_count': float(np.std(y)),
-                'status': 'missing_POST_CHATGPT'
+                'status': 'missing_genai_intensity'
             }
         
-        coef = result.params['POST_CHATGPT']
-        t_stat = result.tvalues['POST_CHATGPT']
-        p_val = result.pvalues['POST_CHATGPT']
+        coef = result.params['genai_intensity']
+        t_stat = result.tvalues['genai_intensity']
+        p_val = result.pvalues['genai_intensity']
         converged = result.converged
         
         return {
@@ -127,7 +130,7 @@ def run_single_regression(args: Tuple) -> Dict:
 
 class MNIRRegression:
     """
-    Manages MNIR regression and index construction with binary treatment.
+    Manages MNIR regression and index construction.
     """
     
     def __init__(self, input_dir: Path, output_dir: Path, use_fixed_effects: bool = True):
@@ -151,7 +154,7 @@ class MNIRRegression:
     def load_data(self):
         """Load preprocessed data with validation."""
         print(f"\n{'='*70}")
-        print("📂 LOADING DATA")
+        print("LOADING DATA")
         print('='*70)
         
         # Load firm-year data (controls + outcome)
@@ -160,10 +163,10 @@ class MNIRRegression:
             raise FileNotFoundError(f"Missing: {firm_year_file}")
         
         self.firm_year_df = pd.read_csv(firm_year_file)
-        self.log_validation(f"✓ Loaded {len(self.firm_year_df):,} firm-year observations")
+        self.log_validation(f"Loaded {len(self.firm_year_df):,} firm-year observations")
         
         # Validate required columns
-        required_cols = ['ticker', 'year', 'POST_CHATGPT', 'rating', 'review_count',
+        required_cols = ['ticker', 'year', 'genai_intensity', 'rating', 'review_count',
                         'word_count_pros', 'word_count_cons']
         missing = [c for c in required_cols if c not in self.firm_year_df.columns]
         if missing:
@@ -176,7 +179,7 @@ class MNIRRegression:
         
         with open(vocab_file, 'r') as f:
             self.vocabulary = json.load(f)
-        self.log_validation(f"✓ Loaded {len(self.vocabulary):,} vocabulary words")
+        self.log_validation(f"Loaded {len(self.vocabulary):,} vocabulary words")
         
         # Load word counts
         pros_file = self.input_dir / 'word_counts_pros.csv'
@@ -189,7 +192,7 @@ class MNIRRegression:
         
         self.word_counts['pros'] = pd.read_csv(pros_file)
         self.word_counts['cons'] = pd.read_csv(cons_file)
-        self.log_validation(f"✓ Loaded word count matrices")
+        self.log_validation(f"Loaded word count matrices")
         
         # Validate data alignment
         self.validate_data_alignment()
@@ -197,7 +200,7 @@ class MNIRRegression:
     def validate_data_alignment(self):
         """Ensure firm_year_data aligns with word count matrices."""
         print(f"\n{'='*70}")
-        print("🔍 VALIDATING DATA ALIGNMENT")
+        print("VALIDATING DATA ALIGNMENT")
         print('='*70)
         
         for section in ['pros', 'cons']:
@@ -219,24 +222,25 @@ class MNIRRegression:
             
             if n_matched != len(self.firm_year_df):
                 self.log_validation(
-                    f"⚠️  WARNING: {section} has {n_left_only} unmatched firm-years in firm_year_data"
+                    f"WARNING: {section} has {n_left_only} unmatched firm-years in firm_year_data"
                 )
             else:
-                self.log_validation(f"✓ {section}: All {n_matched:,} firm-years matched")
+                self.log_validation(f"{section}: All {n_matched:,} firm-years matched")
             
             # Check for word columns with 'wc_' prefix
             word_cols = [c for c in counts.columns if c.startswith('wc_')]
-            self.log_validation(f"✓ {section}: Found {len(word_cols):,} word count columns")
+            self.log_validation(f"{section}: Found {len(word_cols):,} word count columns")
             
             # Verify no missing values in critical columns
             if counts[['ticker', 'year']].isna().any().any():
-                self.log_validation(f"⚠️  WARNING: {section} has missing ticker/year values")
+                self.log_validation(f"WARNING: {section} has missing ticker/year values")
         
-        # Validate POST_CHATGPT distribution
-        print(f"\n  POST_CHATGPT Distribution:")
-        print(f"    Pre (0): {(self.firm_year_df['POST_CHATGPT'] == 0).sum():,}")
-        print(f"    Post (1): {(self.firm_year_df['POST_CHATGPT'] == 1).sum():,}")
-        print(f"    Treatment rate: {self.firm_year_df['POST_CHATGPT'].mean()*100:.1f}%")
+        # Validate GenAI intensity distribution
+        print(f"\nGenAI Intensity Distribution:")
+        print(f"    Mean: {self.firm_year_df['genai_intensity'].mean():.4f}")
+        print(f"    Std:  {self.firm_year_df['genai_intensity'].std():.4f}")
+        print(f"    Min:  {self.firm_year_df['genai_intensity'].min():.4f}")
+        print(f"    Max:  {self.firm_year_df['genai_intensity'].max():.4f}")
     
     def prepare_regression_data(self, section: str = 'pros') -> Tuple:
         """
@@ -262,30 +266,38 @@ class MNIRRegression:
         df['intercept'] = 1.0
         df['log_reviews'] = np.log1p(df['review_count'])
         
-        # Ensure POST_CHATGPT is integer
-        df['POST_CHATGPT'] = df['POST_CHATGPT'].astype(int)
+        # CRITICAL FIX: Scale genai_intensity to percentage (0-100) for numerical stability
+        # Original values are very small (mean ~0.006), causing convergence issues
+        df['genai_intensity_pct'] = df['genai_intensity'] * 100
         
-        print(f"    POST_CHATGPT distribution:")
-        print(f"      Pre (0): {(df['POST_CHATGPT'] == 0).sum():,}")
-        print(f"      Post (1): {(df['POST_CHATGPT'] == 1).sum():,}")
+        print(f"    GenAI Intensity (scaled to %):")
+        print(f"      Mean: {df['genai_intensity_pct'].mean():.4f}%")
+        print(f"      Std:  {df['genai_intensity_pct'].std():.4f}%")
+        print(f"      Range: [{df['genai_intensity_pct'].min():.4f}%, {df['genai_intensity_pct'].max():.4f}%]")
         
         if self.use_fixed_effects:
             # Use YEAR fixed effects to control for time trends
+            # CRITICAL: Convert year to integer first to avoid dtype issues
             df['year'] = df['year'].astype(int)
             year_dummies = pd.get_dummies(df['year'], prefix='year', drop_first=True, dtype=float)
             
-            # Combine: base covariates + year dummies + POST_CHATGPT
+            # Combine: base covariates + year dummies
+            # Use SCALED genai_intensity for numerical stability
             X = pd.concat([
-                df[['intercept', 'rating', 'log_reviews', 'POST_CHATGPT']],
+                df[['intercept', 'rating', 'log_reviews', 'genai_intensity_pct']],
                 year_dummies
             ], axis=1)
+            
+            # Rename column for clarity in results
+            X.rename(columns={'genai_intensity_pct': 'genai_intensity'}, inplace=True)
             
             # Ensure all columns are numeric (float64)
             X = X.astype(float)
             
             print(f"    Added {year_dummies.shape[1]} year fixed effects")
         else:
-            X = df[['intercept', 'rating', 'log_reviews', 'POST_CHATGPT']].copy()
+            X = df[['intercept', 'rating', 'log_reviews', 'genai_intensity_pct']].copy()
+            X.rename(columns={'genai_intensity_pct': 'genai_intensity'}, inplace=True)
             X = X.astype(float)
         
         # Offset: log(Total_Word_Count)
@@ -306,7 +318,7 @@ class MNIRRegression:
             n_jobs: Number of CPU cores (default: 1 for stability)
         """
         print(f"\n{'='*70}")
-        print(f"📊 RUNNING REGRESSIONS: {section.upper()}")
+        print(f"RUNNING REGRESSIONS: {section.upper()}")
         print('='*70)
         
         # Prepare data
@@ -316,9 +328,9 @@ class MNIRRegression:
         print(f"  Covariates: {X.shape[1]} variables")
         print(f"  Words to process: {len(word_columns):,}")
         if self.use_fixed_effects:
-            print(f"  ✓ Using year fixed effects")
+            print(f"Using year fixed effects")
         else:
-            print(f"  ⚠️  No fixed effects")
+            print(f"No fixed effects")
         
         # Prepare arguments for processing
         tasks = []
@@ -341,33 +353,33 @@ class MNIRRegression:
         results_df['section'] = section
         
         # Print detailed diagnostics
-        print(f"\n  📊 Detailed Status Breakdown:")
+        print(f"\nDetailed Status Breakdown:")
         status_counts = results_df['status'].value_counts()
         for status, count in status_counts.items():
-            print(f"    - {status}: {count:,} ({count/len(results_df)*100:.1f}%)")
+            print(f"- {status}: {count:,} ({count/len(results_df)*100:.1f}%)")
         
         # Print summary
         n_converged = (results_df['converged'] == True).sum()
         n_significant = ((results_df['t_stat'].abs() > 1.96) & 
                         (results_df['converged'] == True)).sum()
         
-        print(f"\n  ✓ Regressions complete:")
-        print(f"    - Converged: {n_converged:,} / {len(results_df):,} ({n_converged/len(results_df)*100:.1f}%)")
-        print(f"    - Significant (|t| > 1.96): {n_significant:,} ({n_significant/len(results_df)*100:.1f}%)")
+        print(f"\nRegressions complete:")
+        print(f"- Converged: {n_converged:,} / {len(results_df):,} ({n_converged/len(results_df)*100:.1f}%)")
+        print(f"- Significant (|t| > 1.96): {n_significant:,} ({n_significant/len(results_df)*100:.1f}%)")
         
         # If convergence is very low, print first few errors as examples
         if n_converged < len(results_df) * 0.1:  # Less than 10% convergence
-            print(f"\n  ⚠️  Low convergence rate! Sample errors:")
+            print(f"\nLow convergence rate! Sample errors:")
             error_samples = results_df[results_df['converged'] == False].head(3)
             for idx, row in error_samples.iterrows():
-                print(f"    Word: {row['word']}, Status: {row['status']}")
+                print(f"Word: {row['word']}, Status: {row['status']}")
         
         return results_df
     
     def construct_index(self, weights_df: pd.DataFrame, section: str = 'pros',
                        min_t_stat: float = 1.96) -> np.ndarray:
         """
-        Construct ChatGPT Language Index using vectorized operations.
+        Construct GenAI Productivity Index using vectorized operations.
         
         Index = (Normalized_Counts) @ Weights
         where Normalized_Counts = Counts / Total_Words
@@ -381,7 +393,7 @@ class MNIRRegression:
             Array of index scores (aligned with firm_year_df)
         """
         print(f"\n{'='*70}")
-        print(f"🏗️  CONSTRUCTING INDEX: {section.upper()}")
+        print(f"CONSTRUCTING INDEX: {section.upper()}")
         print('='*70)
         
         # Filter weights by convergence and significance
@@ -391,11 +403,11 @@ class MNIRRegression:
         ].copy()
         
         if len(valid_weights) == 0:
-            print(f"  ⚠️  WARNING: No significant weights found for {section}")
+            print(f"WARNING: No significant weights found for {section}")
             return np.zeros(len(self.firm_year_df))
         
-        print(f"  Using {len(valid_weights):,} significant weights (|t| ≥ {min_t_stat})")
-        print(f"  Mean |coefficient|: {valid_weights['coef'].abs().mean():.4f}")
+        print(f"Using {len(valid_weights):,} significant weights (|t| ≥ {min_t_stat})")
+        print(f"Mean |coefficient|: {valid_weights['coef'].abs().mean():.4f}")
         
         # Create word -> coefficient mapping
         word_to_coef = valid_weights.set_index('word')['coef'].to_dict()
@@ -412,10 +424,10 @@ class MNIRRegression:
                 words_to_use.append(word)
         
         if len(words_to_use) == 0:
-            print(f"  ⚠️  WARNING: No word columns match between counts and weights")
+            print(f"WARNING: No word columns match between counts and weights")
             return np.zeros(len(self.firm_year_df))
         
-        print(f"  Matched {len(words_to_use):,} words between counts and weights")
+        print(f"Matched {len(words_to_use):,} words between counts and weights")
         
         # Extract count matrix for matched words
         word_cols = [f'wc_{w}' for w in words_to_use]
@@ -436,11 +448,11 @@ class MNIRRegression:
         scores = X_normalized.dot(w)
         scores = scores.fillna(0.0)
         
-        print(f"  ✓ Index constructed")
-        print(f"    Mean: {scores.mean():.6f}")
-        print(f"    Std:  {scores.std():.6f}")
-        print(f"    Min:  {scores.min():.6f}")
-        print(f"    Max:  {scores.max():.6f}")
+        print(f"Index constructed")
+        print(f"Mean: {scores.mean():.6f}")
+        print(f"Std:  {scores.std():.6f}")
+        print(f"Min:  {scores.min():.6f}")
+        print(f"Max:  {scores.max():.6f}")
         
         return scores.values
     
@@ -450,33 +462,32 @@ class MNIRRegression:
         with open(report_file, 'w', encoding='utf-8') as f:
             f.write("="*70 + "\n")
             f.write("MNIR REGRESSION VALIDATION REPORT\n")
-            f.write("Binary POST_CHATGPT Treatment\n")
             f.write("="*70 + "\n")
             f.write(f"Generated: {datetime.now().isoformat()}\n")
             f.write("\n")
             for msg in self.validation_log:
                 f.write(msg + "\n")
         
-        print(f"\n💾 Saved validation report → {report_file}")
+        print(f"Saved validation report → {report_file}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='MNIR Regression with Binary POST_CHATGPT Treatment',
+        description='MNIR Regression Stage (v3.0 - continuous GenAI measure)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Default: with year fixed effects and significance filtering
-  python scripts/mnir_regression.py
+  python scripts/mnir_regression_v3.py
   
   # Custom significance threshold
-  python scripts/mnir_regression.py --min-t-stat 2.58  # 99% confidence
+  python scripts/mnir_regression_v3.py --min-t-stat 2.58  # 99% confidence
   
   # Disable fixed effects (for debugging)
-  python scripts/mnir_regression.py --no-fixed-effects
+  python scripts/mnir_regression_v3.py --no-fixed-effects
   
   # Custom input/output directories
-  python scripts/mnir_regression.py --input data/processed/mnir --output data/results/mnir
+  python scripts/mnir_regression_v3.py --input data/processed/mnir --output data/results/mnir_v3
         """
     )
     parser.add_argument(
@@ -506,13 +517,12 @@ Examples:
     output_dir = Path(args.output)
     
     print("="*70)
-    print("MNIR STAGE 2: REGRESSION ANALYSIS (BINARY TREATMENT)")
+    print("MNIR STAGE 2: REGRESSION ANALYSIS (v3.0)")
     print("="*70)
-    print(f"\n📂 Input:  {input_dir}")
-    print(f"📁 Output: {output_dir}")
-    print(f"⚙️  Min |t-stat|: {args.min_t_stat}")
-    print(f"⚙️  Year fixed effects: {'Disabled' if args.no_fixed_effects else 'Enabled'}")
-    print(f"🎯 Treatment: POST_CHATGPT (>Nov 30, 2022)")
+    print(f"Input: {input_dir}")
+    print(f"Output: {output_dir}")
+    print(f"Min |t-stat|: {args.min_t_stat}")
+    print(f"Year fixed effects: {'Disabled' if args.no_fixed_effects else 'Enabled'}")
     
     # Initialize
     mnir = MNIRRegression(
@@ -524,7 +534,7 @@ Examples:
     try:
         mnir.load_data()
     except Exception as e:
-        print(f"\n❌ Error loading data: {e}")
+        print(f"Error loading data: {e}")
         return 1
     
     # Run Regressions
@@ -532,48 +542,48 @@ Examples:
         pros_results = mnir.run_regressions('pros')
         cons_results = mnir.run_regressions('cons')
     except Exception as e:
-        print(f"\n❌ Error in regressions: {e}")
+        print(f"Error in regressions: {e}")
         return 1
     
     # Combine and save weights
     all_weights = pd.concat([pros_results, cons_results], ignore_index=True)
     weights_file = output_dir / 'word_weights.csv'
     all_weights.to_csv(weights_file, index=False)
-    print(f"\n💾 Saved word weights → {weights_file}")
+    print(f"Saved word weights → {weights_file}")
     
     # Construct Indices
     firm_year_scores = mnir.firm_year_df[['ticker', 'year']].copy()
     
     try:
-        firm_year_scores['chatgpt_index_pros'] = mnir.construct_index(
+        firm_year_scores['mnir_score_pros'] = mnir.construct_index(
             pros_results, 'pros', min_t_stat=args.min_t_stat
         )
-        firm_year_scores['chatgpt_index_cons'] = mnir.construct_index(
+        firm_year_scores['mnir_score_cons'] = mnir.construct_index(
             cons_results, 'cons', min_t_stat=args.min_t_stat
         )
     except Exception as e:
-        print(f"\n❌ Error constructing indices: {e}")
+        print(f"Error constructing indices: {e}")
         return 1
     
     # Combined Score (Average of pros and cons)
-    firm_year_scores['chatgpt_language_index'] = (
-        firm_year_scores['chatgpt_index_pros'] + firm_year_scores['chatgpt_index_cons']
+    firm_year_scores['genai_productivity_index'] = (
+        firm_year_scores['mnir_score_pros'] + firm_year_scores['mnir_score_cons']
     ) / 2
     
     # Save Index
-    index_file = output_dir / 'chatgpt_language_index.csv'
+    index_file = output_dir / 'genai_productivity_index.csv'
     firm_year_scores.to_csv(index_file, index=False)
-    print(f"💾 Saved ChatGPT Language Index → {index_file}")
+    print(f"Saved GenAI Productivity Index → {index_file}")
     
     # Save validation report
     mnir.save_validation_report()
     
     # Detailed Analysis
-    print(f"\n{'='*70}")
-    print("📈 INDEX STATISTICS")
-    print('='*70)
+    print("="*70)
+    print("INDEX STATISTICS")
+    print("="*70)
     
-    for col in ['chatgpt_index_pros', 'chatgpt_index_cons', 'chatgpt_language_index']:
+    for col in ['mnir_score_pros', 'mnir_score_cons', 'genai_productivity_index']:
         values = firm_year_scores[col]
         print(f"\n{col}:")
         print(f"  Mean:   {values.mean():10.6f}")
@@ -584,12 +594,12 @@ Examples:
         print(f"  Non-zero: {(values != 0).sum():,} / {len(values):,} ({(values != 0).mean()*100:.1f}%)")
     
     # Top Words Analysis
-    print(f"\n{'='*70}")
-    print("🔝 TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)")
-    print('='*70)
+    print("="*70)
+    print("TOP PREDICTIVE WORDS")
+    print("="*70)
     
     for section in ['pros', 'cons']:
-        print(f"\n{section.upper()} Section (Positive Association with POST_CHATGPT):")
+        print(f"\n{section.upper()} Section (Positive Association with GenAI):")
         top_words = all_weights[
             (all_weights['section'] == section) & 
             (all_weights['converged'] == True) &
@@ -602,12 +612,12 @@ Examples:
             for i, row in enumerate(top_words.itertuples(), 1):
                 print(f"  {i:2d}. {row.word:<20} coef: {row.coef:8.4f}  t: {row.t_stat:7.2f}  p: {row.p_value:.4f}")
     
-    print(f"\n{'='*70}")
-    print("🔻 BOTTOM WORDS (NEGATIVE ASSOCIATION)")
-    print('='*70)
+    print("="*70)
+    print("BOTTOM WORDS")
+    print("="*70)
     
     for section in ['pros', 'cons']:
-        print(f"\n{section.upper()} Section (Negative Association with POST_CHATGPT):")
+        print(f"\n{section.upper()} Section (Negative Association with GenAI):")
         bot_words = all_weights[
             (all_weights['section'] == section) & 
             (all_weights['converged'] == True) &
@@ -621,9 +631,9 @@ Examples:
                 print(f"  {i:2d}. {row.word:<20} coef: {row.coef:8.4f}  t: {row.t_stat:7.2f}  p: {row.p_value:.4f}")
     
     # Summary statistics
-    print(f"\n{'='*70}")
-    print("📊 REGRESSION SUMMARY")
-    print('='*70)
+    print("="*70)
+    print("REGRESSION SUMMARY")
+    print("="*70)
     
     total_words = len(all_weights)
     converged = (all_weights['converged'] == True).sum()
@@ -645,25 +655,25 @@ Examples:
         neg_coefs = (sig_weights['coef'] < 0).sum()
         
         print(f"\nSignificant coefficients:")
-        print(f"  Positive (increased post-ChatGPT): {pos_coefs:,} ({pos_coefs/len(sig_weights)*100:.1f}%)")
-        print(f"  Negative (decreased post-ChatGPT): {neg_coefs:,} ({neg_coefs/len(sig_weights)*100:.1f}%)")
+        print(f"  Positive: {pos_coefs:,} ({pos_coefs/len(sig_weights)*100:.1f}%)")
+        print(f"  Negative: {neg_coefs:,} ({neg_coefs/len(sig_weights)*100:.1f}%)")
         print(f"  Mean |coef|: {sig_weights['coef'].abs().mean():.4f}")
     
-    print(f"\n{'='*70}")
-    print("✅ ANALYSIS COMPLETE")
-    print('='*70)
-    print(f"\n📁 Output files:")
-    print(f"  • {weights_file.name}")
-    print(f"  • {index_file.name}")
-    print(f"  • validation_report.txt")
-    print(f"\n🚀 NEXT STEPS:")
-    print(f"  1. Review validation_report.txt for data quality")
+    print("="*70)
+    print("ANALYSIS COMPLETE")
+    print("="*70)
+    print(f"Output files:")
+    print(f"  {weights_file.name}")
+    print(f"  {index_file.name}")
+    print(f"  validation_report.txt")
+    print(f"\nNEXT STEPS:")
+ print(f"  1. Review validation_report.txt for data quality")
     print(f"  2. Run: python scripts/map_stems_to_words.py")
     print(f"  3. Examine word_weights_readable.csv for interpretable words")
     print(f"  4. Run: python scripts/analysis.py")
     print(f"  5. Merge chatgpt_language_index.csv with REIT performance data")
     print(f"  6. Test hypothesis: High ChatGPT Language Index → Better performance?")
-    print('='*70)
+    print("="*70)
     
     return 0
 

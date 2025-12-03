@@ -1,5 +1,5 @@
 """
-Stage 3: Descriptive Analysis and Visualization (FIXED)
+Stage 3: Descriptive Analysis and Visualization
 ========================================================
 Creates comprehensive descriptive statistics and visualizations.
 
@@ -42,19 +42,16 @@ plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 plt.rcParams['font.size'] = 10
 
-# ============================================================================
-# 1. LOAD DATA
-# ============================================================================
-print("📂 Loading data...")
+
+#1. LOAD DATA
+print("Loading data...")
 df = pd.read_csv(INPUT_FILE)
-print(f"  ✓ Loaded {len(df):,} firm-year observations")
-print(f"  ✓ Columns: {len(df.columns)}")
+print(f"Loaded {len(df):,} firm-year observations")
+print(f"Columns: {len(df.columns)}")
 print()
 
-# ============================================================================
-# 2. DESCRIPTIVE STATISTICS TABLES
-# ============================================================================
-print("📊 Creating descriptive statistics tables...")
+#2. DESCRIPTIVE STATISTICS TABLES
+print("Creating descriptive statistics tables...")
 
 # Overall summary statistics
 desc_stats = df[[
@@ -63,7 +60,7 @@ desc_stats = df[[
 ]].describe()
 
 desc_stats.to_csv(os.path.join(OUTPUT_DIR, "summary_statistics.csv"))
-print("  ✓ Saved: summary_statistics.csv")
+print("Saved: summary_statistics.csv")
 
 # By property type
 prop_stats = df.groupby('property_type')[[
@@ -71,7 +68,7 @@ prop_stats = df.groupby('property_type')[[
 ]].agg(['mean', 'std', 'count'])
 
 prop_stats.to_csv(os.path.join(OUTPUT_DIR, "stats_by_property_type.csv"))
-print("  ✓ Saved: stats_by_property_type.csv")
+print("Saved: stats_by_property_type.csv")
 
 # Pre/Post ChatGPT
 chatgpt_stats = df.groupby('POST_CHATGPT')[[
@@ -79,7 +76,7 @@ chatgpt_stats = df.groupby('POST_CHATGPT')[[
 ]].agg(['mean', 'std', 'count'])
 
 chatgpt_stats.to_csv(os.path.join(OUTPUT_DIR, "stats_pre_post_chatgpt.csv"))
-print("  ✓ Saved: stats_pre_post_chatgpt.csv")
+print("Saved: stats_pre_post_chatgpt.csv")
 
 # By year
 year_stats = df.groupby('year')[[
@@ -87,14 +84,12 @@ year_stats = df.groupby('year')[[
 ]].agg(['mean', 'std', 'count'])
 
 year_stats.to_csv(os.path.join(OUTPUT_DIR, "stats_by_year.csv"))
-print("  ✓ Saved: stats_by_year.csv")
+print("Saved: stats_by_year.csv")
 
 print()
 
-# ============================================================================
-# 3. CORRELATION MATRIX
-# ============================================================================
-print("🔗 Creating correlation matrix...")
+#3. CORRELATION MATRIX
+print("Creating correlation matrix...")
 
 corr_vars = [
     'sentiment_score_mean', 'sentiment_dispersion', 'sentiment_agreement',
@@ -103,7 +98,7 @@ corr_vars = [
 
 corr_matrix = df[corr_vars].corr()
 corr_matrix.to_csv(os.path.join(OUTPUT_DIR, "correlation_matrix.csv"))
-print("  ✓ Saved: correlation_matrix.csv")
+print("Saved: correlation_matrix.csv")
 
 # Correlation heatmap
 fig, ax = plt.subplots(figsize=(10, 8))
@@ -113,15 +108,13 @@ plt.title('Correlation Matrix: Key Variables', fontsize=14, fontweight='bold', p
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "correlation_heatmap.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: correlation_heatmap.png")
+print("Saved: correlation_heatmap.png")
 print()
 
-# ============================================================================
-# 4. TIME TRENDS
-# ============================================================================
-print("📈 Creating time trend visualizations...")
+#4. TIME TRENDS
+print("Creating time trend visualizations...")
 
-# 4.1 Sentiment over time
+# Sentiment over time
 yearly = df.groupby('year').agg({
     'sentiment_score_mean': ['mean', 'std', 'count'],
     'rating_mean': 'mean'
@@ -159,9 +152,9 @@ ax2.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "time_trends.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: time_trends.png")
+print("Saved: time_trends.png")
 
-# 4.2 Review volume over time
+# Review volume over time
 fig, ax = plt.subplots(figsize=(12, 6))
 yearly_reviews = df.groupby('year')['review_count'].sum()
 ax.bar(yearly_reviews.index, yearly_reviews.values, color='forestgreen', alpha=0.7)
@@ -174,15 +167,13 @@ ax.grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "review_volume_trend.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: review_volume_trend.png")
+print("Saved: review_volume_trend.png")
 print()
 
-# ============================================================================
-# 5. PRE/POST CHATGPT COMPARISON
-# ============================================================================
-print("🔄 Creating Pre/Post ChatGPT comparisons...")
+#5. PRE/POST CHATGPT COMPARISON
+print("Creating Pre/Post ChatGPT comparisons...")
 
-# 5.1 Box plots
+# Box plots
 fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
 metrics = [
@@ -222,15 +213,13 @@ for var, label, ax in metrics:
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "pre_post_chatgpt_comparison.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: pre_post_chatgpt_comparison.png")
+print("Saved: pre_post_chatgpt_comparison.png")
 print()
 
-# ============================================================================
-# 6. PROPERTY TYPE ANALYSIS
-# ============================================================================
-print("🏢 Creating property type comparisons...")
+#6. PROPERTY TYPE ANALYSIS
+print("Creating property type comparisons...")
 
-# 6.1 Sentiment by property type
+# Sentiment by property type
 prop_summary = df.groupby('property_type').agg({
     'sentiment_score_mean': ['mean', 'std', 'count'],
     'rating_mean': 'mean',
@@ -313,13 +302,11 @@ axes[1].grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "tech_vs_traditional_comparison.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: tech_vs_traditional_comparison.png")
+print("Saved: tech_vs_traditional_comparison.png")
 print()
 
-# ============================================================================
-# 7. SENTIMENT DISTRIBUTION
-# ============================================================================
-print("📊 Creating sentiment distribution plots...")
+#7. SENTIMENT DISTRIBUTION
+print("Creating sentiment distribution plots...")
 
 # Create 3x2 grid for overall + top 5 property types
 fig, axes = plt.subplots(3, 2, figsize=(14, 16))
@@ -352,13 +339,11 @@ for i, (ptype, (row, col)) in enumerate(zip(top_types, positions)):
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, "sentiment_distributions.png"), bbox_inches='tight')
 plt.close()
-print("  ✓ Saved: sentiment_distributions.png")
+print("Saved: sentiment_distributions.png")
 print()
 
-# ============================================================================
-# 8. CREATE SUMMARY REPORT
-# ============================================================================
-print("📝 Creating summary report...")
+#8. CREATE SUMMARY REPORT
+print("Creating summary report...")
 
 report = f"""
 DESCRIPTIVE ANALYSIS SUMMARY REPORT
@@ -407,35 +392,35 @@ FILES GENERATED
 report_file = os.path.join(OUTPUT_DIR, "analysis_summary_report.txt")
 with open(report_file, 'w') as f:
     f.write(report)
-print(f"  ✓ Saved: analysis_summary_report.txt")
+print("Saved: analysis_summary_report.txt")
 print()
 
 print("=" * 80)
-print("✅ STAGE 3 COMPLETE")
+print("STAGE 3 COMPLETE")
 print("=" * 80)
 print()
-print("📁 Output Directory: " + OUTPUT_DIR)
+print("Output Directory: " + OUTPUT_DIR)
 print()
-print("📊 Generated Files:")
-print("  Tables:")
-print("    • summary_statistics.csv")
-print("    • stats_by_property_type.csv")
-print("    • stats_pre_post_chatgpt.csv")
-print("    • stats_by_year.csv")
-print("    • correlation_matrix.csv")
+print("Generated Files:")
+print("Tables:")
+print("summary_statistics.csv")
+print("stats_by_property_type.csv")
+print("stats_pre_post_chatgpt.csv")
+print("stats_by_year.csv")
+print("correlation_matrix.csv")
 print()
-print("  Figures:")
-print("    • correlation_heatmap.png")
-print("    • time_trends.png")
-print("    • review_volume_trend.png")
-print("    • pre_post_chatgpt_comparison.png")
-print("    • sentiment_by_property_type.png")
-print("    • tech_vs_traditional_comparison.png")
-print("    • sentiment_distributions.png")
+print("Figures:")
+print("correlation_heatmap.png")
+print("time_trends.png")
+print("review_volume_trend.png")
+print("pre_post_chatgpt_comparison.png")
+print("sentiment_by_property_type.png")
+print("tech_vs_traditional_comparison.png")
+print("sentiment_distributions.png")
 print()
-print("  Reports:")
-print("    • analysis_summary_report.txt")
+print("Reports:")
+print("analysis_summary_report.txt")
 print()
-print("🚀 Next Step:")
-print("  Run Stage 4: python scripts/export_analysis_dataset.py")
+print("Next Step:")
+print("Run Stage 4: python scripts/export_analysis_dataset.py")
 print("=" * 80)
