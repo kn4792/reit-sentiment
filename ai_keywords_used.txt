@@ -1,6 +1,0 @@
- # AI/Technology-related bigrams
-        ai_keywords = ['ai', 'generati' 'artificial', 'intelligence', 'technology',
-                       'digital', 'software', 'system', 'tool', 'platform',
-                       'chatgpt', 'gpt', 'machine', 'learni', 'algo', 'bing',
-                       'bard', 'robot', 'robotic', 'openai', 'llm', 'model', 'gemini',
-                       'copilot', 'neural', 'network', 'automat', 'predict', 'data']
