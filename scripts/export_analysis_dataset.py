@@ -14,8 +14,7 @@
 # generates a variable codebook, and provides sample merge code.
 #
 # @author Konain Niaz (kn4792@rit.edu)
-# @date 2025-12-16
-# @version 1.0
+# @date 2025-12-01
 
 import pandas as pd
 import numpy as np
