@@ -1,0 +1,82 @@
+{
+  "preprocessing_date": "2025-11-29T18:00:06.018005",
+  "methodology": "MNIR with binary POST_CHATGPT treatment (Campbell & Shang 2021)",
+  "chatgpt_launch_date": "2022-11-30",
+  "review_level": {
+    "total_reviews": 28252,
+    "unique_firms": 115,
+    "date_range": {
+      "min": "Apr 1, 2014",
+      "max": "Sep 9, 2025"
+    },
+    "pre_chatgpt": 18646,
+    "post_chatgpt": 9606
+  },
+  "firm_year_level": {
+    "total_observations": 966,
+    "unique_firms": 115,
+    "year_range": {
+      "min": 2014,
+      "max": 2025
+    },
+    "avg_reviews_per_firm_year": 27.34368530020704,
+    "median_reviews_per_firm_year": 7.0,
+    "pre_chatgpt_firm_years": 692,
+    "post_chatgpt_firm_years": 274
+  },
+  "vocabulary": {
+    "size": 3280,
+    "top_50_words": [
+      "abandon",
+      "abil",
+      "abl",
+      "abound",
+      "absent",
+      "absolut",
+      "absorb",
+      "absurd",
+      "abund",
+      "abus",
+      "abysm",
+      "acceler",
+      "accept",
+      "access",
+      "acclim",
+      "accommod",
+      "accomplish",
+      "accord",
+      "accordingli",
+      "account",
+      "accru",
+      "accrual",
+      "accumul",
+      "accur",
+      "accus",
+      "achiev",
+      "acknowledg",
+      "acquir",
+      "acquisit",
+      "across",
+      "act",
+      "action",
+      "activ",
+      "actual",
+      "adapt",
+      "add",
+      "addict",
+      "addit",
+      "address",
+      "adequ",
+      "adher",
+      "adjust",
+      "admin",
+      "administr",
+      "admir",
+      "admit",
+      "adopt",
+      "adult",
+      "advanc",
+      "advantag"
+    ]
+  }
+}

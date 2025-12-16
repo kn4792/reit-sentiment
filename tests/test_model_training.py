@@ -18,7 +18,7 @@ from datetime import datetime
 
 # Import project modules
 from scripts.keyword_extraction import KeywordExtractor
-from scripts.sentiment_analysis import FinBERTSentimentAnalyzer
+from scripts.finbert_validation import FinBERTSentimentAnalyzer
 
 @pytest.mark.integration
 class TestModelTrainingPipeline:

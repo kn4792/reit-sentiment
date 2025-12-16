@@ -1,0 +1,22 @@
+REIT Reviews Analysis Report
+============================
+
+Found 127 valid tickers in JSON.
+
+File                                                         | Reviews    | Unique Tickers 
+------------------------------------------------------------------------------------------
+all_reit_reviews_20251204_024439.csv                         | 13807      | 34             
+all_reit_reviews_20251204_032441.csv                         | 43         | 1              
+all_reit_reviews_20251204_085636.csv                         | 14842      | 81             
+------------------------------------------------------------------------------------------
+
+Total Reviews across all files: 28692
+Total Unique Tickers across all files: 114
+Tickers from JSON NOT found in any file (13): ['AGNC', 'CCI', 'CDP', 'CMTG', 'CTRE', 'ELS', 'LTC', 'OLP', 'PINE', 'PSA', 'REG', 'SILA', 'TRNO']
+
+Duplicate Reviews (based on content): 51
+Example duplicates:
+      ticker          date                    title
+13850    DOC   Nov 4, 2025     Decent place to work
+13851    DOC  Jul 14, 2025        Fantastic Company
+13852    DOC   May 1, 2025  Great experience so far

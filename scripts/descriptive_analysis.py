@@ -1,18 +1,24 @@
-"""
-Stage 3: Descriptive Analysis and Visualization
-========================================================
-Creates comprehensive descriptive statistics and visualizations.
-
-Input:  data/processed/firm_year_sentiment.csv
-Output: data/results/descriptive_stats/ (multiple files)
-
-Outputs:
-- Summary statistics tables
-- Time trend visualizations
-- Property type comparisons
-- Pre/Post ChatGPT analysis
-- Correlation matrices
-"""
+## @file descriptive_analysis.py
+# @brief Stage 3: Descriptive Analysis and Visualization
+#
+# Creates comprehensive descriptive statistics and visualizations
+# for the firm-year sentiment dataset.
+#
+# @details
+# Input:  data/processed/firm_year_sentiment.csv
+# Output: data/results/descriptive_stats/ (multiple files)
+#
+# Outputs generated:
+# - Summary statistics tables (CSV)
+# - Time trend visualizations (PNG)
+# - Property type comparisons (PNG)
+# - Pre/Post ChatGPT analysis (PNG)
+# - Correlation matrices (CSV, PNG)
+# - Analysis summary report (TXT)
+#
+# @author Konain Niaz (kn4792@rit.edu)
+# @date 2025-12-16
+# @version 1.0
 
 import pandas as pd
 import numpy as np
@@ -27,33 +33,45 @@ print("STAGE 3: DESCRIPTIVE ANALYSIS AND VISUALIZATION")
 print("=" * 80)
 print()
 
-# Configuration
+## @var INPUT_FILE
+# Path to input CSV file with firm-year aggregated data
 INPUT_FILE = "data/processed/firm_year_sentiment.csv"
+
+## @var OUTPUT_DIR
+# Directory for descriptive statistics output files
 OUTPUT_DIR = "data/results/descriptive_stats"
+
+## @var FIGURES_DIR
+# Directory for visualization output files
 FIGURES_DIR = os.path.join(OUTPUT_DIR, "figures")
 
 # Create output directories
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(FIGURES_DIR, exist_ok=True)
 
-# Set visualization style
+# Set visualization style for publication-quality figures
 sns.set_style("whitegrid")
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 plt.rcParams['font.size'] = 10
 
-
-#1. LOAD DATA
+# ============================================================================
+# STEP 1: LOAD DATA
+# Load the firm-year aggregated dataset from Stage 2
+# ============================================================================
 print("Loading data...")
 df = pd.read_csv(INPUT_FILE)
 print(f"Loaded {len(df):,} firm-year observations")
 print(f"Columns: {len(df.columns)}")
 print()
 
-#2. DESCRIPTIVE STATISTICS TABLES
+# ============================================================================
+# STEP 2: DESCRIPTIVE STATISTICS TABLES
+# Create summary statistics tables for key variables
+# ============================================================================
 print("Creating descriptive statistics tables...")
 
-# Overall summary statistics
+# Overall summary statistics for key variables
 desc_stats = df[[
     'sentiment_score_mean', 'sentiment_dispersion', 'sentiment_agreement',
     'rating_mean', 'review_count', 'positive_prob_mean', 'negative_prob_mean'
@@ -62,7 +80,7 @@ desc_stats = df[[
 desc_stats.to_csv(os.path.join(OUTPUT_DIR, "summary_statistics.csv"))
 print("Saved: summary_statistics.csv")
 
-# By property type
+# Statistics grouped by property type
 prop_stats = df.groupby('property_type')[[
     'sentiment_score_mean', 'rating_mean', 'review_count'
 ]].agg(['mean', 'std', 'count'])
@@ -70,7 +88,7 @@ prop_stats = df.groupby('property_type')[[
 prop_stats.to_csv(os.path.join(OUTPUT_DIR, "stats_by_property_type.csv"))
 print("Saved: stats_by_property_type.csv")
 
-# Pre/Post ChatGPT
+# Statistics grouped by Pre/Post ChatGPT
 chatgpt_stats = df.groupby('POST_CHATGPT')[[
     'sentiment_score_mean', 'sentiment_dispersion', 'rating_mean', 'review_count'
 ]].agg(['mean', 'std', 'count'])
@@ -78,7 +96,7 @@ chatgpt_stats = df.groupby('POST_CHATGPT')[[
 chatgpt_stats.to_csv(os.path.join(OUTPUT_DIR, "stats_pre_post_chatgpt.csv"))
 print("Saved: stats_pre_post_chatgpt.csv")
 
-# By year
+# Statistics grouped by year
 year_stats = df.groupby('year')[[
     'sentiment_score_mean', 'rating_mean', 'review_count'
 ]].agg(['mean', 'std', 'count'])
@@ -88,19 +106,25 @@ print("Saved: stats_by_year.csv")
 
 print()
 
-#3. CORRELATION MATRIX
+# ============================================================================
+# STEP 3: CORRELATION MATRIX
+# Calculate and visualize correlations between key variables
+# ============================================================================
 print("Creating correlation matrix...")
 
+## @var corr_vars
+# List of variables to include in correlation analysis
 corr_vars = [
     'sentiment_score_mean', 'sentiment_dispersion', 'sentiment_agreement',
     'rating_mean', 'review_count', 'POST_CHATGPT', 'tech_intensive'
 ]
 
+# Calculate Pearson correlation matrix
 corr_matrix = df[corr_vars].corr()
 corr_matrix.to_csv(os.path.join(OUTPUT_DIR, "correlation_matrix.csv"))
 print("Saved: correlation_matrix.csv")
 
-# Correlation heatmap
+# Create correlation heatmap visualization
 fig, ax = plt.subplots(figsize=(10, 8))
 sns.heatmap(corr_matrix, annot=True, fmt='.3f', cmap='RdBu_r', center=0,
             square=True, linewidths=1, cbar_kws={"shrink": 0.8})
@@ -111,10 +135,13 @@ plt.close()
 print("Saved: correlation_heatmap.png")
 print()
 
-#4. TIME TRENDS
+# ============================================================================
+# STEP 4: TIME TRENDS
+# Visualize sentiment and rating trends over time
+# ============================================================================
 print("Creating time trend visualizations...")
 
-# Sentiment over time
+# Calculate yearly aggregates with confidence intervals
 yearly = df.groupby('year').agg({
     'sentiment_score_mean': ['mean', 'std', 'count'],
     'rating_mean': 'mean'
@@ -123,15 +150,17 @@ yearly = df.groupby('year').agg({
 yearly.columns = ['year', 'sentiment_mean', 'sentiment_std', 'n_firms', 'rating_mean']
 yearly['sentiment_se'] = yearly['sentiment_std'] / np.sqrt(yearly['n_firms'])
 
+# Create dual panel figure for sentiment and rating trends
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-# Sentiment trend
+# Panel 1: Sentiment trend with confidence interval
 ax1.plot(yearly['year'], yearly['sentiment_mean'], marker='o', linewidth=2, 
          markersize=8, color='steelblue', label='Mean Sentiment')
 ax1.fill_between(yearly['year'],
                  yearly['sentiment_mean'] - 1.96 * yearly['sentiment_se'],
                  yearly['sentiment_mean'] + 1.96 * yearly['sentiment_se'],
                  alpha=0.3, color='steelblue', label='95% CI')
+# Add vertical line for ChatGPT launch (Nov 30, 2022 ≈ 2022.917)
 ax1.axvline(x=2022.917, color='red', linestyle='--', linewidth=2, alpha=0.7, label='ChatGPT Launch')
 ax1.set_xlabel('Year', fontsize=12)
 ax1.set_ylabel('Sentiment Score', fontsize=12)
@@ -139,7 +168,7 @@ ax1.set_title('Employee Sentiment Over Time', fontsize=14, fontweight='bold')
 ax1.legend()
 ax1.grid(True, alpha=0.3)
 
-# Rating trend
+# Panel 2: Rating trend
 ax2.plot(yearly['year'], yearly['rating_mean'], marker='s', linewidth=2,
          markersize=8, color='coral', label='Mean Rating')
 ax2.axvline(x=2022.917, color='red', linestyle='--', linewidth=2, alpha=0.7, label='ChatGPT Launch')
@@ -154,7 +183,7 @@ plt.savefig(os.path.join(FIGURES_DIR, "time_trends.png"), bbox_inches='tight')
 plt.close()
 print("Saved: time_trends.png")
 
-# Review volume over time
+# Create review volume bar chart
 fig, ax = plt.subplots(figsize=(12, 6))
 yearly_reviews = df.groupby('year')['review_count'].sum()
 ax.bar(yearly_reviews.index, yearly_reviews.values, color='forestgreen', alpha=0.7)
@@ -170,12 +199,17 @@ plt.close()
 print("Saved: review_volume_trend.png")
 print()
 
-#5. PRE/POST CHATGPT COMPARISON
+# ============================================================================
+# STEP 5: PRE/POST CHATGPT COMPARISON
+# Create box plots comparing metrics before and after ChatGPT launch
+# ============================================================================
 print("Creating Pre/Post ChatGPT comparisons...")
 
-# Box plots
+# Create 2x2 grid of box plots
 fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
+## @var metrics
+# List of tuples defining (variable, label, axis) for box plots
 metrics = [
     ('sentiment_score_mean', 'Sentiment Score', axes[0, 0]),
     ('sentiment_dispersion', 'Sentiment Dispersion', axes[0, 1]),
@@ -183,6 +217,7 @@ metrics = [
     ('review_count', 'Reviews per Firm-Year', axes[1, 1])
 ]
 
+# Create box plot for each metric with t-test results
 for var, label, ax in metrics:
     pre_data = df[df['POST_CHATGPT'] == 0][var]
     post_data = df[df['POST_CHATGPT'] == 1][var]
@@ -194,11 +229,11 @@ for var, label, ax in metrics:
     bp['boxes'][0].set_facecolor('lightblue')
     bp['boxes'][1].set_facecolor('lightcoral')
     
-    # Add means
+    # Add means as diamond markers
     ax.plot([1, 2], [pre_data.mean(), post_data.mean()], 
             'D-', color='darkred', markersize=10, linewidth=2, label='Mean')
     
-    # T-test
+    # Perform t-test and display results
     t_stat, p_val = stats.ttest_ind(pre_data, post_data)
     sig_text = '***' if p_val < 0.001 else '**' if p_val < 0.01 else '*' if p_val < 0.05 else 'ns'
     ax.text(0.5, 0.95, f't={t_stat:.2f}, p={p_val:.4f} {sig_text}',
@@ -216,10 +251,13 @@ plt.close()
 print("Saved: pre_post_chatgpt_comparison.png")
 print()
 
-#6. PROPERTY TYPE ANALYSIS
+# ============================================================================
+# STEP 6: PROPERTY TYPE ANALYSIS
+# Compare sentiment across different REIT property types
+# ============================================================================
 print("Creating property type comparisons...")
 
-# Sentiment by property type
+# Calculate mean sentiment by property type
 prop_summary = df.groupby('property_type').agg({
     'sentiment_score_mean': ['mean', 'std', 'count'],
     'rating_mean': 'mean',
@@ -229,14 +267,15 @@ prop_summary = df.groupby('property_type').agg({
 prop_summary.columns = ['property_type', 'sentiment_mean', 'sentiment_std', 'n_obs', 'rating', 'tech_intensive']
 prop_summary = prop_summary.sort_values('sentiment_mean', ascending=False)
 
-# Top 12 property types
+# Create horizontal bar chart for top 12 property types
 prop_summary_top = prop_summary.head(12)
 
 fig, ax = plt.subplots(figsize=(12, 8))
+# Color bars: green for tech-intensive, blue for traditional
 colors = ['darkgreen' if x == 1 else 'steelblue' for x in prop_summary_top['tech_intensive']]
 bars = ax.barh(range(len(prop_summary_top)), prop_summary_top['sentiment_mean'], color=colors, alpha=0.7)
 
-# Add error bars
+# Add error bars for standard deviation
 ax.errorbar(prop_summary_top['sentiment_mean'], range(len(prop_summary_top)),
             xerr=prop_summary_top['sentiment_std'], fmt='none', ecolor='black', alpha=0.5)
 
@@ -258,10 +297,10 @@ plt.savefig(os.path.join(FIGURES_DIR, "sentiment_by_property_type.png"), bbox_in
 plt.close()
 print("  ✓ Saved: sentiment_by_property_type.png")
 
-# 6.2 Tech-intensive vs Traditional
+# Create tech-intensive vs traditional comparison
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
-# Sentiment comparison
+# Panel 1: Box plot comparison
 tech_data = df[df['tech_intensive'] == 1]['sentiment_score_mean']
 trad_data = df[df['tech_intensive'] == 0]['sentiment_score_mean']
 
@@ -285,7 +324,7 @@ axes[0].set_title('Sentiment: Tech-Intensive vs Traditional REITs', fontsize=12,
 axes[0].legend()
 axes[0].grid(True, alpha=0.3, axis='y')
 
-# Time trend by type
+# Panel 2: Time trend by REIT type
 yearly_by_type = df.groupby(['year', 'tech_intensive'])['sentiment_score_mean'].mean().reset_index()
 for tech_val, label, color in [(1, 'Tech-Intensive', 'darkgreen'), (0, 'Traditional', 'steelblue')]:
     data = yearly_by_type[yearly_by_type['tech_intensive'] == tech_val]
@@ -305,13 +344,16 @@ plt.close()
 print("Saved: tech_vs_traditional_comparison.png")
 print()
 
-#7. SENTIMENT DISTRIBUTION
+# ============================================================================
+# STEP 7: SENTIMENT DISTRIBUTION
+# Visualize the distribution of sentiment scores
+# ============================================================================
 print("Creating sentiment distribution plots...")
 
-# Create 3x2 grid for overall + top 5 property types
+# Create 3x2 grid: overall + top 5 property types
 fig, axes = plt.subplots(3, 2, figsize=(14, 16))
 
-# Overall distribution
+# Panel 1: Overall distribution
 axes[0, 0].hist(df['sentiment_score_mean'], bins=50, color='steelblue', alpha=0.7, edgecolor='black')
 axes[0, 0].axvline(df['sentiment_score_mean'].mean(), color='red', linestyle='--', 
                    linewidth=2, label=f'Mean = {df["sentiment_score_mean"].mean():.3f}')
@@ -323,7 +365,7 @@ axes[0, 0].set_title('Distribution of Firm-Year Sentiment', fontsize=12, fontwei
 axes[0, 0].legend()
 axes[0, 0].grid(True, alpha=0.3, axis='y')
 
-# By property type (top 5)
+# Panels 2-6: Top 5 property types
 top_types = df['property_type'].value_counts().head(5).index
 positions = [(0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
 
@@ -342,7 +384,10 @@ plt.close()
 print("Saved: sentiment_distributions.png")
 print()
 
-#8. CREATE SUMMARY REPORT
+# ============================================================================
+# STEP 8: CREATE SUMMARY REPORT
+# Generate text report summarizing all analyses
+# ============================================================================
 print("Creating summary report...")
 
 report = f"""

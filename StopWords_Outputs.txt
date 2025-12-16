@@ -1,0 +1,320 @@
+Loading reviews data...
+Loaded 32,518 reviews from 120 companies
+Date range: Apr 1, 2013 to Sep 9, 2025
+
+Cleaning text...
+Tokenizing and removing stopwords...
+
+Token statistics:
+  Mean tokens per review: 25.9
+  Median tokens per review: 15.0
+  Max tokens in a review: 806
+
+Building vocabulary...
+
+Vocabulary statistics:
+  Total tokens (with repetition): 842,405
+  Unique words (vocabulary size): 21,041
+
+Saved vocabulary to: data/processed/vocabulary.csv
+Saved cleaned reviews to: data/processed/reviews_cleaned.csv
+
+Top 50 most frequent words:
+------------------------------------------------------------
+ 1. work                 21,505 occurrences
+ 2. company              16,266 occurrences
+ 3. great                13,375 occurrences
+ 4. good                 12,194 occurrences
+ 5. management            9,310 occurrences
+ 6. people                8,626 occurrences
+ 7. pay                   8,049 occurrences
+ 8. employees             7,739 occurrences
+ 9. benefits              7,352 occurrences
+10. time                  5,516 occurrences
+11. get                   5,248 occurrences
+12. job                   5,031 occurrences
+13. team                  5,025 occurrences     
+14. culture               4,762 occurrences     
+15. working               4,540 occurrences     
+16. environment           4,312 occurrences     
+17. life                  4,202 occurrences     
+21. hours                 3,350 occurrences
+22. many                  3,149 occurrences
+23. place                 3,030 occurrences
+24. lot                   3,011 occurrences
+25. training              2,927 occurrences
+26. opportunities         2,919 occurrences
+27. one                   2,828 occurrences
+28. really                2,766 occurrences
+29. office                2,760 occurrences
+30. any                   2,739 occurrences
+31. new                   2,716 occurrences
+32. managers              2,708 occurrences
+33. make                  2,673 occurrences
+34. much                  2,613 occurrences
+35. leadership            2,596 occurrences
+36. day                   2,475 occurrences
+37. well                  2,468 occurrences
+38. manager               2,462 occurrences
+39. always                2,454 occurrences
+40. employee              2,372 occurrences
+41. hard                  2,279 occurrences
+42. years                 2,279 occurrences
+43. care                  2,196 occurrences
+44. nice                  2,146 occurrences
+45. experience            2,064 occurrences
+46. long                  2,062 occurrences
+47. best                  2,024 occurrences
+48. every                 1,978 occurrences
+49. career                1,972 occurrences
+50. salary                1,969 occurrences
+
+Saved statistics to: data/processed/cleaning_statistics.csv
+
+============================================================
+Text cleaning complete!
+============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+Loading cleaned reviews...
+Loaded 32,518 reviews
+Extracting unigrams from reviews...
+  Processing review 32,000/32,518
+  Extracted 21,041 unique unigrams
+
+Building unigram statistics dataframe...
+
+Saved unigrams to: data/processed/unigrams.csv
+Saved company-specific unigrams to: data/processed/unigrams_by_company.csv
+Saved property type-specific unigrams to: data/processed/unigrams_by_property_type.csv
+Saved job title-specific unigrams to: data/processed/unigrams_by_job_title.csv
+
+============================================================      
+UNIGRAM SUMMARY STATISTICS
+============================================================      
+Total unique unigrams: 21,041
+Total unigram occurrences: 842,405
+
+Top 30 most frequent unigrams:
+------------------------------------------------------------      
+  1. work                 freq=21,505 docs=14,993 ( 46.1%) pros/cons=  1.50
+  2. company              freq=16,266 docs=10,889 ( 33.5%) pros/cons=  1.36
+  3. great                freq=13,375 docs=10,322 ( 31.7%) pros/cons=  8.63
+  4. good                 freq=12,194 docs=9,401 ( 28.9%) pros/cons=  5.08
+  5. management           freq= 9,310 docs=7,444 ( 22.9%) pros/cons=  0.50
+  6. people               freq= 8,626 docs=6,761 ( 20.8%) pros/cons=  1.70
+  7. pay                  freq= 8,049 docs=7,128 ( 21.9%) pros/cons=  0.87
+  8. employees            freq= 7,739 docs=5,622 ( 17.3%) pros/cons=  0.78
+  9. benefits             freq= 7,352 docs=7,051 ( 21.7%) pros/cons=  6.01
+ 10. time                 freq= 5,516 docs=4,361 ( 13.4%) pros/cons=  0.69
+ 11. get                  freq= 5,248 docs=3,792 ( 11.7%) pros/cons=  0.48
+ 12. job                  freq= 5,031 docs=4,018 ( 12.4%) pros/cons=  1.01
+ 13. team                 freq= 5,025 docs=4,112 ( 12.6%) pros/cons=  2.08
+ 14. culture              freq= 4,762 docs=4,332 ( 13.3%) pros/cons=  2.66
+ 15. working              freq= 4,540 docs=3,866 ( 11.9%) pros/cons=  1.19
+ 16. environment          freq= 4,312 docs=4,006 ( 12.3%) pros/cons=  2.70
+ 17. life                 freq= 4,202 docs=3,985 ( 12.3%) pros/cons=  1.87
+ 18. growth               freq= 3,860 docs=3,549 ( 10.9%) pros/cons=  1.22
+ 19. balance              freq= 3,689 docs=3,608 ( 11.1%) pros/cons=  2.14
+ 20. like                 freq= 3,559 docs=2,903 (  8.9%) pros/cons=  0.62
+ 21. hours                freq= 3,350 docs=3,024 (  9.3%) pros/cons=  0.92
+ 22. many                 freq= 3,149 docs=2,674 (  8.2%) pros/cons=  0.56
+ 23. place                freq= 3,030 docs=2,718 (  8.4%) pros/cons=  1.88
+ 24. lot                  freq= 3,011 docs=2,577 (  7.9%) pros/cons=  0.76
+ 25. training             freq= 2,927 docs=2,616 (  8.0%) pros/cons=  1.24
+ 26. opportunities        freq= 2,919 docs=2,684 (  8.3%) pros/cons=  2.42
+ 27. one                  freq= 2,828 docs=2,236 (  6.9%) pros/cons=  0.56
+ 28. really               freq= 2,766 docs=2,342 (  7.2%) pros/cons=  1.14
+ 29. office               freq= 2,760 docs=2,272 (  7.0%) pros/cons=  0.83
+ 30. any                  freq= 2,739 docs=2,445 (  7.5%) pros/cons=  0.25
+
+Top 20 words most associated with PROS (high sentiment ratio):    
+------------------------------------------------------------
+beautiful            ratio= 23.71 (pros= 166, cons=   7)
+ample                ratio= 17.00 (pros=  68, cons=   4)
+invests              ratio= 15.75 (pros=  63, cons=   4)
+excellent            ratio= 15.38 (pros= 923, cons=  60)
+approachable         ratio= 14.78 (pros= 133, cons=   9)
+respectful           ratio= 13.67 (pros=  82, cons=   6)
+decent               ratio= 13.37 (pros=1377, cons= 103)
+relaxed              ratio= 13.18 (pros= 145, cons=  11)
+notch                ratio= 12.75 (pros= 102, cons=   8)
+mentors              ratio= 12.75 (pros=  51, cons=   4)
+friendly             ratio= 12.56 (pros=1306, cons= 104)
+amazing              ratio= 12.31 (pros=1145, cons=  93)
+gym                  ratio= 11.90 (pros= 119, cons=  10)
+impressive           ratio= 11.60 (pros=  58, cons=   5)
+dental               ratio= 11.20 (pros= 168, cons=  15)
+incredible           ratio= 10.75 (pros= 172, cons=  16)
+collaborative        ratio= 10.67 (pros= 256, cons=  24)
+supportive           ratio= 10.31 (pros= 794, cons=  77)
+stable               ratio= 10.23 (pros= 440, cons=  43)
+welcoming            ratio= 10.06 (pros= 181, cons=  18)
+
+Top 20 words most associated with CONS (low sentiment ratio):
+------------------------------------------------------------
+threatened           ratio=  0.00 (pros=   0, cons=  51)
+istent               ratio=  0.00 (pros=   0, cons= 100)
+downsides            ratio=  0.00 (pros=   0, cons= 131)
+disconnected         ratio=  0.00 (pros=   0, cons=  85)
+truction             ratio=  0.00 (pros=   0, cons= 145)
+ultant               ratio=  0.00 (pros=   0, cons= 152)
+understaffed         ratio=  0.01 (pros=   2, cons= 182)
+unrealistic          ratio=  0.01 (pros=   3, cons= 227)
+downside             ratio=  0.01 (pros=   2, cons= 142)
+nepotism             ratio=  0.02 (pros=   2, cons= 133)
+confusing            ratio=  0.02 (pros=   1, cons=  63)
+unclear              ratio=  0.02 (pros=   1, cons=  62)
+restructuring        ratio=  0.02 (pros=   1, cons=  61)
+trash                ratio=  0.02 (pros=   1, cons=  56)
+lacking              ratio=  0.02 (pros=   3, cons= 166)
+abusive              ratio=  0.02 (pros=   1, cons=  55)
+tedious              ratio=  0.02 (pros=   1, cons=  54)
+lack                 ratio=  0.02 (pros=  26, cons=1359)
+unorganized          ratio=  0.02 (pros=   2, cons= 104)
+inconsistent         ratio=  0.02 (pros=   2, cons= 103)
+
+============================================================
+Unigram extraction complete!
+============================================================
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis>
+
+
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/extract_bigrams.py
+Configuration:
+  Consecutive only: False
+  Minimum frequency: 5
+
+Loading cleaned reviews...
+Loaded 32,518 reviews
+Extracting bigrams from reviews (consecutive_only=False)...
+  Processing review 32,000/32,518
+  Extracted 1,934,084 unique bigrams
+  After filtering (min_freq=5): 182,551 bigrams
+
+Building bigram statistics dataframe...
+
+Saved bigrams to: data/processed/bigrams.csv
+Saved property type-specific bigrams to: data/processed/bigrams_by_property_type.csv
+
+============================================================
+BIGRAM SUMMARY STATISTICS
+============================================================
+Total unique bigrams (after filtering): 182,551
+Total bigram occurrences: 3,103,985
+
+Top 30 most frequent bigrams:
+------------------------------------------------------------
+  1. great work                     freq=5,675 docs=4,041 ratio= 12.77
+  2. life work                      freq=4,638 docs=3,590 ratio=  2.06
+  3. company work                   freq=4,439 docs=3,333 ratio=  2.61
+  4. balance work                   freq=4,401 docs=3,475 ratio=  2.18
+  5. good work                      freq=4,181 docs=3,054 ratio=  7.60
+  6. company great                  freq=4,027 docs=2,891 ratio=  8.61
+  7. balance life                   freq=3,518 docs=3,389 ratio=  2.17
+  8. benefits great                 freq=3,449 docs=2,680 ratio= 33.15
+  9. people work                    freq=3,316 docs=2,553 ratio=  3.13
+ 10. benefits good                  freq=2,963 docs=2,318 ratio= 26.95
+ 11. company employees              freq=2,823 docs=2,008 ratio=  1.28
+ 12. work work                      freq=2,820 docs=2,187 ratio=  1.56
+ 13. great people                   freq=2,730 docs=2,095 ratio= 15.55
+ 14. environment work               freq=2,567 docs=2,078 ratio=  3.32
+ 15. company good                   freq=2,515 docs=1,970 ratio=  4.44
+ 16. great great                    freq=2,275 docs=1,669 ratio= 44.50
+ 17. management work                freq=2,196 docs=1,766 ratio=  0.95
+ 18. good good                      freq=2,170 docs=1,550 ratio= 13.76
+ 19. company people                 freq=2,107 docs=1,618 ratio=  1.77
+ 20. employees work                 freq=2,103 docs=1,561 ratio=  1.15
+ 21. good pay                       freq=2,100 docs=1,647 ratio=  9.77
+ 22. pay work                       freq=2,056 docs=1,714 ratio=  1.00
+ 23. place work                     freq=2,000 docs=1,648 ratio=  3.16
+ 24. benefits work                  freq=1,926 docs=1,679 ratio=  9.82
+ 25. good great                     freq=1,910 docs=1,492 ratio= 22.88
+ 26. good people                    freq=1,906 docs=1,441 ratio=  5.37
+ 27. management upper               freq=1,862 docs=1,502 ratio=  0.33
+ 28. team work                      freq=1,779 docs=1,372 ratio=  3.44
+ 29. culture great                  freq=1,772 docs=1,405 ratio= 23.96
+ 30. company company                freq=1,757 docs=1,377 ratio=  1.45
+
+============================================================
+Bigram extraction complete!
+============================================================
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> 
+
+
+
+
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> python scripts/extract_trigrams.py
+Configuration:
+  Consecutive only: True
+  Minimum frequency: 3
+  Maximum window: 5
+
+Loading cleaned reviews...
+Loaded 32,518 reviews
+Extracting trigrams from reviews (consecutive_only=True)...
+  Processing review 32,000/32,518
+  Extracted 633,423 unique trigrams
+  After filtering (min_freq=3): 11,098 trigrams
+
+Building trigram statistics dataframe...
+
+Saved trigrams to: data/processed/trigrams.csv
+Saved property type-specific trigrams to: data/processed/trigrams_by_property_type.csv
+
+============================================================
+TRIGRAM SUMMARY STATISTICS
+============================================================
+Total unique trigrams (after filtering): 11,098
+Total trigram occurrences: 70,369
+
+Top 30 most frequent trigrams:
+------------------------------------------------------------
+  1. work life balance                   freq=3,244 docs=3,210
+  2. great place work                    freq= 614 docs=607
+  3. good work life                      freq= 425 docs=425
+  4. great company work                  freq= 373 docs=370
+  5. great work life                     freq= 353 docs=352
+  6. great people work                   freq= 228 docs=228
+  7. good place work                     freq= 216 docs=216
+  8. extra space storage                 freq= 203 docs=179
+  9. good company work                   freq= 201 docs=201
+ 10. great work environment              freq= 173 docs=172
+ 11. life balance great                  freq= 165 docs=165
+ 12. great co workers                    freq= 143 docs=141
+ 13. great benefits great                freq= 142 docs=141
+ 14. life balance good                   freq= 141 docs=141
+ 15. good benefits good                  freq= 133 docs=133
+ 16. great company culture               freq= 125 docs=125
+ 17. open door policy                    freq= 120 docs=119
+ 18. good work environment               freq= 118 docs=118
+ 19. good pay benefits                   freq= 103 docs=103
+ 20. good people work                    freq=  97 docs= 97
+ 21. pay could better                    freq=  97 docs= 97
+ 22. fast paced environment              freq=  95 docs= 95
+ 23. good pay good                       freq=  95 docs= 95
+ 24. think any cons                      freq=  93 docs= 93
+ 25. great company great                 freq=  89 docs= 86
+ 26. great benefits good                 freq=  87 docs= 87
+ 27. none none none                      freq=  86 docs= 30
+ 28. good working environment            freq=  86 docs= 86
+ 29. great people great                  freq=  85 docs= 85
+ 30. company great benefits              freq=  82 docs= 81
+
+============================================================
+Trigram extraction complete!
+============================================================
+PS C:\Users\konid\Documents\Capstone\reit-sentiment-analysis> 

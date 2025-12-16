@@ -151,7 +151,7 @@ class MNIRRegression:
     def load_data(self):
         """Load preprocessed data with validation."""
         print(f"\n{'='*70}")
-        print("📂 LOADING DATA")
+        print("LOADING DATA")
         print('='*70)
         
         # Load firm-year data (controls + outcome)
@@ -160,7 +160,7 @@ class MNIRRegression:
             raise FileNotFoundError(f"Missing: {firm_year_file}")
         
         self.firm_year_df = pd.read_csv(firm_year_file)
-        self.log_validation(f"✓ Loaded {len(self.firm_year_df):,} firm-year observations")
+        self.log_validation(f"Loaded {len(self.firm_year_df):,} firm-year observations")
         
         # Validate required columns
         required_cols = ['ticker', 'year', 'POST_CHATGPT', 'rating', 'review_count',
@@ -176,7 +176,7 @@ class MNIRRegression:
         
         with open(vocab_file, 'r') as f:
             self.vocabulary = json.load(f)
-        self.log_validation(f"✓ Loaded {len(self.vocabulary):,} vocabulary words")
+        self.log_validation(f"Loaded {len(self.vocabulary):,} vocabulary words")
         
         # Load word counts
         pros_file = self.input_dir / 'word_counts_pros.csv'
@@ -189,7 +189,7 @@ class MNIRRegression:
         
         self.word_counts['pros'] = pd.read_csv(pros_file)
         self.word_counts['cons'] = pd.read_csv(cons_file)
-        self.log_validation(f"✓ Loaded word count matrices")
+        self.log_validation(f"Loaded word count matrices")
         
         # Validate data alignment
         self.validate_data_alignment()
@@ -197,7 +197,7 @@ class MNIRRegression:
     def validate_data_alignment(self):
         """Ensure firm_year_data aligns with word count matrices."""
         print(f"\n{'='*70}")
-        print("🔍 VALIDATING DATA ALIGNMENT")
+        print("VALIDATING DATA ALIGNMENT")
         print('='*70)
         
         for section in ['pros', 'cons']:
@@ -219,21 +219,21 @@ class MNIRRegression:
             
             if n_matched != len(self.firm_year_df):
                 self.log_validation(
-                    f"⚠️  WARNING: {section} has {n_left_only} unmatched firm-years in firm_year_data"
+                    f"WARNING: {section} has {n_left_only} unmatched firm-years in firm_year_data"
                 )
             else:
-                self.log_validation(f"✓ {section}: All {n_matched:,} firm-years matched")
+                self.log_validation(f"{section}: All {n_matched:,} firm-years matched")
             
             # Check for word columns with 'wc_' prefix
             word_cols = [c for c in counts.columns if c.startswith('wc_')]
-            self.log_validation(f"✓ {section}: Found {len(word_cols):,} word count columns")
+            self.log_validation(f"{section}: Found {len(word_cols):,} word count columns")
             
             # Verify no missing values in critical columns
             if counts[['ticker', 'year']].isna().any().any():
-                self.log_validation(f"⚠️  WARNING: {section} has missing ticker/year values")
+                self.log_validation(f"WARNING: {section} has missing ticker/year values")
         
         # Validate POST_CHATGPT distribution
-        print(f"\n  POST_CHATGPT Distribution:")
+        print(f"\nPOST_CHATGPT Distribution:")
         print(f"    Pre (0): {(self.firm_year_df['POST_CHATGPT'] == 0).sum():,}")
         print(f"    Post (1): {(self.firm_year_df['POST_CHATGPT'] == 1).sum():,}")
         print(f"    Treatment rate: {self.firm_year_df['POST_CHATGPT'].mean()*100:.1f}%")
@@ -306,7 +306,7 @@ class MNIRRegression:
             n_jobs: Number of CPU cores (default: 1 for stability)
         """
         print(f"\n{'='*70}")
-        print(f"📊 RUNNING REGRESSIONS: {section.upper()}")
+        print(f"RUNNING REGRESSIONS: {section.upper()}")
         print('='*70)
         
         # Prepare data
@@ -316,9 +316,9 @@ class MNIRRegression:
         print(f"  Covariates: {X.shape[1]} variables")
         print(f"  Words to process: {len(word_columns):,}")
         if self.use_fixed_effects:
-            print(f"  ✓ Using year fixed effects")
+            print(f"  Using year fixed effects")
         else:
-            print(f"  ⚠️  No fixed effects")
+            print(f"  No fixed effects")
         
         # Prepare arguments for processing
         tasks = []
@@ -341,7 +341,7 @@ class MNIRRegression:
         results_df['section'] = section
         
         # Print detailed diagnostics
-        print(f"\n  📊 Detailed Status Breakdown:")
+        print(f"\nDetailed Status Breakdown:")
         status_counts = results_df['status'].value_counts()
         for status, count in status_counts.items():
             print(f"    - {status}: {count:,} ({count/len(results_df)*100:.1f}%)")
@@ -351,13 +351,13 @@ class MNIRRegression:
         n_significant = ((results_df['t_stat'].abs() > 1.96) & 
                         (results_df['converged'] == True)).sum()
         
-        print(f"\n  ✓ Regressions complete:")
+        print(f"\nRegressions complete:")
         print(f"    - Converged: {n_converged:,} / {len(results_df):,} ({n_converged/len(results_df)*100:.1f}%)")
         print(f"    - Significant (|t| > 1.96): {n_significant:,} ({n_significant/len(results_df)*100:.1f}%)")
         
         # If convergence is very low, print first few errors as examples
         if n_converged < len(results_df) * 0.1:  # Less than 10% convergence
-            print(f"\n  ⚠️  Low convergence rate! Sample errors:")
+            print(f"\nLow convergence rate! Sample errors:")
             error_samples = results_df[results_df['converged'] == False].head(3)
             for idx, row in error_samples.iterrows():
                 print(f"    Word: {row['word']}, Status: {row['status']}")
@@ -381,7 +381,7 @@ class MNIRRegression:
             Array of index scores (aligned with firm_year_df)
         """
         print(f"\n{'='*70}")
-        print(f"🏗️  CONSTRUCTING INDEX: {section.upper()}")
+        print(f"CONSTRUCTING INDEX: {section.upper()}")
         print('='*70)
         
         # Filter weights by convergence and significance
@@ -391,11 +391,11 @@ class MNIRRegression:
         ].copy()
         
         if len(valid_weights) == 0:
-            print(f"  ⚠️  WARNING: No significant weights found for {section}")
+            print(f"WARNING: No significant weights found for {section}")
             return np.zeros(len(self.firm_year_df))
         
-        print(f"  Using {len(valid_weights):,} significant weights (|t| ≥ {min_t_stat})")
-        print(f"  Mean |coefficient|: {valid_weights['coef'].abs().mean():.4f}")
+        print(f"Using {len(valid_weights):,} significant weights (|t| ≥ {min_t_stat})")
+        print(f"Mean |coefficient|: {valid_weights['coef'].abs().mean():.4f}")
         
         # Create word -> coefficient mapping
         word_to_coef = valid_weights.set_index('word')['coef'].to_dict()
@@ -412,10 +412,10 @@ class MNIRRegression:
                 words_to_use.append(word)
         
         if len(words_to_use) == 0:
-            print(f"  ⚠️  WARNING: No word columns match between counts and weights")
+            print(f"WARNING: No word columns match between counts and weights")
             return np.zeros(len(self.firm_year_df))
         
-        print(f"  Matched {len(words_to_use):,} words between counts and weights")
+        print(f"Matched {len(words_to_use):,} words between counts and weights")
         
         # Extract count matrix for matched words
         word_cols = [f'wc_{w}' for w in words_to_use]
@@ -436,11 +436,11 @@ class MNIRRegression:
         scores = X_normalized.dot(w)
         scores = scores.fillna(0.0)
         
-        print(f"  ✓ Index constructed")
-        print(f"    Mean: {scores.mean():.6f}")
-        print(f"    Std:  {scores.std():.6f}")
-        print(f"    Min:  {scores.min():.6f}")
-        print(f"    Max:  {scores.max():.6f}")
+        print(f"Index constructed")
+        print(f"Mean: {scores.mean():.6f}")
+        print(f"Std:  {scores.std():.6f}")
+        print(f"Min:  {scores.min():.6f}")
+        print(f"Max:  {scores.max():.6f}")
         
         return scores.values
     
@@ -457,7 +457,7 @@ class MNIRRegression:
             for msg in self.validation_log:
                 f.write(msg + "\n")
         
-        print(f"\n💾 Saved validation report → {report_file}")
+        print(f"Saved validation report → {report_file}")
 
 
 def main():
@@ -508,11 +508,11 @@ Examples:
     print("="*70)
     print("MNIR STAGE 2: REGRESSION ANALYSIS (BINARY TREATMENT)")
     print("="*70)
-    print(f"\n📂 Input:  {input_dir}")
-    print(f"📁 Output: {output_dir}")
-    print(f"⚙️  Min |t-stat|: {args.min_t_stat}")
-    print(f"⚙️  Year fixed effects: {'Disabled' if args.no_fixed_effects else 'Enabled'}")
-    print(f"🎯 Treatment: POST_CHATGPT (>Nov 30, 2022)")
+    print(f"Input:  {input_dir}")
+    print(f"Output: {output_dir}")
+    print(f"Min |t-stat|: {args.min_t_stat}")
+    print(f"Year fixed effects: {'Disabled' if args.no_fixed_effects else 'Enabled'}")
+    print(f"Treatment: POST_CHATGPT (>Nov 30, 2022)")
     
     # Initialize
     mnir = MNIRRegression(
@@ -524,7 +524,7 @@ Examples:
     try:
         mnir.load_data()
     except Exception as e:
-        print(f"\n❌ Error loading data: {e}")
+        print(f"Error loading data: {e}")
         return 1
     
     # Run Regressions
@@ -532,14 +532,14 @@ Examples:
         pros_results = mnir.run_regressions('pros')
         cons_results = mnir.run_regressions('cons')
     except Exception as e:
-        print(f"\n❌ Error in regressions: {e}")
+        print(f"Error in regressions: {e}")
         return 1
     
     # Combine and save weights
     all_weights = pd.concat([pros_results, cons_results], ignore_index=True)
     weights_file = output_dir / 'word_weights.csv'
     all_weights.to_csv(weights_file, index=False)
-    print(f"\n💾 Saved word weights → {weights_file}")
+    print(f"Saved word weights → {weights_file}")
     
     # Construct Indices
     firm_year_scores = mnir.firm_year_df[['ticker', 'year']].copy()
@@ -552,7 +552,7 @@ Examples:
             cons_results, 'cons', min_t_stat=args.min_t_stat
         )
     except Exception as e:
-        print(f"\n❌ Error constructing indices: {e}")
+        print(f"Error constructing indices: {e}")
         return 1
     
     # Combined Score (Average of pros and cons)
@@ -563,14 +563,14 @@ Examples:
     # Save Index
     index_file = output_dir / 'chatgpt_language_index.csv'
     firm_year_scores.to_csv(index_file, index=False)
-    print(f"💾 Saved ChatGPT Language Index → {index_file}")
+    print(f"Saved ChatGPT Language Index → {index_file}")
     
     # Save validation report
     mnir.save_validation_report()
     
     # Detailed Analysis
     print(f"\n{'='*70}")
-    print("📈 INDEX STATISTICS")
+    print("INDEX STATISTICS")
     print('='*70)
     
     for col in ['chatgpt_index_pros', 'chatgpt_index_cons', 'chatgpt_language_index']:
@@ -585,7 +585,7 @@ Examples:
     
     # Top Words Analysis
     print(f"\n{'='*70}")
-    print("🔝 TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)")
+    print("TOP PREDICTIVE WORDS (POST-CHATGPT LANGUAGE)")
     print('='*70)
     
     for section in ['pros', 'cons']:
@@ -603,7 +603,7 @@ Examples:
                 print(f"  {i:2d}. {row.word:<20} coef: {row.coef:8.4f}  t: {row.t_stat:7.2f}  p: {row.p_value:.4f}")
     
     print(f"\n{'='*70}")
-    print("🔻 BOTTOM WORDS (NEGATIVE ASSOCIATION)")
+    print("BOTTOM WORDS (NEGATIVE ASSOCIATION)")
     print('='*70)
     
     for section in ['pros', 'cons']:
@@ -622,7 +622,7 @@ Examples:
     
     # Summary statistics
     print(f"\n{'='*70}")
-    print("📊 REGRESSION SUMMARY")
+    print("REGRESSION SUMMARY")
     print('='*70)
     
     total_words = len(all_weights)
@@ -650,13 +650,13 @@ Examples:
         print(f"  Mean |coef|: {sig_weights['coef'].abs().mean():.4f}")
     
     print(f"\n{'='*70}")
-    print("✅ ANALYSIS COMPLETE")
+    print("ANALYSIS COMPLETE")
     print('='*70)
-    print(f"\n📁 Output files:")
-    print(f"  • {weights_file.name}")
-    print(f"  • {index_file.name}")
-    print(f"  • validation_report.txt")
-    print(f"\n🚀 NEXT STEPS:")
+    print(f"\nOutput files:")
+    print(f"  {weights_file.name}")
+    print(f"  {index_file.name}")
+    print(f"  validation_report.txt")
+    print(f"\nNEXT STEPS:")
     print(f"  1. Review validation_report.txt for data quality")
     print(f"  2. Run: python scripts/map_stems_to_words.py")
     print(f"  3. Examine word_weights_readable.csv for interpretable words")

@@ -29,7 +29,7 @@ import logging
 sys.path.append(str(Path(__file__).parent.parent))
 
 # Import sentiment analyzer
-from scripts.sentiment_analysis import FinBERTSentimentAnalyzer
+from scripts.finbert_validation import FinBERTSentimentAnalyzer
 
 from src.visualization.plotting import (
     generate_distribution_plots,

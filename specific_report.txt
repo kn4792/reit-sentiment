@@ -1,0 +1,16 @@
+Specific REIT Reviews Analysis Report
+=====================================
+
+File                                                         | Reviews    | Unique Tickers 
+------------------------------------------------------------------------------------------
+all_reit_reviews_20251203_210354.csv                         | 7          | 1              
+all_reit_reviews_20251204_024439.csv                         | 13807      | 34             
+all_reit_reviews_20251204_032441.csv                         | 43         | 1              
+all_reit_reviews_20251204_085636.csv                         | 14842      | 81             
+all_reit_reviews_20251204_154433.csv                         | 3369       | 5              
+------------------------------------------------------------------------------------------
+
+Total Reviews across all files: 32068
+Total Unique Tickers across all files: 119
+
+Unique Tickers Found (119): ['AAT', 'ABR', 'ADC', 'AHH', 'AHR', 'AHT', 'AKR', 'ALEX', 'ALX', 'AMH', 'AMT', 'AOMR', 'APLE', 'ARE', 'AVB', 'BDN', 'BFS', 'BNL', 'BRG', 'BRSP', 'BRX', 'BXP', 'CBL', 'CCI', 'CDP', 'CLDT', 'COLD', 'CPT', 'CSR', 'CUBE', 'CUZ', 'DEA', 'DLR', 'DOC', 'DRH', 'DX', 'EGP', 'ELME', 'EPRT', 'EQIX', 'EQR', 'ESRT', 'ESS', 'EXR', 'FCPT', 'FR', 'FRT', 'FSP', 'GNL', 'GTY', 'HHH', 'HIW', 'HPP', 'HR', 'HST', 'INN', 'INVH', 'IRM', 'IVT', 'JBGS', 'KIM', 'KRC', 'KRG', 'LADR', 'LAMR', 'LINE', 'LXP', 'MAA', 'MAC', 'MFA', 'MPW', 'NHI', 'NNN', 'NREF', 'NSA', 'NTST', 'O', 'OHI', 'OUT', 'PDM', 'PEB', 'PGRE', 'PK', 'PLD', 'PLYM', 'PMT', 'PSA', 'PSTL', 'RC', 'REG', 'RHP', 'RLJ', 'RPT', 'RYN', 'SAFE', 'SBAC', 'SHO', 'SILA', 'SITC', 'SKT', 'SLG', 'SMA', 'SPG', 'STAG', 'STWD', 'SUI', 'TRTX', 'UDR', 'UE', 'UMH', 'VICI', 'VNO', 'VRE', 'VTR', 'WELL', 'WPC', 'WSR', 'WY', 'XHR']

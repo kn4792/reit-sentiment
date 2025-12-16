@@ -1,0 +1,262 @@
+MBR
+
+generative AI and firm values 
+theyve taken into account:
+    how youre using AI 
+    what using for
+
+built index on 8 different things
+
+PArt 1:
+profession exposed to AI, and review feeling about it .
+AI exposure similar to occupations. How much is that occupation exposed to AI tools. Can AI improve productitity based on la bor tasks. 
+
+AI prodcutivty sentiments. Employees evaluating these games. 
+
+Part 2: 
+
+gemerative AI effects non routine analyticql,,
+routine 
+inter personal taks 
+not manual taks 
+
+looking at the topics, things like preidditve mantinarnce, 
+pricing algorithsm,
+properyt manaegement systems
+
+lookign at topics like that in teh reivews. REITs specific lexicon. 
+
+10-k reports, transcipts from mageemnt earnings calls, 
+figuring out what ocntext AI is being used. in this particualty industry and company. 
+employees saying. 
+
+
+Part 3: 
+Weightinn words.
+does chatgpt help me summarize the lease. current game .
+
+vs .
+
+after integrasting chatgpt in the system then that is conditioanl gain.
+AI cannot replace this work = zero exposure. 
+
+four categories
+
+current gain, 
+futue gina, 
+no gian
+
+vision based gain
+zero exposure 
+
+
+REIT specific  lexicon that can idetnifit AI tools and what emplotees are saying. 
+is it curretng ain, futuer gain, no agin 
+
+Person reviewin, job title, how much is job titel is exposed to it.
+
+
+what are wesyaing exactly about the AI productivty measure .
+automating payingments?
+LLMs just day to day 
+
+
+whos usig it, whast it being used for, what is the differnece in gain 
+
+
+current gain = life easy on current basis 
+
+futuer gain = will change my life 
+
+Overt 
+publicyl availabel websitem what are teh job positoins, 
+
+
+
+send me the list of words
+remove stopwrods,
+stem it,
+
+for the glassdoor paper, i manually checked ALL the words to create a lsit of words.
+
+to manually find the vocab and lexicon 
+
+for e.g 
+leasing automation
+
+automated patyments
+
+
+property mangaegemetn systems 
+
+context based modeling in python, you can define the weighing
+
+im looking at this gain and give it some contexts
+
+ask that model to calssify the weifht of the review sentiment 
+
+
+Researhc how to do the weighing
+
+if it says leasing how do i know whether its being used as automated background prfoile checking. 
+or it is like leasing is easdier in this companyy.
+
+when theyr esyaing portfolio, do they have an automated portfolio. 
+
+or is it analyst and is not even doing AI/ML based, just egenral statisctical 
+
+
+the words and if it can be linked 
+
+prcining, reporting, underwriting, prpoerty management, - good words that can be made efficient by the use of technology
+worklife - useless
+from those list of words
+
+unique 
+bygrams and trygrams
+
+word couples and thruples
+
+to capture lets say
+
+leasing, atuomated
+
+pricing, alrogithms
+
+see if they are occuring together in teh same reviwea
+
+high, work load 
+
+work, balance
+full, investment
+upper, management
+ineffiriceitn, managemetn
+
+
+
+
+
+manually look at bigrams, 
+
+
+i agve gpt all the availble bigrams and unigrams 
+
+and gave them the list i identifeis as importatn to me
+
+cna you find similar words in the total list that can be mapped to my list 
+- combinaton of human 
+
+if it matches the context and meanign 
+for example 
+work load is realted to work life balacne 
+
+big lexicon - 200 vocabs for each category. 
+
+list for :
+work life balance
+career oppurtunity - 234
+culture - 313
+overall - 
+
+
+
+BERT dictionary 
+
+dont use financial lexicons. the reviews are technically non financial texts. 
+
+robust measure if we have to create ai productivity gains. my concern is its mentioned enough times. 
+if we can find enough reviews to have robust.
+
+
+onetonline 
+professoins, skills, exposure 
+
+link this to the job titel in teh reivews. 
+fuzzy match 
+
+
+
+recommended, ceo approval, business outlook, work life balance metrics 
+
+send me all the grams. i will make the first list. then i will refine it. 
+
+scarping. 
+
+third job: context based modelling, define 
+
+
+
+Add the stopwords dictionary.
+
+
+Ban is Econ. 
+
+Finance and accounnting. Academia. 180k. Don't need post doc.
+
+Financial Mathematics.
+
+Prof Hao
+
+finance and accounting : jan 15th 
+
+
+cons:
+
+
+
+
+Exposure. What is the person reviewing and their position. How much is the profession exposed. 
+What exactly is there job function?
+
+If lets say cash flow modelling is there job fucntion, then these functions will heavily benefit from AI. 
+And then classify as AI productivity gain, post chatgpt introduction. 
+
+
+
+Steps:
+
+1. context based modeling to identify the job function. (underwriter, app processing). 
+after classifying the job fucntions, would they have a ai 
+maintenance scheduling for example. 
+
+also mention of their job function as exposure. 
+
+topic based modeling. 
+
+transformative AI model. 
+
+language model that understand context.
+
+BERT topic. Feed the topic which are the duties. 
+
+Transformer based models to do word embeddings. 
+how is the word "support" embedded in the review. 
+
+extract the grams and find sentence embeddings 
+(where is the word located in realtoinships to the sentence)
+different task categories. 
+
+sequential classification. SVM/HVM. 
+
+
+
+
+for each review, do context basd modeling. SVM HMM. 
+get rid of the stopwords. tokenize. 
+
+then it would find phrases and words that pertain to duties. word n phrases for the job function and what
+
+pull out verb object pairs. noun verb pair:
+applciation processing
+background checking 
+
+
+2. BUild a global list of task phrases. 
+
+pros cons and titles:
+3. contextual embdeddings of these tasks using SVM/HMM transformer model. 
+4. cluster these phrases into tasks or work functions. 
+5. score/weight of some sort to say how much it would benefit from gen AI. 
+
+
+

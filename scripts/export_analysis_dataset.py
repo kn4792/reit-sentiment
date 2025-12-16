@@ -1,14 +1,21 @@
-"""
-Stage 4: Export Analysis-Ready Dataset
-=======================================
-Prepares clean, validated dataset ready for merging with REIT performance data.
-
-Input:  data/processed/firm_year_sentiment.csv
-Output: data/results/analysis_ready_dataset.csv
-        data/results/variable_codebook.md
-
-This is the final dataset you'll merge with your REIT performance data for regressions.
-"""
+## @file export_analysis_dataset.py
+# @brief Stage 4: Export Analysis-Ready Dataset
+#
+# Prepares clean, validated dataset ready for merging with REIT performance data.
+#
+# @details
+# Input:  data/processed/firm_year_sentiment.csv
+# Output: data/results/analysis_ready_dataset.csv
+#         data/results/variable_codebook.md
+#         data/results/sample_merge_and_regression.py
+#
+# This is the final dataset you'll merge with your REIT performance data for regressions.
+# The script performs data quality checks, creates additional useful variables,
+# generates a variable codebook, and provides sample merge code.
+#
+# @author Konain Niaz (kn4792@rit.edu)
+# @date 2025-12-16
+# @version 1.0
 
 import pandas as pd
 import numpy as np
@@ -21,28 +28,40 @@ print("STAGE 4: EXPORT ANALYSIS-READY DATASET")
 print("=" * 80)
 print()
 
-# Configuration
+## @var INPUT_FILE
+# Path to input CSV file with firm-year aggregated sentiment data
 INPUT_FILE = "data/processed/firm_year_sentiment.csv"
+
+## @var OUTPUT_DIR
+# Directory for final output files
 OUTPUT_DIR = "data/results"
+
+## @var OUTPUT_FILE
+# Path to the analysis-ready dataset CSV
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "analysis_ready_dataset.csv")
+
+## @var CODEBOOK_FILE
+# Path to the variable codebook markdown file
 CODEBOOK_FILE = os.path.join(OUTPUT_DIR, "variable_codebook.md")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ============================================================================
-# 1. LOAD DATA
+# STEP 1: LOAD DATA
+# Load the firm-year aggregated dataset from Stage 2
 # ============================================================================
-print("📂 Loading data...")
+print("Loading data...")
 df = pd.read_csv(INPUT_FILE)
-print(f"  ✓ Loaded {len(df):,} firm-year observations")
+print(f"Loaded {len(df):,} firm-year observations")
 print()
 
 # ============================================================================
-# 2. SELECT AND RENAME VARIABLES
+# STEP 2: SELECT AND RENAME VARIABLES
+# Create a clean dataset with standardized variable names
 # ============================================================================
-print("🔧 Preparing analysis-ready variables...")
+print("Preparing analysis-ready variables...")
 
-# Select key variables and rename for clarity
+# Select key variables and rename for clarity in regression output
 analysis_df = pd.DataFrame({
     # Identifiers
     'ticker': df['ticker'],
@@ -57,7 +76,7 @@ analysis_df = pd.DataFrame({
     'sentiment_min': df['sentiment_score_min'],
     'sentiment_max': df['sentiment_score_max'],
     
-    # Sentiment components
+    # Sentiment components from FinBERT
     'positive_prob': df['positive_prob_mean'],
     'negative_prob': df['negative_prob_mean'],
     'neutral_prob': df['neutral_prob_mean'],
@@ -81,7 +100,8 @@ analysis_df = pd.DataFrame({
 })
 
 # ============================================================================
-# 3. DATA QUALITY CHECKS
+# STEP 3: DATA QUALITY CHECKS
+# Validate data integrity before export
 # ============================================================================
 print("🔍 Running data quality checks...")
 
@@ -97,21 +117,21 @@ if missing.sum() > 0:
 else:
     print("  ✓ No missing values in key variables")
 
-# Check 2: Sentiment score range
+# Check 2: Sentiment score range validation
 if (analysis_df['sentiment'] < -1).any() or (analysis_df['sentiment'] > 1).any():
     print("  ⚠️  WARNING: Sentiment scores outside [-1, 1] range")
     checks_passed = False
 else:
     print("  ✓ Sentiment scores within valid range [-1, 1]")
 
-# Check 3: Rating range
+# Check 3: Rating range validation
 if (analysis_df['rating'] < 1).any() or (analysis_df['rating'] > 5).any():
     print("  ⚠️  WARNING: Ratings outside [1, 5] range")
     checks_passed = False
 else:
     print("  ✓ Ratings within valid range [1, 5]")
 
-# Check 4: Positive review count
+# Check 4: Positive review count validation
 if (analysis_df['review_count'] < 1).any():
     print("  ⚠️  WARNING: Firm-years with < 1 review detected")
     checks_passed = False
@@ -135,27 +155,28 @@ else:
 print()
 
 # ============================================================================
-# 4. CREATE ADDITIONAL USEFUL VARIABLES
+# STEP 4: CREATE ADDITIONAL USEFUL VARIABLES
+# Generate derived variables for regression analysis
 # ============================================================================
 print("➕ Creating additional variables...")
 
-# Year indicators for easy filtering
+# Year indicators for easy period filtering
 analysis_df['year_2022_or_earlier'] = (analysis_df['year'] <= 2022).astype(int)
 analysis_df['year_2023_or_later'] = (analysis_df['year'] >= 2023).astype(int)
 
-# Sentiment categories (for robustness checks)
+# Sentiment categories for robustness checks
 analysis_df['high_sentiment'] = (analysis_df['sentiment'] > analysis_df['sentiment'].median()).astype(int)
 analysis_df['low_sentiment'] = (analysis_df['sentiment'] < analysis_df['sentiment'].quantile(0.25)).astype(int)
 
-# High dispersion indicator (disagreement among employees)
+# High dispersion indicator (employee disagreement)
 analysis_df['high_dispersion'] = (analysis_df['sentiment_dispersion'] > 
                                   analysis_df['sentiment_dispersion'].median()).astype(int)
 
-# Large firm-year (many reviews)
+# Large firm-year indicator (many reviews)
 analysis_df['many_reviews'] = (analysis_df['review_count'] > 
                                analysis_df['review_count'].median()).astype(int)
 
-# Interaction term for key hypothesis (you can create more in your regression)
+# Pre-computed interaction terms for key hypotheses
 analysis_df['sentiment_X_POST_CHATGPT'] = (analysis_df['sentiment'] * 
                                             analysis_df['POST_CHATGPT'])
 analysis_df['sentiment_X_tech_intensive'] = (analysis_df['sentiment'] * 
@@ -166,7 +187,8 @@ print("  ✓ Created interaction terms")
 print()
 
 # ============================================================================
-# 5. SUMMARY STATISTICS
+# STEP 5: SUMMARY STATISTICS
+# Display summary of the final dataset
 # ============================================================================
 print("📊 Final dataset summary:")
 print()
@@ -196,7 +218,8 @@ print(f"  Traditional:     {(analysis_df['tech_intensive']==0).sum():>4} ({(anal
 print()
 
 # ============================================================================
-# 6. SAVE ANALYSIS-READY DATASET
+# STEP 6: SAVE ANALYSIS-READY DATASET
+# Export the final dataset to CSV
 # ============================================================================
 print("💾 Saving analysis-ready dataset...")
 
@@ -211,7 +234,8 @@ print(f"  ✓ Columns: {len(analysis_df.columns)}")
 print()
 
 # ============================================================================
-# 7. CREATE VARIABLE CODEBOOK
+# STEP 7: CREATE VARIABLE CODEBOOK
+# Generate documentation for all variables in the dataset
 # ============================================================================
 print("📖 Creating variable codebook...")
 
@@ -413,7 +437,8 @@ print(f"  ✓ Saved: {CODEBOOK_FILE}")
 print()
 
 # ============================================================================
-# 8. CREATE SAMPLE MERGE SCRIPT
+# STEP 8: CREATE SAMPLE MERGE SCRIPT
+# Generate example code for users to merge with their performance data
 # ============================================================================
 print("📝 Creating sample merge script...")
 
@@ -576,7 +601,8 @@ print(f"  ✓ Saved: {sample_script_file}")
 print()
 
 # ============================================================================
-# 9. FINAL SUMMARY
+# STEP 9: FINAL SUMMARY
+# Display completion message and next steps
 # ============================================================================
 print("=" * 80)
 print("✅ STAGE 4 COMPLETE - PIPELINE FINISHED!")

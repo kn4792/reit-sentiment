@@ -667,7 +667,7 @@ Examples:
     print(f"  {index_file.name}")
     print(f"  validation_report.txt")
     print(f"\nNEXT STEPS:")
- print(f"  1. Review validation_report.txt for data quality")
+    print(f"  1. Review validation_report.txt for data quality")
     print(f"  2. Run: python scripts/map_stems_to_words.py")
     print(f"  3. Examine word_weights_readable.csv for interpretable words")
     print(f"  4. Run: python scripts/analysis.py")

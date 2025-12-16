@@ -1,0 +1,12 @@
+{
+  "input_file": "data\\processed\\cleaned_PLD_reviews.csv",
+  "total_reviews": 99,
+  "train_reviews": 69,
+  "val_reviews": 15,
+  "test_reviews": 15,
+  "train_ratio": 0.7,
+  "val_ratio": 0.15,
+  "test_ratio": 0.15,
+  "random_state": 42,
+  "stratify_by": "ticker"
+}

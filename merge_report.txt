@@ -1,0 +1,19 @@
+Merge and Deduplication Report
+==============================
+
+File                                                         | Reviews   
+---------------------------------------------------------------------------
+all_reit_reviews_20251203_210354.csv                         | 7         
+all_reit_reviews_20251204_024439.csv                         | 13807     
+all_reit_reviews_20251204_032441.csv                         | 43        
+all_reit_reviews_20251204_085636.csv                         | 14842     
+all_reit_reviews_20251204_154433.csv                         | 3369      
+all_reit_reviews_20251204_162620.csv                         | 508       
+---------------------------------------------------------------------------
+
+Total Initial Reviews: 32576
+Duplicates Removed: 58
+Final Total Reviews: 32518
+
+Merged file saved to: c:\Users\konid\Documents\Capstone\reit-sentiment-analysis\data\raw\all_reviews.csv
+Total Unique Tickers in Final Dataset: 120

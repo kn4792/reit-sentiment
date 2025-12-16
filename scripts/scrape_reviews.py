@@ -250,6 +250,24 @@ def extract_review_data(review_element) -> Dict[str, str]:
         except NoSuchElementException:
             continue
     
+    job_title_selectors = [
+        '[data-test="review-avatar-label"]',  # Primary selector
+        'span.review-avatar_avatarLabel__P15ey',  # Class-based fallback
+        'div[data-test="review-avatar-container"] span[class*="avatarLabel"]'  # General fallback
+    ]
+    
+    for selector in job_title_selectors:
+        try:
+            element = review_element.find_element(By.CSS_SELECTOR, selector)
+            job_title = element.text.strip()
+            # Filter out generic/empty values
+            if job_title and job_title not in ['Anonymous employee', 'Employee', '']:
+                data['job_title'] = job_title
+                break
+        except NoSuchElementException:
+            continue
+
+
     # Extract employee info
     employee_selectors = [
         'span[class*="JobTitle" i]',
@@ -634,9 +652,10 @@ PRODUCTION FEATURES:
         help='Resume from company number N (default: 0)'
     )
     parser.add_argument(
-        '--company',
-        help='Scrape specific company by ticker symbol'
-    )
+       '--company',
+       nargs='+',  # Accept one or more values
+       help='Scrape specific company/companies by ticker symbol(s)'
+   )
     parser.add_argument(
         '--debug-port',
         type=int,
@@ -659,7 +678,8 @@ PRODUCTION FEATURES:
     
     # Filter companies
     if args.company:
-        companies = [c for c in companies if c['ticker'] == args.company.upper()]
+        tickers = [t.upper() for t in args.company]
+        companies = [c for c in companies if c['ticker'] in tickers]
         if not companies:
             print(f"Company {args.company} not found")
             return

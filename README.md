@@ -140,6 +140,8 @@ cp all_reit_reviews_merged.csv data/raw/
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\selenium\ChromeProfile"
 # Log in to Glassdoor, come back to the terminal and enter:
 python scripts/scrape_glassdoor_reviews.py
+# Just make sure the file is named all_reit_reviews_merged.csv and is placed in the data/raw folder. 
+
 
 # 3. Install dependencies
 pip install -r requirements.txt
